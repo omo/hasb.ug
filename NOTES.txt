@@ -1,0 +1,137 @@
+
+TODOs:
+--------------------------
+
+- Setup: python, etc. on husb.ug
+  # Need to take notes but any automation isn't needed for now. I can do it later.
+
+- Make wkcheck.in work (stateless server)
+  - Write stupidly simple flask app
+  - push it
+  # Don't need nginx for now. Expose gunicorn and see.
+
+- Setup build pipeline like less
+- Setup python unittest
+- Setup Flask configuration
+- Automate code push
+
+- Design the first version: UI, model, etc.
+
+> Read-only
+  - Add myself as a (built-in) user
+  - Move wkb.ug, wkcheck.in, webkit.hasb.ug as myself-added shortener.
+  - Make it work.
+> User-enabled
+  - Add login/auth page.
+  - Add shortener adding page
+
+
+Features:
+---------------------------------------------
+
+Shortener:
+
+- The visitors can be redirected from the shoretened URL.
+- The visitors can see:
+  - where a shortener redirect them to.
+  - who added the shortener (to ask them to update, etc.)
+- The visitors can shorten the existing URL.
+  - Even for non bug URLS (through goo.gl?)
+
+- The users can add atheir own shortener. (hasb.ug subdomain or their own domain)
+  - The shortening entry has a shortening pattern and visibility.
+  - THe shortening entry can be edited.
+
+Linker:
+
+- The visitors can see the list of links to bugs with their titles.
+- The visitors can see the list in MD format to copy it. 
+
+- The users can save each of lists with a specific name.
+- The users can change the bug list of saved links.
+- The users can add some note to each of saved links.
+- The visitors can see the history of such changes.
+
+Buzz:
+
+- The visitors can see the list of registered shorteners.
+- The user can "share" newly added shorteners.
+
+User:
+
+- The visitors can signup as a user via Github OAuth
+- The visitors and users can see the list of shortener for each of users added.
+
+
+Vague ideas:
+
+- Prefixed shortener like wk12345
+- A shortener UI
+- CRX shortener
+- API
+
+Some ideas:
+---------------------------------------------
+
+ - Having CLI tool for operating models.
+   - Adding user (possible?)
+   - Adding shortenings.
+   - ...
+
+URL which should be recognized (eventually)
+---------------------------------------------
+
+- hasbug redirect: http://jquery.hasb.ug/12345
+- 3rdparty redirect: http://wkb.ug/12345
+  No auth
+
+- meta http://jquery.hasb.ug/+12345
+       http://jquery.hasb.ug/+12345+23456	
+
+- named http://jquery.hasb.ug/chromespecific
+  No auth
+
+- named meta http://jquery.hasb.ug/+chromespecific
+
+- title for bug http://jquery.hasb.ug/12345/title
+  Do we need this?
+- markdown for meta http://jquery.hasb.ug/+12345+23456.md
+  or text           http://jquery.hasb.ug/+12345+23456.txt
+
+- prefixing
+  http://omo.hasb.ug/wk12345
+  http://omo.hasb.ug/+wk12345
+  http://omo.hasb.ug/+wk12345+cr23456
+
+- index: http://jquery.hasb.ug/
+         http://wkb.ug/
+- filter (not clear yet...)
+         http://wkb.ug/?t=list
+         http://wkb.ug/?list
+
+- predefined things (not clear yet)
+  http://wkb.ug/$404
+  http://wkb.ug/.404
+
+- user: http://hasb.ug/~omo
+        http://hasb.ug/~omo/p
+        http://hasb.ug/~omo/p/wkb.ug - this is for editing.
+        http://hasb.ug/~omo/b
+        http://hasb.ug/~omo/b/...?
+
+. user bug: http://omo.hasb.ug/ (don't need nothing special.)
+
+- site contents: http://hasb.ug/about
+- redirect: http://www.hasb.ug/xxx -> http://phasb.ug/xxx
+
+reserving
+- this.husb.ug
+
+----
+
+- Need a shortener UI/API.
+
+
+----
+- http://en.wikipedia.org/wiki/URL_shortening
+- http://cement.readthedocs.org/en/portland/
