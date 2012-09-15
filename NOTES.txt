@@ -133,7 +133,9 @@ reserving
 
 EC2 setup (should be fabrified):
 ---------------------------------------------
-sudo aptitude install git python
+
+$ sudo aptitude install make git python python-distribute python-virtualenv
+$ git clone https://github.com/omo/hasb.ug
 
 
 Links
