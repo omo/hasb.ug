@@ -25,7 +25,6 @@ TODOs:
   - Add login/auth page.
   - Add shortener adding page
 
-
 Features:
 ---------------------------------------------
 
@@ -132,6 +131,12 @@ reserving
 - Need a shortener UI/API.
 
 
-----
+EC2 setup (should be fabrified):
+---------------------------------------------
+sudo aptitude install git python
+
+
+Links
+-------------------------------------------
 - http://en.wikipedia.org/wiki/URL_shortening
 - http://cement.readthedocs.org/en/portland/
