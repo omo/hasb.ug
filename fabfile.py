@@ -17,7 +17,7 @@ def hello():
 
 def update():
     with cd(PROJECT_DIR):
-        run("git pull")
+        run("git pull origin master")
         run("virtualenv pyenv --distribute")
         virtualenv("pip install -r requirements.txt")
 
