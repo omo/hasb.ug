@@ -6,14 +6,15 @@ TODOs:
   # Need to take notes but any automation isn't needed for now. I can do it later.
 
 - Make wkcheck.in work (stateless server)
-  - Write stupidly simple flask app
+  - Write a stupidly simple flask app
   - push it
-  # Don't need nginx for now. Expose gunicorn and see.
+  # Don't require nginx for now. Expose gunicorn and see.
 
 - Setup build pipeline like less
 - Setup python unittest
 - Setup Flask configuration
 - Automate code push
+- Makes upstart+gunicorn work
 
 - Design the first version: UI, model, etc.
 
@@ -130,6 +131,9 @@ reserving
 
 - Need a shortener UI/API.
 
+Commands:
+----------------------------------
+$ fab -i ~/.ssh/omokey.pem  -H ubuntu@hasb.ug deploy
 
 EC2 setup (should be fabrified):
 ---------------------------------------------
