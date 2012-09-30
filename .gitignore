@@ -1,2 +1,4 @@
 pyenv
 *.pyc
+run
+log
