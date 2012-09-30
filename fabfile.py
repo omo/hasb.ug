@@ -1,5 +1,5 @@
 
-from fabric.api import local, run, cd
+from fabric.api import local, run, cd, settings, sudo
 import os
 
 # http://stackoverflow.com/questions/1180411/activate-a-virtualenv-via-fabric-as-deploy-user
@@ -15,11 +15,23 @@ def virtualenv(command):
 def hello():
     print "Hello!"
 
+# This should be a part of initial per-user setup
+#def setup_pyenv():
+#    with cd(PROJECT_DIR):
+#        run("virtualenv pyenv --distribute")
+
 def update():
     with cd(PROJECT_DIR):
         run("git pull origin master")
-        run("virtualenv pyenv --distribute")
         virtualenv("pip install -r requirements.txt")
+
+def reload_gunicorn():
+    with cd(PROJECT_DIR):
+        with settings(warn_only=True):
+            sudo("stop gunicorn")
+        sudo("cp confs/gunicorn-upstart.conf /etc/init/gunicorn.conf")
+        sudo("start --verbose gunicorn")
 
 def deploy():
     update()
+    reload_gunicorn()
