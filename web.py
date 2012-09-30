@@ -13,4 +13,4 @@ def redirect(bugid):
     return f.redirect(url)
 
 if __name__ == '__main__':
-    app.run(DEBUG=True)
+    app.run()
