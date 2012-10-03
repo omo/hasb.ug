@@ -2,22 +2,33 @@
 TODOs:
 --------------------------
 
-- Setup: python, etc. on husb.ug
++ Setup: python, etc. on husb.ug
   # Need to take notes but any automation isn't needed for now. I can do it later.
 
-- Make wkcheck.in work (stateless server)
-  - Write a stupidly simple flask app
-  - push it
+> Make wkcheck.in work (stateless server)
+  + Write a stupidly simple flask app
+  + push it
   # Don't require nginx for now. Expose gunicorn and see.
++ Make upstart+gunicorn work
++ Automate code push
 
-- Setup build pipeline like less
+- Split hasb.ug app and redirector using WSGI middleware
+- Setup wildcard domain
+- Make hasb.ug (as a hello), webkit.hasb.ug and wkcheck.in work (without DB)
 - Setup python unittest
-- Setup Flask configuration
-- Automate code push
-- Makes upstart+gunicorn work
+- Experiment with DynamoDB+Bono
+- Create CLI manip?
 
+> UI
+  - Rough mock for initial UI
+  - Implement OAuth login stub
+
+. Setup Flask configuration
 - Design the first version: UI, model, etc.
 
+> UI boilerplate
+  - Setup Jinja2 layout template
+  - Setup build pipeline like less
 > Read-only
   - Add myself as a (built-in) user
   - Move wkb.ug, wkcheck.in, webkit.hasb.ug as myself-added shortener.
