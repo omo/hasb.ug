@@ -12,12 +12,16 @@ TODOs:
 + Make upstart+gunicorn work
 + Automate code push
 
-- Split hasb.ug app and redirector using WSGI middleware
-- Setup wildcard domain
-- Make hasb.ug (as a hello), webkit.hasb.ug and wkcheck.in work (without DB)
-- Setup python unittest
++ Split hasb.ug app and redirector using WSGI middleware
++ Setup wildcard domain
++ Setup python unittest
++ Make hasb.ug (as a hello), webkit.hasb.ug and wkcheck.in work (without DB)
 - Experiment with DynamoDB+Bono
 - Create CLI manip?
+
+- Setup Asset distribution
+  - ...
+  - Add favicon.ico
 
 > UI
   - Rough mock for initial UI
@@ -157,3 +161,15 @@ Links
 -------------------------------------------
 - http://en.wikipedia.org/wiki/URL_shortening
 - http://cement.readthedocs.org/en/portland/
+
+models:
+------------------
+
+
+class ShortenerRepo:
+- find(host)
+
+class Shortener:
+- pattern
+- url_for(id)
+  

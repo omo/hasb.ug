@@ -3,9 +3,10 @@
 coweb: An app console. Provicing per-user data access, etc.
 """
 
+import hasbug
 import flask as f
 
-app = f.Flask(__name__)
+app = hasbug.App(__name__)
 
 @app.route('/')
 def hello_world():
