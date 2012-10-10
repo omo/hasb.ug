@@ -3,12 +3,14 @@ import unittest
 import hasbug
 import hasbug.reweb
 
-class RedirectorCase(unittest.TestCase):
+class RedirectorTest(unittest.TestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        hasbug.reweb.app.r = hasbug.MockRepo()
 
     def setUp(self):
         self.app = hasbug.reweb.app.test_client()
-        hasbug.reweb.app.r = hasbug.Repo()
-        hasbug.reweb.app.r.shortener_repo_class = hasbug.MockShortenerRepo
 
     def assert_redirect_to(self, resp, url):
         self.assertTrue("302" in resp.status)

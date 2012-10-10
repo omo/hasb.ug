@@ -2,6 +2,7 @@ Fabric==1.4.3
 Flask==0.9
 Jinja2==2.6
 Werkzeug==0.8.3
+boto==2.6.0
 distribute==0.6.28
 gunicorn==0.14.6
 pycrypto==2.6

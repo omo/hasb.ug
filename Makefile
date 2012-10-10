@@ -1,16 +1,18 @@
 
 SSH_KEY         = ""
 PIP_REQUIREMENT = "requirements.txt"
+BOTOCONF        = "./confs/boto.conf"
 
 all:
 	echo "Not yet."
 
 run:
-	python web.py
+	source ./bin/activate && python web.py
 
 test:
-	source ./pyenv/bin/activate && python -m unittest discover
-
+	source ./bin/activate && python -m unittest discover
+dbtest:
+	source ./bin/activate && HASBUG_TEST_DATABASE=1 python -m unittest discover
 deploy:
 	fab -H hasb.ug -u ubuntu -i ${SSH_KEY} deploy
 

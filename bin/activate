@@ -1,0 +1,3 @@
+
+source ./pyenv/bin/activate
+export BOTO_CONFIG=./confs/boto.conf

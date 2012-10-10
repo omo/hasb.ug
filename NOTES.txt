@@ -16,7 +16,13 @@ TODOs:
 + Setup wildcard domain
 + Setup python unittest
 + Make hasb.ug (as a hello), webkit.hasb.ug and wkcheck.in work (without DB)
-- Experiment with DynamoDB+Bono
+> Experiment with DynamoDB+Boto
+  + Install Boto
+  - Setup DynamoDB service
+    BOTO_CONFIG
+  - Figure out the configuration
+  - Add net-ed unittest 
+
 - Create CLI manip?
 
 - Setup Asset distribution
