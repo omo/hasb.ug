@@ -32,7 +32,7 @@ TODOs:
   - delete shortener
 
 > Implement validation
-  - Shortener.
+  + Shortener.
 
 - Wire DB-based model and web FEs.
 

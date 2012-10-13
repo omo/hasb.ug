@@ -21,9 +21,9 @@ class ClTest(cement.utils.test.CementTestCase):
 
     def test_as_mock(self):
         self._run(['as', "--mock",
-                   '--host', "testhost", 
+                   '--host', "example.com", 
                    "--pattern", "http://test.example.com/{id}",
-                   "--user", "alice"])
+                   "--user", "http://alice.example.com/"])
 
     @unittest.skipIf(not testing.enable_database, "Database test is disabled")
     def test_noop(self):
