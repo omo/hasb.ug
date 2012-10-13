@@ -18,12 +18,23 @@ TODOs:
 + Make hasb.ug (as a hello), webkit.hasb.ug and wkcheck.in work (without DB)
 > Experiment with DynamoDB+Boto
   + Install Boto
-  - Setup DynamoDB service
+  + Setup DynamoDB service
     BOTO_CONFIG
-  - Figure out the configuration
-  - Add net-ed unittest 
+  + Figure out the configuration
+  + Add net-ed unittest 
 
-- Create CLI manip?
+> Create CLI manip
+  > option
+    + mock option (kind of dry run)
+    - test/prod switch
+  - add shortener
+  - list shortener
+  - delete shortener
+
+> impl validation
+  - Shortener.
+
+- Wire DB-based model and web FEs.
 
 - Setup Asset distribution
   - ...
@@ -171,7 +182,6 @@ Links
 models:
 ------------------
 
-
 class ShortenerRepo:
 - find(host)
 
@@ -179,3 +189,9 @@ class Shortener:
 - pattern
 - url_for(id)
   
+
+Cement complaints:
+----------------------
+- Should have way to handle errors
+- depending on nose. should be depend on explicitly.
+

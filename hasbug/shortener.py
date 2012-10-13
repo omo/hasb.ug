@@ -30,8 +30,14 @@ class MockShorteners(object):
         self._dict["wkb.ug"] = Shortener("wkb.ug", 
                                          "https://bugs.webkit.org/show_bug.cgi?id={id}")
 
+    def add(self, s):
+        self._dict[s.host] = s
+
     def find(self, host):
         return self._dict[host]
+
+    def remove(self, item):
+        del self._dict[item.host]
 
 
 class Shortener(object):

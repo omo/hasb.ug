@@ -1,0 +1,4 @@
+
+HERE=`dirname $0`
+source ${HERE}/activate
+python ${HERE}/hasbuger.py $*
