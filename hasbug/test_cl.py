@@ -29,5 +29,9 @@ class ClTest(cement.utils.test.CementTestCase):
     def test_noop(self):
         self._run(['noop'])
 
+    @unittest.skipIf(not testing.enable_database, "Database test is disabled")
+    def test_noop_prod(self):
+        self._run(['noop', '--prod'])
+
     def test_noop_mock(self):
         self._run(['noop', '--mock'])

@@ -26,12 +26,12 @@ TODOs:
 > Create CLI manip
   > option
     + mock option (kind of dry run)
-    - test/prod switch
-  - add shortener
+    + test/prod switch
+  + add shortener
   - list shortener
   - delete shortener
 
-> impl validation
+> Implement validation
   - Shortener.
 
 - Wire DB-based model and web FEs.

@@ -3,7 +3,7 @@
 import sys
 from cement.core import backend, foundation, controller, handler, exc
 
-import hasbug, hasbug.testing
+import hasbug, hasbug.testing, hasbug.prod
 
 
 class AppController(controller.CementBaseController):
@@ -11,7 +11,8 @@ class AppController(controller.CementBaseController):
         config_defaults = {}
 
         arguments = [
-            (['-m', '--mock'], dict(action='store_true', help='Use mock')),
+            (['-m', '--mock'], dict(action='store_true', help='Uses mock')),
+            (['--prod'], dict(action='store_true', help='Uses production database')),
             (['-n', '--host'], dict(action='store', help='Shortener Host Name (Ex: wkb.ug)')),
             (['-p', '--pattern'], dict(action='store', help='Shortener Pattern (Ex: "https://bugs.webkit.org/show_bug.cgi?id={id}")')),
             (['-u', '--user'], dict(action='store', help='A user URL who addds the Shortener (Ex: "http://dodgson.org/omo")'))
@@ -23,7 +24,6 @@ class AppController(controller.CementBaseController):
     
     def __init__(self, *args, **kwargs):
         super(AppController, self).__init__(*args, **kwargs)
-        self.table_name = hasbug.testing.TABLE_NAME # FIXME: Should have a way to point prod.
 
     @property
     def _repo(self):
@@ -38,7 +38,8 @@ class AppController(controller.CementBaseController):
         if self.pargs.mock:
             return hasbug.MockRepo()
         else:
-            return hasbug.Repo(self.table_name)
+            table_name = hasbug.prod.TABLE_NAME if self.pargs.prod else hasbug.testing.TABLE_NAME
+            return hasbug.Repo(table_name)
 
     @controller.expose(aliases=["as"], help="Add a new shortener.")
     def add_shortener(self):
