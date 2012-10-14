@@ -33,14 +33,14 @@ TODOs:
 
 > Implement validation
   + Shortener.
-  - Check uniqueness of Shortener for add()
+  + Check uniqueness of Shortener for add()
 
 - Think what I should do next.
 
 - Setup Asset distribution
   - ...
   - Add favicon.ico
-
+  # Don't worry about S3 for now.
 
 > UI
   - Rough mock for initial UI

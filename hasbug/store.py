@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 
 import datetime
 import boto
@@ -7,6 +8,10 @@ import boto.dynamodb.condition as condition
 class ItemNotFoundError(Exception):
     def __init__(self, message):
         super(ItemNotFoundError, self).__init__(message)  
+
+class ItemInvalidError(Exception):
+    def __init__(self, message):
+        super(ItemInvalidError, self).__init__(message)  
 
 
 class Store(object):
@@ -38,6 +43,9 @@ class Store(object):
 
 
 class Bag(object):
+    key_key = "range"
+    table_key = "hash"
+
     def __init__(self, table):
         self.table = table
         self.name = self.__class__.__name__.lower()
@@ -52,13 +60,19 @@ class Bag(object):
 
     def new_item(self, key, at=0, attrs={}):
         return self.table.new_item(hash_key=self.hash_of(at), range_key=key, attrs=self._bless(attrs))
-
+    
     def get_item(self, key, at=0):
         try:
             return self.table.get_item(hash_key=self.hash_of(at), range_key=key)
         except exceptions.DynamoDBKeyNotFoundError, ex:
             raise ItemNotFoundError(str(ex))
 
+    def put_new_item(self, item):
+        try:
+            item.put(expected_value={ self.key_key: False, self.table_key: False })
+        except exceptions.DynamoDBConditionalCheckFailedError, ex:
+            raise ItemInvalidError(str(ex))
+
     def list_item(self, at):
         return self.table.query(hash_key=self.hash_of(at))
-        
+

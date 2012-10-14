@@ -5,14 +5,15 @@ import hasbug.store as store
 import hasbug.testing as testing
 import hasbug.validation as validation
 
-def make_fresh():
-    return hasbug.Shortener("foo.hasb.ug", "http://foo.bugtracker.org/{id}", "http://github.com/omo")
+def make_fresh(host="foo.hasb.ug"):
+    return hasbug.Shortener(host, "http://foo.bugtracker.org/{id}", "http://github.com/omo")
 
 def make_fresh_more():
     return hasbug.Shortener("bar.hasb.ug", "http://bar.bugtracker.org/{id}", "http://github.com/omo")
 
 def make_bad():
     return hasbug.Shortener("foo.hasb.ug", "badurl", "http://github.com/omo")
+
 
 class ShortenerRepoCommonCases(object):
     def test_list(self):
@@ -38,6 +39,13 @@ class ShortenerRepoCommonCases(object):
             self.repo.shorteners.add(bad)
         self.assertRaises(validation.ValidationError, do)
 
+    def test_add_unique(self):
+        fresh = make_fresh()
+        self.repo.shorteners.add(fresh)
+        def do():
+            self.repo.shorteners.add(fresh)
+        self.assertRaises(store.ItemInvalidError, do)
+
 
 class MockShortenerRepoTest(unittest.TestCase, ShortenerRepoCommonCases):
     def setUp(self):
@@ -51,17 +59,31 @@ class MockShortenerRepoTest(unittest.TestCase, ShortenerRepoCommonCases):
         self.assertEquals("https://bugs.webkit.org/show_bug.cgi?id=12345", 
                           target.url_for(12345))
 
+    def test_remove_by_hostname(self):
+        host = "baz.hasb.ug"
+        self.repo.shorteners.add(make_fresh(host))
+        self.assertIsNotNone(self.repo.shorteners.find(host))
+        self.repo.shorteners.remove_by_host(host)
+        def do():
+            self.repo.shorteners.find(host)
+        self.assertRaises(store.ItemNotFoundError, do)
+
 
 @unittest.skipIf(not testing.enable_database, "Database test is disabled")
 class ShortenerRepoTest(unittest.TestCase, ShortenerRepoCommonCases):
-
     @classmethod
     def setUpClass(cls):
         cls.repo = hasbug.Repo(testing.TABLE_NAME)
 
+    def setUp(self):
+        for h in ["foo.hasb.ug", "bar.hasb.ug"]:
+            try:
+                self.repo.shorteners.remove_by_host(h)
+            except store.ItemNotFoundError:
+                pass
+
 
 class ShortenerTest(unittest.TestCase):
-
     def setUp(self):
         self.target = hasbug.Shortener("foo.hasb.ug", "http://foo.bugtracker.org/{id}", "http://github.com/omo")        
 

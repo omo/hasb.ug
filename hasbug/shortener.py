@@ -3,15 +3,19 @@
 import hasbug.store as store
 import hasbug.validation as validation
 
-class Shorteners(store.Bag):
+class ShortenersOps(object):
+    def remove_by_host(self, host):
+        toremove = self.find(host)
+        self.remove(toremove)
+
+
+class Shorteners(store.Bag, ShortenersOps):
     def __init__(self, *args, **kwargs):
         store.Bag.__init__(self, *args, **kwargs)
 
     def add(self, s):
         s.validate().raise_if_invalid()
-        item = self.new_item(s.host, 0, { "pattern": s.pattern, "added_by": s.added_by })
-        item.put()
-        item.save()
+        self.put_new_item(self.new_item(s.host, 0, { "pattern": s.pattern, "added_by": s.added_by }))
 
     def find(self, host):
         # FIXME: Better to wrap the exception?
@@ -30,7 +34,7 @@ class Shorteners(store.Bag):
         ret._item = item
         return ret
 
-class MockShorteners(object):
+class MockShorteners(ShortenersOps):
     def __init__(self, *args, **kwargs):
         self._dict = {}
         self._dict["wkcheck.in"] = Shortener("wkcheck.in", 
@@ -40,6 +44,8 @@ class MockShorteners(object):
 
     def add(self, s):
         s.validate().raise_if_invalid()
+        if self._dict.has_key(s.host):
+            raise store.ItemInvalidError("{} is duplicated".format(s.host))
         self._dict[s.host] = s
 
     def find(self, host):
