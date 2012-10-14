@@ -1,4 +1,5 @@
 
+import StringIO
 import unittest
 import cement.utils.test
 import hasbug
@@ -12,10 +13,12 @@ class ClTest(cement.utils.test.CementTestCase):
     def setUp(self):
         super(ClTest, self).setUp()
         self.reset_backend()
+        self.faked_io = StringIO.StringIO()
 
     def _run(self, argv):
         app = self.make_app(argv=argv)
         app.setup()
+        app.controller.o = self.faked_io
         app.run()
         app.close()
 
@@ -35,3 +38,10 @@ class ClTest(cement.utils.test.CementTestCase):
 
     def test_noop_mock(self):
         self._run(['noop', '--mock'])
+
+    def test_list_mock(self):
+        self._run(['ls', '--mock'])
+
+    def test_ds_mock(self):
+        self._run(['ds', '--mock', '--host', 'wkb.ug'])
+        self.assertRegexpMatches(self.faked_io.getvalue(), "Deleted")

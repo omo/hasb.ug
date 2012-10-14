@@ -1,9 +1,13 @@
 
 import datetime
 import boto
-import boto.dynamodb.exceptions
+import boto.dynamodb.exceptions as exceptions
+import boto.dynamodb.condition as condition
 
-NotFoundError = boto.dynamodb.exceptions.DynamoDBKeyNotFoundError
+class ItemNotFoundError(Exception):
+    def __init__(self, message):
+        super(ItemNotFoundError, self).__init__(message)  
+
 
 class Store(object):
     READ_UNIT   = 1
@@ -36,21 +40,25 @@ class Store(object):
 class Bag(object):
     def __init__(self, table):
         self.table = table
-
-    @property
-    def name(self):
-        return self.__class__.__name__.lower()
+        self.name = self.__class__.__name__.lower()
 
     def _bless(self, attr):
         boilerplate = { "created_at": datetime.datetime.utcnow().isoformat() }
         boilerplate.update(attr)
         return boilerplate
 
-    def range_of(self, index):
+    def hash_of(self, index):
         return u".".join([self.name, str(index)])
 
     def new_item(self, key, at=0, attrs={}):
-        return self.table.new_item(hash_key=key, range_key=self.range_of(at), attrs=self._bless(attrs))
+        return self.table.new_item(hash_key=self.hash_of(at), range_key=key, attrs=self._bless(attrs))
 
     def get_item(self, key, at=0):
-        return self.table.get_item(hash_key=key, range_key=self.range_of(at))
+        try:
+            return self.table.get_item(hash_key=self.hash_of(at), range_key=key)
+        except exceptions.DynamoDBKeyNotFoundError, ex:
+            raise ItemNotFoundError(str(ex))
+
+    def list_item(self, at):
+        return self.table.query(hash_key=self.hash_of(at))
+        

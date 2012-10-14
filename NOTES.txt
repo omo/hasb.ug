@@ -28,17 +28,19 @@ TODOs:
     + mock option (kind of dry run)
     + test/prod switch
   + add shortener
-  - list shortener
-  - delete shortener
+  + list shortener
+  + delete shortener
 
 > Implement validation
   + Shortener.
+  - Check uniqueness of Shortener for add()
 
-- Wire DB-based model and web FEs.
+- Think what I should do next.
 
 - Setup Asset distribution
   - ...
   - Add favicon.ico
+
 
 > UI
   - Rough mock for initial UI

@@ -8,37 +8,21 @@ import hasbug.validation as validation
 def make_fresh():
     return hasbug.Shortener("foo.hasb.ug", "http://foo.bugtracker.org/{id}", "http://github.com/omo")
 
+def make_fresh_more():
+    return hasbug.Shortener("bar.hasb.ug", "http://bar.bugtracker.org/{id}", "http://github.com/omo")
+
 def make_bad():
     return hasbug.Shortener("foo.hasb.ug", "badurl", "http://github.com/omo")
 
-class MockShortenerTest(unittest.TestCase):
-    def setUp(self):
-        self.repo = hasbug.MockShorteners()        
+class ShortenerRepoCommonCases(object):
+    def test_list(self):
+        self.repo.shorteners.add(make_fresh())
+        self.repo.shorteners.add(make_fresh_more())
+        listed = self.repo.shorteners.list()
+        self.assertTrue("foo.hasb.ug" in [ i.host for i in listed ])
+        self.assertTrue("bar.hasb.ug" in [ i.host for i in listed ])
 
-    def test_find(self):
-        target = self.repo.find("wkb.ug")
-        self.assertEquals("https://bugs.webkit.org/show_bug.cgi?id=12345", 
-                          target.url_for(12345))
-
-    def test_add(self):
-        fresh = make_fresh()
-        self.repo.add(fresh)
-        self.assertEquals(fresh, self.repo.find(fresh.host))
-
-    def test_add_bad(self):
-        bad = make_bad()
-        def do():
-            self.repo.add(bad)
-        self.assertRaises(validation.ValidationError, do)
-
-@unittest.skipIf(not testing.enable_database, "Database test is disabled")
-class ShortenerRepoTest(unittest.TestCase):
-
-    @classmethod
-    def setUpClass(cls):
-        cls.repo = hasbug.Repo(testing.TABLE_NAME)
-
-    def test_hello(self):
+    def test_add_then_remove(self):
         toadd = make_fresh()
         self.repo.shorteners.add(toadd)
         found = self.repo.shorteners.find("foo.hasb.ug")
@@ -46,7 +30,34 @@ class ShortenerRepoTest(unittest.TestCase):
         self.repo.shorteners.remove(found)
         def should_raise():
             self.repo.shorteners.find("foo.hasb.ug")
-        self.assertRaises(store.NotFoundError, should_raise)
+        self.assertRaises(store.ItemNotFoundError, should_raise)
+
+    def test_add_bad(self):
+        bad = make_bad()
+        def do():
+            self.repo.shorteners.add(bad)
+        self.assertRaises(validation.ValidationError, do)
+
+
+class MockShortenerRepoTest(unittest.TestCase, ShortenerRepoCommonCases):
+    def setUp(self):
+        class MockRepo:
+            def __init__(self):
+                self.shorteners = hasbug.MockShorteners()
+        self.repo = MockRepo()
+
+    def test_find_initials(self):
+        target = self.repo.shorteners.find("wkb.ug")
+        self.assertEquals("https://bugs.webkit.org/show_bug.cgi?id=12345", 
+                          target.url_for(12345))
+
+
+@unittest.skipIf(not testing.enable_database, "Database test is disabled")
+class ShortenerRepoTest(unittest.TestCase, ShortenerRepoCommonCases):
+
+    @classmethod
+    def setUpClass(cls):
+        cls.repo = hasbug.Repo(testing.TABLE_NAME)
 
 
 class ShortenerTest(unittest.TestCase):

@@ -24,6 +24,7 @@ class AppController(controller.CementBaseController):
     
     def __init__(self, *args, **kwargs):
         super(AppController, self).__init__(*args, **kwargs)
+        self.o = sys.stdout
 
     @property
     def _repo(self):
@@ -51,6 +52,21 @@ class AppController(controller.CementBaseController):
             self._error_exit("user is missing")
         toadd = hasbug.Shortener(self.pargs.host, self.pargs.pattern, self.pargs.user)
         self._repo.shorteners.add(toadd)
+
+    @controller.expose(aliases=["ls"], help="List shorteners.")
+    def list_shortener(self):
+        listed = self._repo.shorteners.list()
+        for i in listed:
+            self.o.write("{:<10} {:<50} {:10}\n".format(i.host, i.pattern, i.added_by))
+        self.o.write("total {} shorteners found.\n".format(len(listed)))
+
+    @controller.expose(aliases=["ds"], help="Delete shorteners.")
+    def delete_shortener(self):
+        if not self.pargs.host:
+            self._error_exit("host is missing")
+        todel = self._repo.shorteners.find(self.pargs.host)
+        self._repo.shorteners.remove(todel)
+        self.o.write("Deleted {}.\n".format(todel.host))
 
     @controller.expose(aliases=["noop"], help="Do nothing.")
     def do_nothing(self):

@@ -15,14 +15,20 @@ class Shorteners(store.Bag):
 
     def find(self, host):
         # FIXME: Better to wrap the exception?
-        found = self.get_item(host, 0)
-        ret = Shortener(found.get("hash"), found.get("pattern"), found.get("added_by"))
-        ret._item = found
-        return ret
+        return self.to_m(self.get_item(host, 0))
+
+    def list(self):
+        # FIXME: should use generator
+        return [ self.to_m(i) for i in self.list_item(0) ]
 
     def remove(self, item):
         item._item.delete()
 
+    @classmethod
+    def to_m(cls, item):
+        ret = Shortener(item.range_key, item.get("pattern"), item.get("added_by"))
+        ret._item = item
+        return ret
 
 class MockShorteners(object):
     def __init__(self, *args, **kwargs):
@@ -37,10 +43,16 @@ class MockShorteners(object):
         self._dict[s.host] = s
 
     def find(self, host):
-        return self._dict[host]
+        try:
+            return self._dict[host]
+        except KeyError, ex:
+            raise store.ItemNotFoundError(str(ex))
 
     def remove(self, item):
         del self._dict[item.host]
+
+    def list(self):
+        return self._dict.values()
 
 
 class Shortener(object):
