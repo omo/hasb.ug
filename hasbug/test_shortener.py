@@ -12,7 +12,7 @@ def make_fresh_more():
     return hasbug.Shortener("bar.hasb.ug", "http://bar.bugtracker.org/{id}", "http://github.com/omo")
 
 def make_bad():
-    return hasbug.Shortener("foo.hasb.ug", "badurl", "http://github.com/omo")
+    return hasbug.Shortener("foo.hasb.ug", "bad/url", "http://github.com/omo")
 
 
 class ShortenerRepoCommonCases(object):
@@ -98,7 +98,7 @@ class ShortenerTest(unittest.TestCase):
         self.assertFalse(self.target.validate().invalid())
 
     def test_validate_bad(self):
-        s1 = hasbug.Shortener("foo", 
+        s1 = hasbug.Shortener("foo/bar", 
                               "http://foo.bugtracker.org/{id}", 
                               "http://github.com/omo")        
         self.assertTrue(s1.validate().invalid())

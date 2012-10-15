@@ -3,6 +3,7 @@
 reweb: Redirectors and other domain based services
 """
 
+import re
 import flask as f
 import logging
 import hasbug
@@ -15,11 +16,12 @@ def hello_world():
 
 @app.route('/<int:bugid>') # FIXME: should be digits rather than a number
 def redirect(bugid):
-    host = f.request.headers.get("host")
+    host_may_with_port = f.request.headers.get("host")
     try:
+        host = re.sub("\\:\\d+$", "", host_may_with_port)
         shortener = app.r.shorteners.find(host)
         return f.redirect(shortener.url_for(bugid))
-    except KeyError, e:
+    except hasbug.ItemNotFoundError, e:
         # TODO: handle null-host case
         # TODO: handle unknown host case
         raise e

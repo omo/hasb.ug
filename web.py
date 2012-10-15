@@ -18,4 +18,6 @@ class AppDispatcher(object):
 app = AppDispatcher()
 
 if __name__ == '__main__':
-    werkzeug.serving.run_simple('localhost', 5000, app, use_reloader=True)
+    hasbug.reweb.app.config['DEBUG'] = True
+    hasbug.coweb.app.config['DEBUG'] = True
+    werkzeug.serving.run_simple('localhost', 5000, app, use_debugger=True, use_reloader=True, passthrough_errors=True)

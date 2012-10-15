@@ -80,7 +80,7 @@ class Shortener(object):
 
     def validate(self):
         v = validation.Validator(self)
-        v.should_match("host_upper", "^([A-Z0-9\-]{2,63}\.)+[A-Z]{2,63}$")
+        v.should_match("host_upper", "^([A-Z0-9\-]{2,63}\.)*[A-Z]{2,63}$")
         v.should_be_web_url("pattern_zero")
         v.should_match("pattern", "\{id\}")
         v.should_be_web_url("added_by")
