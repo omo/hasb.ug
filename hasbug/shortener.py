@@ -15,7 +15,7 @@ class Shorteners(store.Bag, ShortenersOps):
 
     def add(self, s):
         s.validate().raise_if_invalid()
-        self.put_new_item(self.new_item(s.host, 0, { "pattern": s.pattern, "added_by": s.added_by }))
+        self.insert_item(self.new_item(s.host, 0, { "pattern": s.pattern, "added_by": s.added_by }))
 
     def find(self, host):
         # FIXME: Better to wrap the exception?
@@ -30,7 +30,7 @@ class Shorteners(store.Bag, ShortenersOps):
 
     @classmethod
     def to_m(cls, item):
-        ret = Shortener(item.range_key, item.get("pattern"), item.get("added_by"))
+        ret = Shortener(cls.from_internal_key(item.range_key), item.get("pattern"), item.get("added_by"))
         ret._item = item
         return ret
 

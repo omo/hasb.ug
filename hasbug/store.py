@@ -50,6 +50,16 @@ class Bag(object):
         self.table = table
         self.name = self.__class__.__name__.lower()
 
+    @classmethod
+    def to_internal_key(cls, k):
+        return "#" + k
+
+    @classmethod
+    def from_internal_key(cls, i):
+        if i.find("#") < 0:
+            raise ValueError(i + " is not a hash key")
+        return i[1:]
+
     def _bless(self, attr):
         boilerplate = { "created_at": datetime.datetime.utcnow().isoformat() }
         boilerplate.update(attr)
@@ -59,15 +69,15 @@ class Bag(object):
         return u".".join([self.name, str(index)])
 
     def new_item(self, key, at=0, attrs={}):
-        return self.table.new_item(hash_key=self.hash_of(at), range_key=key, attrs=self._bless(attrs))
+        return self.table.new_item(hash_key=self.hash_of(at), range_key=self.to_internal_key(key), attrs=self._bless(attrs))
     
     def get_item(self, key, at=0):
         try:
-            return self.table.get_item(hash_key=self.hash_of(at), range_key=key)
+            return self.table.get_item(hash_key=self.hash_of(at), range_key=self.to_internal_key(key))
         except exceptions.DynamoDBKeyNotFoundError, ex:
             raise ItemNotFoundError(str(ex))
 
-    def put_new_item(self, item):
+    def insert_item(self, item):
         try:
             item.put(expected_value={ self.key_key: False, self.table_key: False })
         except exceptions.DynamoDBConditionalCheckFailedError, ex:
