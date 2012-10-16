@@ -1,7 +1,7 @@
 import multiprocessing
 import os
 
-prod_dir = "/home/ubuntu/work/hasbug/"
+prod_dir = "/home/ubuntu/work/hasb.ug/"
 worker = multiprocessing.cpu_count() * 2 + 1
 
 if os.environ.get("HASBUG_PROD"):
