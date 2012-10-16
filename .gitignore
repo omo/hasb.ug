@@ -2,3 +2,4 @@ pyenv
 *.pyc
 run
 log
+confs/boto.conf
