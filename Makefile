@@ -6,8 +6,10 @@ BOTOCONF        = "./confs/boto.conf"
 all:
 	echo "Not yet."
 
-run:
+grun:
 	source ./bin/activate && gunicorn --config==confs/gunicorn.conf.py web:app
+run:
+	source ./bin/activate && python web.py
 
 test:
 	source ./bin/activate && python -m unittest discover

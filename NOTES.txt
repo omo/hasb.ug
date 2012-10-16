@@ -39,7 +39,9 @@ TODOs:
 
 + deploy non UI version, setup wkcheck.in
 > makeup deploy settings 
-  - gunicorn log
+  + gunicorn log
+
+- Setup /etc/hosts for coweb development
 
 - Setup Asset distribution
   - less
@@ -64,6 +66,8 @@ TODOs:
 > User-enabled
   - Add login/auth page.
   - Add shortener adding page
+
+- logrotate
 
 Features:
 ---------------------------------------------
