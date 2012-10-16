@@ -7,7 +7,7 @@ all:
 	echo "Not yet."
 
 run:
-	source ./bin/activate && python web.py
+	source ./bin/activate && gunicorn --config==confs/gunicorn.conf.py web:app
 
 test:
 	source ./bin/activate && python -m unittest discover

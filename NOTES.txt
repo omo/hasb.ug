@@ -37,7 +37,7 @@ TODOs:
 
 + Think what I should do next.
 
-- deploy non UI version, setup wkcheck.in
++ deploy non UI version, setup wkcheck.in
 > makeup deploy settings 
   - gunicorn log
 
