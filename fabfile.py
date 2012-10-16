@@ -1,11 +1,13 @@
 
-from fabric.api import local, run, cd, settings, sudo
+from fabric.api import local, run, cd, settings, sudo, env, put
 import os
 
 # http://stackoverflow.com/questions/1180411/activate-a-virtualenv-via-fabric-as-deploy-user
 # FIXME: These should be env. variables.
-PROJECT_DIR   = "~/work/hasb.ug"
+PROJECT_DIR   = "/home/ubuntu/work/hasb.ug"
 VENV_ACTIVATE = os.path.join(PROJECT_DIR, "pyenv/bin/activate")
+
+env.use_ssh_config = True
 
 def virtualenv(command):
     run("source " + VENV_ACTIVATE + ' && ' + command)
@@ -23,6 +25,7 @@ def hello():
 def update():
     with cd(PROJECT_DIR):
         run("git pull origin master")
+        put("confs/boto.conf", "confs/boto.conf")
         virtualenv("pip install -r requirements.txt")
 
 def reload_gunicorn():

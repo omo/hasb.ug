@@ -35,19 +35,24 @@ TODOs:
   + Shortener.
   + Check uniqueness of Shortener for add()
 
-- Think what I should do next.
++ Think what I should do next.
+
+- deploy non UI version, setup wkcheck.in
+> makeup deploy settings 
+  - gunicorn log
 
 - Setup Asset distribution
-  - ...
-  - Add favicon.ico
+  - less
+  - favicon.ico
   # Don't worry about S3 for now.
 
 > UI
-  - Rough mock for initial UI
-  - Implement OAuth login stub
+  - Design the first version: UI, model, etc.
+  - Rough mock for initial UI (?)
+  - Implmement it with Stub login
+- Implement OAuth login stub
 
 . Setup Flask configuration
-- Design the first version: UI, model, etc.
 
 > UI boilerplate
   - Setup Jinja2 layout template

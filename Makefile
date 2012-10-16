@@ -14,7 +14,7 @@ test:
 dbtest:
 	source ./bin/activate && HASBUG_TEST_DATABASE=1 python -m unittest discover
 deploy:
-	fab -H hasb.ug -u ubuntu -i ${SSH_KEY} deploy
+	source ./bin/activate && fab -H hasb.ug -u ubuntu deploy
 
 freeze: ${PIP_REQUIREMENT}
 
