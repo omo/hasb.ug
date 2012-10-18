@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
-import os
-import werkzeug.serving
-import hasbug.coweb, hasbug.reweb
 
+import werkzeug.serving
+import hasbug.coweb, hasbug.reweb, hasbug.prod
+
+force_debug = True
 
 class AppDispatcher(object):
     def _app_for(self, host):
@@ -18,7 +19,7 @@ class AppDispatcher(object):
 
 app = AppDispatcher()
 
-if not os.environ.get("HASBUG_PROD"):
+if not hasbug.prod.in_prod or force_debug:
     hasbug.reweb.app.config['DEBUG'] = True
     hasbug.coweb.app.config['DEBUG'] = True
 
