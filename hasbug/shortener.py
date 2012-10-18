@@ -30,7 +30,7 @@ class Shorteners(store.Bag, ShortenersOps):
 
     @classmethod
     def to_m(cls, item):
-        ret = Shortener(cls.from_internal_key(item.range_key), item.get("pattern"), item.get("added_by"))
+        ret = Shortener(cls.from_internal_key(item.hash_key), item.get("pattern"), item.get("added_by"))
         ret._item = item
         return ret
 
