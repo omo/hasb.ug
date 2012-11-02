@@ -42,6 +42,8 @@ TODOs:
   + gunicorn log
 + Setup /etc/hosts for coweb development
 
+- Try github oauth login
+
 - Setup Asset distribution
   - less
   - favicon.ico
