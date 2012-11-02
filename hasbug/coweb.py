@@ -27,4 +27,8 @@ def login_callback():
         return f.abort(401)
     user_dict = hasbug.oauth.authorize_user(code, state)
     # XXX
-    return f.redirect("/")
+    return f.redirect("/~" + user_dict["login"])
+
+@app.route('/~<user>')
+def user_home(user):
+    return 'Hello, {user}!'.format(user=user)

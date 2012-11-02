@@ -63,9 +63,13 @@ class ConsoleTest(unittest.TestCase):
         correct_state = hasbug.oauth.auth_state()
         url = "/login/back?code=xxx&state={}".format(correct_state)
         resp = self.app.get(url)
-        self.assert_redirect_to(resp, "http://localhost/")
+        self.assert_redirect_to(resp, "http://localhost/~octocat")
 
     def test_login_back_wrong_state(self):
         url = "/login/back?code=xxx&state={}".format("wrong_state")
         resp = self.app.get(url)
         self.assertTrue("401" in resp.status)
+
+    def test_user_home(self):
+        resp = self.app.get("/~octocat")
+        self.assertTrue("200" in resp.status)
