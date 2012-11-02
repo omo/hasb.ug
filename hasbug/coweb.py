@@ -21,4 +21,10 @@ def login_oauth():
 
 @app.route('/login/back')
 def login_callback():
-    pass
+    code = f.request.args["code"]
+    state = f.request.args["state"]
+    if not hasbug.oauth.auth_state_matches(state):
+        return f.abort(401)
+    user_dict = hasbug.oauth.authorize_user(code, state)
+    # XXX
+    return f.redirect("/")
