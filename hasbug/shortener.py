@@ -34,6 +34,7 @@ class Shorteners(store.Bag, ShortenersOps):
         ret._item = item
         return ret
 
+
 class MockShorteners(ShortenersOps):
     def __init__(self, *args, **kwargs):
         self._dict = {}
