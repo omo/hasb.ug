@@ -5,10 +5,13 @@ coweb: An app console. Provicing per-user data access, etc.
 
 import urlparse
 import hasbug
-import hasbug.oauth
 import flask as f
+import hasbug.oauth
+import hasbug.user
+import hasbug.conf
 
 app = hasbug.App(__name__)
+app.secret_key = hasbug.conf.flask_secret_key()
 
 
 @app.route('/')
@@ -26,8 +29,11 @@ def login_callback():
     if not hasbug.oauth.auth_state_matches(state):
         return f.abort(401)
     user_dict = hasbug.oauth.authorize_user(code, state)
-    # XXX
-    return f.redirect("/~" + user_dict["login"])
+    user = hasbug.user.User(user_dict)
+    app.r.users.add(user, can_replace=True)
+
+    f.session['user'] = user.key
+    return f.redirect("/~" + user.login)
 
 @app.route('/~<user>')
 def user_home(user):

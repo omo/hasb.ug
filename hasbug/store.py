@@ -31,7 +31,9 @@ class Store(object):
             schema = self._conn.create_schema(hash_key_name=self.hash_key_name, hash_key_proto_value='S', range_key_name=self.range_key_name, range_key_proto_value='S')
             self._table = self._conn.create_table(name=name, schema=schema, read_units=self.READ_UNIT, write_units=self.WRITE_UNIT)
             self._fresh = True
-        for bag in [cls(self._table) for cls in bag_classes]:
+        #for bag in [cls for cls in bag_classes]:
+        for bc in bag_classes:
+            bag = bc(self._table)
             setattr(self, bag.name, bag)
 
     @property
@@ -49,7 +51,7 @@ class Bag(object):
     range_key_name = "range"
     table_key_name = "hash"
 
-    def __init__(self, table):
+    def __init__(self, table, **kwargs):
         self.table = table
         self.name = self.__class__.__name__.lower()
 
@@ -90,3 +92,59 @@ class Bag(object):
         filter = { Store.range_key_name: condition.EQ(self.range_of(at)) }
         return self.table.scan(scan_filter=filter)
 
+    @property
+    def model_class(self):
+        return self._modeL_class
+
+    @model_class.setter
+    def model_class(self, val):
+        self._modeL_class = val
+
+
+class BagOps(object):
+    def __init__(self, *args, **kwargs):
+        super(BagOps, self).__init__()
+
+
+    def add(self, m):
+        m.validate().raise_if_invalid()
+        self.insert_item(self.new_item(m.key, 0, m.to_item_values()))
+
+    def find(self, key):
+        # FIXME: Better to wrap the exception?
+        return self.to_m(self.get_item(key, 0))
+
+    def list(self):
+        # FIXME: should use generator
+        return [ self.to_m(i) for i in self.list_item(0) ]
+
+    def remove(self, m):
+        m._item.delete()
+
+    def to_m(self, item):
+        model = self.model_class.from_item(item)
+        model._item = item
+        return model
+
+
+class MockBag(object):
+    def __init__(self, *args, **kwargs):
+        self._dict = {}
+
+    def add(self, s, can_replace=False):
+        s.validate().raise_if_invalid()
+        if not can_replace and self._dict.has_key(s.key):
+            raise ItemInvalidError("{} is duplicated".format(s.key))
+        self._dict[s.key] = s
+
+    def find(self, key):
+        try:
+            return self._dict[key]
+        except KeyError, ex:
+            raise ItemNotFoundError(str(ex))
+
+    def remove(self, item):
+        del self._dict[item.key]
+
+    def list(self):
+        return self._dict.values()

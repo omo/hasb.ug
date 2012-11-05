@@ -42,7 +42,19 @@ TODOs:
   + gunicorn log
 + Setup /etc/hosts for coweb development
 
-- Try github oauth login
++ Try github oauth login
+
+> User model and session
+  - User model
+  - Save and Restore user from the session.
+  - /me page.
+  - user page (~)
+    - not found handling
+  - logout
+  - hasbuger user commands
+
+- Poor HTML impl for adding shorteners.
+  - Add and remove
 
 - Setup Asset distribution
   - less

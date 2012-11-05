@@ -14,8 +14,13 @@ class DatabaseTest(unittest.TestCase):
         tables = conn.list_tables()
         self.assertTrue(u'hello' in tables)
 
-class TestBag(hasbug.Bag):
+class TestModel(object):
     pass
+
+class TestBag(hasbug.Bag, hasbug.BagOps):
+    def __init__(self, *args, **kwargs):
+        super(TestBag, self).__init__(*args, **kwargs)
+        self.model_class = TestModel
 
 
 @unittest.skipIf(not testing.enable_database, "Database test is disabled")

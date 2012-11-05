@@ -3,6 +3,6 @@
 from hasbug.shortener import Shorteners, MockShorteners, Shortener
 from hasbug.repo import Repo, MockRepo
 from hasbug.app import App
-from hasbug.store import Store, Bag, ItemNotFoundError, ItemInvalidError
+from hasbug.store import Store, Bag, BagOps, ItemNotFoundError, ItemInvalidError
 #import hasbug.conf as conf
 import hasbug.oauth as oauth

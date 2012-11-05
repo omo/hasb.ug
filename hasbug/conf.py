@@ -14,3 +14,6 @@ def github_client_id():
 
 def github_client_secret():
     return get("Credentials", "github_client_secret")
+
+def flask_secret_key():
+    return get("Credentials", "flask_secret_key")

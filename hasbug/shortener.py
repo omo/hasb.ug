@@ -9,57 +9,20 @@ class ShortenersOps(object):
         self.remove(toremove)
 
 
-class Shorteners(store.Bag, ShortenersOps):
+class Shorteners(store.Bag, store.BagOps, ShortenersOps):
     def __init__(self, *args, **kwargs):
-        store.Bag.__init__(self, *args, **kwargs)
-
-    def add(self, s):
-        s.validate().raise_if_invalid()
-        self.insert_item(self.new_item(s.host, 0, { "pattern": s.pattern, "added_by": s.added_by }))
-
-    def find(self, host):
-        # FIXME: Better to wrap the exception?
-        return self.to_m(self.get_item(host, 0))
-
-    def list(self):
-        # FIXME: should use generator
-        return [ self.to_m(i) for i in self.list_item(0) ]
-
-    def remove(self, item):
-        item._item.delete()
-
-    @classmethod
-    def to_m(cls, item):
-        ret = Shortener(cls.from_internal_key(item.hash_key), item.get("pattern"), item.get("added_by"))
-        ret._item = item
-        return ret
+        super(Shorteners, self).__init__(*args, **kwargs)
+        self.model_class = Shortener
 
 
-class MockShorteners(ShortenersOps):
+class MockShorteners(store.MockBag, ShortenersOps):
     def __init__(self, *args, **kwargs):
-        self._dict = {}
+        super(MockShorteners, self).__init__(*args, **kwargs)
         self._dict["wkcheck.in"] = Shortener("wkcheck.in", 
                                              "http://trac.webkit.org/changeset/{id}")
         self._dict["wkb.ug"] = Shortener("wkb.ug", 
                                          "https://bugs.webkit.org/show_bug.cgi?id={id}")
 
-    def add(self, s):
-        s.validate().raise_if_invalid()
-        if self._dict.has_key(s.host):
-            raise store.ItemInvalidError("{} is duplicated".format(s.host))
-        self._dict[s.host] = s
-
-    def find(self, host):
-        try:
-            return self._dict[host]
-        except KeyError, ex:
-            raise store.ItemNotFoundError(str(ex))
-
-    def remove(self, item):
-        del self._dict[item.host]
-
-    def list(self):
-        return self._dict.values()
 
 
 class Shortener(object):
@@ -70,6 +33,10 @@ class Shortener(object):
 
     def url_for(self, id):
         return self.pattern.format(id = id)
+
+    @property
+    def key(self):
+        return self.host
 
     @property
     def host_upper(self):
@@ -89,3 +56,12 @@ class Shortener(object):
 
     def __eq__(self, other):
         return self.host == other.host and self.pattern == other.pattern and self.added_by == self.added_by
+
+    def to_item_values(self):
+        return { "pattern": self.pattern, "added_by": self.added_by }
+
+    @classmethod
+    def from_item(cls, item):
+        return cls(store.Bag.from_internal_key(item.hash_key),
+                   item.get("pattern"), item.get("added_by"))
+
