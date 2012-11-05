@@ -22,7 +22,7 @@ deploy:
 freeze: ${PIP_REQUIREMENT}
 
 ${PIP_REQUIREMENT}:
-	pip freeze > $@
+	source ./bin/activate && pip freeze > $@
 
 clean:
 	find hasbug -name "*.pyc" | xargs rm

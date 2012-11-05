@@ -6,7 +6,7 @@ import hasbug.coweb
 import hasbug.oauth
 import hasbug.conf
 import hasbug.user
-
+import flask
 
 def fake_urlopen(req):
     if "https://github.com/login/oauth/access_token" == req.get_full_url():
@@ -22,6 +22,11 @@ class ConsoleTest(unittest.TestCase):
         hasbug.coweb.app.r = hasbug.MockRepo()
         hasbug.oauth.urlopen = fake_urlopen
 
+    def login_as_octocat(self):
+        correct_state = hasbug.oauth.auth_state()
+        url = "/login/back?code=xxx&state={}".format(correct_state)
+        return self.app.get(url)
+
     def setUp(self):
         self.app = hasbug.coweb.app.test_client()
 
@@ -33,14 +38,12 @@ class ConsoleTest(unittest.TestCase):
         redirected_to = resp.headers["Location"]
         self.assertEquals(0, redirected_to.index(url))
         
-    def test_login_ask(self):
-        resp = self.app.get("/login/ask")
+    def test_login(self):
+        resp = self.app.get("/login")
         self.assert_redirect_to(resp, "https://github.com/login/oauth/authorize")
 
     def test_login_back(self):
-        correct_state = hasbug.oauth.auth_state()
-        url = "/login/back?code=xxx&state={}".format(correct_state)
-        resp = self.app.get(url)
+        resp = self.login_as_octocat()
         self.assert_redirect_to(resp, "http://localhost/~octocat")
 
     def test_login_back_wrong_state(self):
@@ -51,3 +54,16 @@ class ConsoleTest(unittest.TestCase):
     def test_user_home(self):
         resp = self.app.get("/~octocat")
         self.assertTrue("200" in resp.status)
+
+    def test_login_user(self):
+        with self.app as c:
+            self.login_as_octocat()
+            c.get("/")
+            self.assertEquals(flask.request.user.login, "octocat")
+
+    def test_logout(self):
+        with self.app as c:
+            self.login_as_octocat()
+            c.post("/logout")
+            c.get("/")
+            self.assertIsNone(flask.request.user)

@@ -13,14 +13,28 @@ import hasbug.conf
 app = hasbug.App(__name__)
 app.secret_key = hasbug.conf.flask_secret_key()
 
+@f.request_started.connect_via(app)
+def restore_user_from_session(sender, **extra):
+    user_key = f.session.get('user')
+    f.request.user = sender.r.users.find(user_key) if user_key else None
+
+def save_use_to_session(user):
+    f.session['user'] = user.key
+    f.session.modified = True
 
 @app.route('/')
 def hello_world():
     return 'Hello Console!'
 
-@app.route('/login/ask')
+@app.route('/login')
 def login_oauth():
     return f.redirect(hasbug.oauth.redirect_url())
+
+@app.route('/logout', methods=["POST"])
+def logout():
+    # FIXME: Guard against CSRF
+    f.session.clear()
+    return f.redirect("/")
 
 @app.route('/login/back')
 def login_callback():
@@ -31,10 +45,7 @@ def login_callback():
     user_dict = hasbug.oauth.authorize_user(code, state)
     user = hasbug.user.User(user_dict)
     app.r.users.add(user, can_replace=True)
-
-    f.session['user'] = user.key
-    f.session.modified = True
-
+    save_use_to_session(user)
     return f.redirect("/~" + user.login)
 
 @app.route('/~<user>')
