@@ -31,7 +31,9 @@ octocat_text = """
 octocat_dict = json.loads(octocat_text)
 
 class UserOps(object):
-    pass
+    def remove_by_url(self, url):
+        toremove = self.find(url)
+        self.remove(toremove)
 
 
 class Users(store.Bag, store.BagOps, UserOps):
@@ -65,7 +67,7 @@ class User(object):
 
     @property
     def dumps(self):
-        json.dumps(self.user_dict)
+        return json.dumps(self.user_dict)
 
     def validate(self):
         v = validation.Validator(self)
@@ -79,5 +81,4 @@ class User(object):
 
     @classmethod
     def from_item(cls, item):
-        return cls(store.Bag.from_internal_key(item.hash_key),
-                   json.loads(item.get("dumps")))
+        return cls(json.loads(item.get("dumps")))

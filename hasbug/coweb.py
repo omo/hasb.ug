@@ -33,6 +33,8 @@ def login_callback():
     app.r.users.add(user, can_replace=True)
 
     f.session['user'] = user.key
+    f.session.modified = True
+
     return f.redirect("/~" + user.login)
 
 @app.route('/~<user>')

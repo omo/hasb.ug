@@ -44,8 +44,10 @@ TODOs:
 
 + Try github oauth login
 
++ Want tests be filterable
+
 > User model and session
-  - User model
+  + User model
   - Save and Restore user from the session.
   - /me page.
   - user page (~)

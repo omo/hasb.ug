@@ -82,9 +82,12 @@ class Bag(object):
         except exceptions.DynamoDBKeyNotFoundError, ex:
             raise ItemNotFoundError(str(ex))
 
-    def insert_item(self, item):
+    def insert_item(self, item, can_replace):
         try:
-            item.put(expected_value={ Store.hash_key_name: False, Store.range_key_name: False })
+            if can_replace:
+                item.put()
+            else:
+                item.put(expected_value={ Store.hash_key_name: False, Store.range_key_name: False })
         except exceptions.DynamoDBConditionalCheckFailedError, ex:
             raise ItemInvalidError(str(ex))
 
@@ -106,9 +109,9 @@ class BagOps(object):
         super(BagOps, self).__init__()
 
 
-    def add(self, m):
+    def add(self, m, can_replace=False):
         m.validate().raise_if_invalid()
-        self.insert_item(self.new_item(m.key, 0, m.to_item_values()))
+        self.insert_item(self.new_item(m.key, 0, m.to_item_values()), can_replace)
 
     def find(self, key):
         # FIXME: Better to wrap the exception?
@@ -131,11 +134,11 @@ class MockBag(object):
     def __init__(self, *args, **kwargs):
         self._dict = {}
 
-    def add(self, s, can_replace=False):
-        s.validate().raise_if_invalid()
-        if not can_replace and self._dict.has_key(s.key):
-            raise ItemInvalidError("{} is duplicated".format(s.key))
-        self._dict[s.key] = s
+    def add(self, m, can_replace=False):
+        m.validate().raise_if_invalid()
+        if not can_replace and self._dict.has_key(m.key):
+            raise ItemInvalidError("{} is duplicated".format(m.key))
+        self._dict[m.key] = m
 
     def find(self, key):
         try:
