@@ -48,12 +48,11 @@ TODOs:
 
 > User model and session
   + User model
-  - Save and Restore user from the session.
-  - /me page.
-  - user page (~)
-    - not found handling
-  - logout
-  - hasbuger user commands
+  + Save and Restore user from the session.
+  + logout
+
+- auth_hash computation is wrong. 
+- local login option
 
 - Poor HTML impl for adding shorteners.
   - Add and remove
@@ -62,6 +61,12 @@ TODOs:
   - less
   - favicon.ico
   # Don't worry about S3 for now.
+
+> User next round
+  - /me page.
+  - user page (~)
+    - not found handling
+  - hasbuger user commands
 
 > UI
   - Design the first version: UI, model, etc.

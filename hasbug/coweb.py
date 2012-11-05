@@ -3,14 +3,14 @@
 coweb: An app console. Provicing per-user data access, etc.
 """
 
-import urlparse
+import urlparse, os
 import hasbug
 import flask as f
 import hasbug.oauth
 import hasbug.user
 import hasbug.conf
 
-app = hasbug.App(__name__)
+app = hasbug.App(__name__, template_folder=os.path.join(os.path.dirname(__file__), "templates"))
 app.secret_key = hasbug.conf.flask_secret_key()
 
 @f.request_started.connect_via(app)
@@ -24,7 +24,7 @@ def save_use_to_session(user):
 
 @app.route('/')
 def hello_world():
-    return 'Hello Console!'
+    return f.render_template("index.html")
 
 @app.route('/login')
 def login_oauth():
