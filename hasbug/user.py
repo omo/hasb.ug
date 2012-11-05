@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import json
+import json, urllib2, StringIO
 import hasbug.store as store
 import hasbug.validation as validation
 
@@ -30,10 +30,56 @@ octocat_text = """
 
 octocat_dict = json.loads(octocat_text)
 
+mojombo_text = """
+{
+  "type": "User",
+  "avatar_url": "https://secure.gravatar.com/avatar/25c7c18223fb42a4c6ae1c8db6f50f9b?d=https://a248.e.akamai.net/assets.github.com%2Fimages%2Fgravatars%2Fgravatar-user-420.png",
+  "url": "https://api.github.com/users/mojombo",
+  "gravatar_id": "25c7c18223fb42a4c6ae1c8db6f50f9b",
+  "public_gists": 66,
+  "following": 11,
+  "html_url": "https://github.com/mojombo",
+  "email": "tom@github.com",
+  "location": "San Francisco",
+  "hireable": false,
+  "blog": "http://tom.preston-werner.com",
+  "bio": "",
+  "followers": 8252,
+  "company": "GitHub, Inc.",
+  "login": "mojombo",
+  "public_repos": 53,
+  "name": "Tom Preston-Werner",
+  "created_at": "2007-10-20T05:24:19Z",
+  "id": 1
+}
+"""
+
+mojombo_dict = json.loads(mojombo_text)
+
+urlopen = urllib2.urlopen
+
+fake_user_dict = {}
+
+def fake_urlopen():
+    global urlopen
+    def faked(req):
+        return StringIO.StringIO(fake_user_dict[req.get_full_url()])
+    urlopen = faked
+
+def add_fake_mojombo_to_urlopen():
+    fake_user_dict[mojombo_dict["url"]] = mojombo_text
+
+
 class UserOps(object):
     def remove_by_url(self, url):
         toremove = self.find(url)
         self.remove(toremove)
+
+    def add_by_login(self, login_name):
+        url = User.url_from_login(login_name)
+        opened = urlopen(urllib2.Request(url))
+        toadd = User(json.load(opened))
+        self.add(toadd, can_replace=True)
 
 
 class Users(store.Bag, store.BagOps, UserOps):
@@ -55,7 +101,7 @@ class User(object):
 
     @property
     def url(self):
-        return self.user_dict["url"]        
+        return self.user_dict["url"]      
 
     @property
     def key(self):
@@ -64,6 +110,10 @@ class User(object):
     @property
     def login(self):
         return self.user_dict["login"]
+
+    @property
+    def name(self):
+        return self.user_dict["name"]
 
     @property
     def dumps(self):
@@ -82,3 +132,7 @@ class User(object):
     @classmethod
     def from_item(cls, item):
         return cls(json.loads(item.get("dumps")))
+
+    @classmethod
+    def url_from_login(cls, login):
+        return "https://api.github.com/users/" + login

@@ -1,24 +1,15 @@
 # -*- coding: utf-8 -*-
 
-import random, string, urllib2, json
+import random, string, urllib2, json, datetime
 import hasbug.conf
 
 # http://stackoverflow.com/questions/2257441/python-random-string-generation-with-upper-case-letters-and-digits
-def random_string(n):
+def random_string(n=8):
     return ''.join(random.choice(string.ascii_uppercase + string.digits) for x in range(n))
 
-# FIXME: Should be constantly changing
-auth_state_value = random_string(6)
-
-def auth_state():
-    return auth_state_value
-
-def auth_state_matches(given_state):
-    return auth_state_value == given_state
-
-def redirect_url():
+def redirect_url(state):
     params = { "client_id": hasbug.conf.github_client_id(), 
-               "state": auth_state() }
+               "state": state }
     return "https://github.com/login/oauth/authorize?client_id={client_id}&state={state}".format(**params)
 
 def urlopen(req):
@@ -30,7 +21,7 @@ def authorize_user(code, state):
         id = hasbug.conf.github_client_id(),
         secret = hasbug.conf.github_client_secret(),
         code = code,
-        state = auth_state())
+        state = state)
     req = urllib2.Request(url, data)
     req.add_header("Accept", "application/json")
     res = urlopen(req)

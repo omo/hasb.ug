@@ -3,6 +3,7 @@ import StringIO
 import unittest
 import cement.utils.test
 import hasbug
+import hasbug.user
 import hasbug.testing as testing
 import hasbug.cl
 
@@ -41,6 +42,14 @@ class ClTest(cement.utils.test.CementTestCase):
 
     def test_list_mock(self):
         self._run(['ls', '--mock'])
+
+    def test_au_mock(self):
+        hasbug.user.fake_urlopen()
+        hasbug.user.add_fake_mojombo_to_urlopen()
+        self._run(['au', '--mock', '--login', 'mojombo'])
+
+    def test_lu_mock(self):
+        self._run(['lu', '--mock'])
 
     def test_ds_mock(self):
         self._run(['ds', '--mock', '--host', 'wkb.ug'])

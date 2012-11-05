@@ -19,3 +19,6 @@ class App(flask.Flask):
     @r.setter
     def r(self, val):
         self._r = val
+
+    def in_debug(self):
+        return self.config['DEBUG']

@@ -18,17 +18,26 @@ def restore_user_from_session(sender, **extra):
     user_key = f.session.get('user')
     f.request.user = sender.r.users.find(user_key) if user_key else None
 
-def save_use_to_session(user):
+def save_user_to_session(sess, user):
     f.session['user'] = user.key
     f.session.modified = True
 
+def login_as_octocat(sess):
+    save_user_to_session(hasbug.User(hasbug.user.octocat_dict), sess)
+
+def set_auth_state(sess):
+    state = hasbug.oauth.random_string()
+    sess["auth_state"] = state
+    return state
+
 @app.route('/')
 def hello_world():
-    return f.render_template("index.html")
+    return f.render_template("index.html", user=f.request.user)
 
 @app.route('/login')
 def login_oauth():
-    return f.redirect(hasbug.oauth.redirect_url())
+    state = set_auth_state(f.session)
+    return f.redirect(hasbug.oauth.redirect_url(state))
 
 @app.route('/logout', methods=["POST"])
 def logout():
@@ -40,14 +49,21 @@ def logout():
 def login_callback():
     code = f.request.args["code"]
     state = f.request.args["state"]
-    if not hasbug.oauth.auth_state_matches(state):
+    if f.session.get("auth_state") != state:
         return f.abort(401)
     user_dict = hasbug.oauth.authorize_user(code, state)
     user = hasbug.user.User(user_dict)
     app.r.users.add(user, can_replace=True)
-    save_use_to_session(user)
+    save_user_to_session(f.session, user)
     return f.redirect("/~" + user.login)
 
 @app.route('/~<user>')
 def user_home(user):
     return 'Hello, {user}!'.format(user=user)
+
+@app.route('/debug/login')
+def debug_login():
+    if not app.in_debug():
+        return f.abort(401)
+    login_as_octocat(f.session)
+    return f.redirect("/")

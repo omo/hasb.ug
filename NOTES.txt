@@ -52,7 +52,7 @@ TODOs:
   + logout
 
 - auth_hash computation is wrong. 
-- local login option
++ local login option
 
 - Poor HTML impl for adding shorteners.
   - Add and remove
@@ -66,7 +66,10 @@ TODOs:
   - /me page.
   - user page (~)
     - not found handling
-  - hasbuger user commands
+> User hasbuger user commands
+  + list
+  + add
+  - delete: Should be just a flagging?
 
 > UI
   - Design the first version: UI, model, etc.

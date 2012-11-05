@@ -4,6 +4,11 @@
   <title>hasb.ug</title>
 </head>
 <body>
+{% if user %}
+ {{ user.login }}
+{% else %}
+ hehe
+{% endif %}
 Hello!
 <a href="/login">Login</a>
 </body>

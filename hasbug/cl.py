@@ -14,6 +14,7 @@ class AppController(controller.CementBaseController):
             (['-m', '--mock'], dict(action='store_true', help='Uses mock')),
             (['--prod'], dict(action='store_true', help='Uses production database')),
             (['-n', '--host'], dict(action='store', help='Shortener Host Name (Ex: wkb.ug)')),
+            (['-l', '--login'], dict(action='store', help='User Github login name (Ex: octocat)')),
             (['-p', '--pattern'], dict(action='store', help='Shortener Pattern (Ex: "https://bugs.webkit.org/show_bug.cgi?id={id}")')),
             (['-u', '--user'], dict(action='store', help='A user URL who addds the Shortener (Ex: "http://dodgson.org/omo")'))
             ]
@@ -54,7 +55,7 @@ class AppController(controller.CementBaseController):
         self._repo.shorteners.add(toadd)
 
     @controller.expose(aliases=["ls"], help="List shorteners.")
-    def list_shortener(self):
+    def list_shorteners(self):
         listed = self._repo.shorteners.list()
         for i in listed:
             self.o.write("{:<10} {:<50} {:10}\n".format(i.host, i.pattern, i.added_by))
@@ -67,6 +68,19 @@ class AppController(controller.CementBaseController):
         todel = self._repo.shorteners.find(self.pargs.host)
         self._repo.shorteners.remove(todel)
         self.o.write("Deleted {}.\n".format(todel.host))
+
+    @controller.expose(aliases=["au"], help="Add a new user.")
+    def add_user(self):
+        if not self.pargs.login:
+            self._error_exit("login is missing")
+        self._repo.users.add_by_login(self.pargs.login)
+
+    @controller.expose(aliases=["lu"], help="List users.")
+    def list_users(self):
+        listed = self._repo.users.list()
+        for i in listed:
+            self.o.write("{:<16} {:<30}\n".format(i.login, i.name))
+        self.o.write("total {} users found.\n".format(len(listed)))
 
     @controller.expose(aliases=["noop"], help="Do nothing.")
     def do_nothing(self):

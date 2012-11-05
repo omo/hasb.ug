@@ -23,7 +23,8 @@ class ConsoleTest(unittest.TestCase):
         hasbug.oauth.urlopen = fake_urlopen
 
     def login_as_octocat(self):
-        correct_state = hasbug.oauth.auth_state()
+        with self.app.session_transaction() as sess:
+            correct_state = hasbug.coweb.set_auth_state(sess)
         url = "/login/back?code=xxx&state={}".format(correct_state)
         return self.app.get(url)
 
@@ -31,7 +32,7 @@ class ConsoleTest(unittest.TestCase):
         self.app = hasbug.coweb.app.test_client()
 
     def test_oauth(self):
-        hasbug.oauth.redirect_url()
+        hasbug.oauth.redirect_url("foobar")
 
     def assert_redirect_to(self, resp, url):
         self.assertTrue("302" in resp.status)
@@ -56,14 +57,14 @@ class ConsoleTest(unittest.TestCase):
         self.assertTrue("200" in resp.status)
 
     def test_login_user(self):
+        self.login_as_octocat()
         with self.app as c:
-            self.login_as_octocat()
             c.get("/")
             self.assertEquals(flask.request.user.login, "octocat")
 
     def test_logout(self):
+        self.login_as_octocat()
         with self.app as c:
-            self.login_as_octocat()
             c.post("/logout")
             c.get("/")
             self.assertIsNone(flask.request.user)
