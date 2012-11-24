@@ -15,7 +15,6 @@ def fake_urlopen(req):
         return StringIO.StringIO(hasbug.user.octocat_text)
 
 class ConsoleTest(unittest.TestCase):
-
     @classmethod
     def setUpClass(cls):
         hasbug.coweb.app.config['DEBUG'] = True
@@ -45,14 +44,14 @@ class ConsoleTest(unittest.TestCase):
 
     def test_login_back(self):
         resp = self.login_as_octocat()
-        self.assert_redirect_to(resp, "http://localhost/~octocat")
+        self.assert_redirect_to(resp, "http://localhost/me")
 
     def test_login_back_wrong_state(self):
         url = "/login/back?code=xxx&state={}".format("wrong_state")
         resp = self.app.get(url)
         self.assertTrue("401" in resp.status)
 
-    def test_user_home(self):
+    def test_user_public(self):
         resp = self.app.get("/~octocat")
         self.assertTrue("200" in resp.status)
 
@@ -68,3 +67,12 @@ class ConsoleTest(unittest.TestCase):
             c.post("/logout")
             c.get("/")
             self.assertIsNone(flask.request.user)
+
+    def test_me_before_login(self):
+        resp = self.app.get("/me")
+        self.assert_redirect_to(resp, "http://localhost/login")
+
+    def test_me_after_login(self):
+        self.login_as_octocat()
+        resp = self.app.get("/me")
+        self.assertTrue("octocat" in resp.data)

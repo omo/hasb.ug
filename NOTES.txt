@@ -51,11 +51,15 @@ TODOs:
   + Save and Restore user from the session.
   + logout
 
-- auth_hash computation is wrong. 
++ auth_hash computation is wrong. 
 + local login option
 
+- setup Yeoman
+
 - Poor HTML impl for adding shorteners.
-  - Add and remove
+  + "me" page (/me)
+  - "shortener" page (/s/)
+  - Add and remove shorternes via /me
 
 - Setup Asset distribution
   - less
