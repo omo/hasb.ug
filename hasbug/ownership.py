@@ -7,9 +7,7 @@ import hasbug.shortener
 
 class Ownership(store.Stuff):
     bag_name = "ownerships"
-    key_prop_name = "owner_key"
-    ord_prop_name = "which"
-    attributes = [store.StuffAttr("owner_key"), store.StuffAttr("what"), store.StuffAttr("which")]
+    attributes = [store.StuffKey("owner_key"), store.StuffAttr("what"), store.StuffOrd("which")]
 
     @classmethod
     def make(cls, owner_key, what, which):

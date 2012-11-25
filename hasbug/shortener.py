@@ -6,8 +6,7 @@ import hasbug.user as user
 
 class Shortener(store.Stuff):
     bag_name = "shorteners"
-    key_prop_name = "host"
-    attributes = [store.StuffAttr("host"), store.StuffAttr("pattern"), store.StuffAttr("added_by")]
+    attributes = [store.StuffKey("host"), store.StuffAttr("pattern"), store.StuffAttr("added_by")]
 
     def url_for(self, id):
         return self.pattern.format(id = id)

@@ -85,71 +85,6 @@ class Store(DelegationHelper):
             conn.delete_table(conn.get_table(name))
 
 
-class StuffAttr(object):
-    def __init__(self, name):
-        self.name = name
-
-
-class StuffMeta(type):
-    @classmethod
-    def make_getter(cls, attr):
-        def generated_getter(self):
-            return self._dict.get(attr.name)
-        return generated_getter
-
-    def __new__(mcs, name, bases, dict):
-        cls = type.__new__(mcs, name, bases, dict)
-        for attr in dict.get("attributes", []):
-            setattr(cls, attr.name, property(StuffMeta.make_getter(attr)))
-        return cls
-
-
-class Stuff(object):
-    __metaclass__ = StuffMeta
-
-    default_ord_value = "0"
-    ord_prop_name = ""
-    key_prop_name = ""
-
-    def __init__(self, dict={}):
-        self._dict = dict
-
-    def get_value(self, name):
-        return self._dict[name]
-
-    def __eq__(self, other):
-        return self._dict == other._dict
-
-    def to_item_values(self):
-        return { "dict": json.dumps(self._dict) }
-
-    def validate(self):
-        v = validation.Validator(self)
-        return v
-
-    @classmethod
-    def from_item(cls, item):
-        d = item.get("dict")
-        return cls(json.loads(d) if d else {})
-
-    @property
-    def ord(self):
-        if self.ord_prop_name:
-            assert hasattr(self, self.ord_prop_name)
-            return getattr(self, self.ord_prop_name, None) or self.default_ord_value
-        return self.default_ord_value
-
-    @property
-    def key(self):
-        assert self.key_prop_name
-        assert hasattr(self, self.key_prop_name)
-        return getattr(self, self.key_prop_name, None)
-
-    @classmethod
-    def fill_mock_bag(cls, bag):
-        pass
-
-
 class Bag(DelegationHelper):
     range_key_name = "range"
     table_key_name = "hash"
@@ -241,6 +176,96 @@ class Bag(DelegationHelper):
         model = self.model_class.from_item(item)
         model._item = item
         return model
+
+
+class StuffAttr(object):
+    def __init__(self, name):
+        self.name = name
+
+
+class StuffKey(StuffAttr):
+    pass
+
+
+class StuffOrd(StuffAttr):
+    pass
+
+
+class StuffMeta(type):
+    @classmethod
+    def make_getter(cls, attr):
+        def generated_getter(self):
+            return self._dict.get(attr.name)
+        return generated_getter
+
+    def find_key_attr_name(cls, attrs):
+        found = [a.name for a in attrs if isinstance(a, StuffKey)]
+        if not found:
+            if cls.__name__ != "Stuff":
+                raise Exception("Stuff needs key attribute: " + str(cls))
+            return None
+        return found[0]
+
+    def find_ord_attr_name(cls, attrs):
+        found = [a.name for a in attrs if isinstance(a, StuffOrd)]
+        if not found:
+            return None
+        return found[0]
+
+    def __new__(mcs, name, bases, dict):
+        cls = type.__new__(mcs, name, bases, dict)
+        attrs = dict.get("attributes", [])
+        for attr in attrs:
+            setattr(cls, attr.name, property(StuffMeta.make_getter(attr)))
+        setattr(cls, "key_prop_name", cls.find_key_attr_name(attrs))
+        setattr(cls, "ord_prop_name", cls.find_ord_attr_name(attrs))
+        return cls
+
+
+class Stuff(object):
+    __metaclass__ = StuffMeta
+
+    default_ord_value = "0"
+    ord_prop_name = ""
+    key_prop_name = ""
+
+    def __init__(self, dict={}):
+        self._dict = dict
+
+    def get_value(self, name):
+        return self._dict[name]
+
+    def __eq__(self, other):
+        return self._dict == other._dict
+
+    def to_item_values(self):
+        return { "dict": json.dumps(self._dict) }
+
+    def validate(self):
+        v = validation.Validator(self)
+        return v
+
+    @classmethod
+    def from_item(cls, item):
+        d = item.get("dict")
+        return cls(json.loads(d) if d else {})
+
+    @property
+    def ord(self):
+        if self.ord_prop_name:
+            assert hasattr(self, self.ord_prop_name)
+            return getattr(self, self.ord_prop_name, None) or self.default_ord_value
+        return self.default_ord_value
+
+    @property
+    def key(self):
+        assert self.key_prop_name
+        assert hasattr(self, self.key_prop_name)
+        return getattr(self, self.key_prop_name, None)
+
+    @classmethod
+    def fill_mock_bag(cls, bag):
+        pass
 
 
 class MockItem(object):

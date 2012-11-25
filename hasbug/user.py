@@ -72,8 +72,7 @@ def add_fake_mojombo_to_urlopen():
 
 class User(store.Stuff):
     bag_name = "users"
-    key_prop_name = "url"
-    attributes = [store.StuffAttr("login"), store.StuffAttr("url"), store.StuffAttr("name")]
+    attributes = [store.StuffAttr("login"), store.StuffKey("url"), store.StuffAttr("name")]
 
     def __init__(self, user_dict):
         super(User, self).__init__(user_dict)
