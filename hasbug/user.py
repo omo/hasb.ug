@@ -131,7 +131,5 @@ class User(object):
         bag.add(toadd, can_replace=True)
 
     @classmethod
-    def fill_mock_table(cls, table):
-        u = User(octocat_dict)
-        table.new_item(range_key="users.0", hash_key="#" + u.url, 
-                       attrs={ "dumps": u.dumps }).put()
+    def fill_mock_bag(cls, bag):
+        bag.add(User(octocat_dict))

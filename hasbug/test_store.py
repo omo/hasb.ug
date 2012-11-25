@@ -27,7 +27,7 @@ class TestModel(object):
         self.model_class = TestModel
     
     @classmethod
-    def fill_mock_table(cls, table):
+    def fill_mock_bag(cls, table):
         pass
 
 

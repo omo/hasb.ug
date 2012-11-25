@@ -23,9 +23,9 @@ class Store(object):
 
     def _make_bag(self, model_class):
         if self._mock:
-            table = MockTable()
-            model_class.fill_mock_table(table)
-            return Bag(model_class=model_class, table=table)
+            bag = Bag(model_class=model_class, table=MockTable())
+            model_class.fill_mock_bag(bag)
+            return bag
         else:
             return Bag(model_class=model_class, table=self._table)
 
@@ -88,18 +88,15 @@ class Bag(object):
         boilerplate.update(attr)
         return boilerplate
 
-    # FIXME: inline
     def new_item(self, hash, ord, attrs={}):
         return self.table.new_item(range_key=self.to_internal_range(ord), hash_key=self.to_item_hash(hash), attrs=self._bless(attrs))
     
-    # FIXME: inline
     def get_item(self, hash, ord):
         try:
             return self.table.get_item(range_key=self.to_internal_range(ord), hash_key=self.to_item_hash(hash))
         except exceptions.DynamoDBKeyNotFoundError, ex:
             raise ItemNotFoundError(str(ex))
 
-    # FIXME: inline
     def insert_item(self, item, can_replace):
         try:
             if can_replace:
@@ -109,7 +106,6 @@ class Bag(object):
         except exceptions.DynamoDBConditionalCheckFailedError, ex:
             raise ItemInvalidError(str(ex))
     
-    # FIXME: inline
     def list_item(self, ord):
         filter = { Store.range_key_name: condition.BEGINS_WITH(self.to_internal_range(ord)) }
         return self.table.scan(scan_filter=filter)

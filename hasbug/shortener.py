@@ -55,8 +55,6 @@ class Shortener(object):
                    item.get("pattern"), item.get("added_by"))
 
     @classmethod
-    def fill_mock_table(cls, table):
-        table.new_item(range_key="shorteners.0", hash_key="#wkb.ug", 
-                       attrs={ "pattern": "https://bugs.webkit.org/show_bug.cgi?id={id}" }).put()
-        table.new_item(range_key="shorteners.0", hash_key="#wkcheck.in", 
-                       attrs={ "pattern": "http://trac.webkit.org/changeset/{id}" }).put()
+    def fill_mock_bag(cls, bag):
+        bag.add(Shortener(host="wkb.ug", pattern="https://bugs.webkit.org/show_bug.cgi?id={id}", added_by="https://github.com/octocat"))
+        bag.add(Shortener(host="wkcheck.in", pattern="http://trac.webkit.org/changeset/{id}", added_by="https://github.com/octocat"))

@@ -57,8 +57,10 @@ TODOs:
 . setup Yeoman
 > Store cleanup
   + Kill mocks
-  - Make range key a first citizen
-  - Kill Bag subclasses
+  + Make range key a first citizen
+  + Kill Bag subclasses
+  + rewrite fill_mock_table to fill_mock_bag
+  - kill ord and key method
 
 - Poor HTML impl for adding shorteners.
   + "me" page (/me)
