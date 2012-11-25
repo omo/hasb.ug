@@ -105,6 +105,10 @@ class User(object):
         return self.url
 
     @property
+    def ord(self):
+        return "0"
+
+    @property
     def login(self):
         return self.user_dict["login"]
 

@@ -68,32 +68,35 @@ class Bag(object):
         self.name = self.__class__.__name__.lower()
 
     @classmethod
-    def to_internal_key(cls, k):
+    def to_item_hash(cls, k):
         return "#" + k
 
     @classmethod
-    def from_internal_key(cls, i):
+    def from_item_hash(cls, i):
         if i.find("#") < 0:
             raise ValueError(i + " is not a hash key")
         return i[1:]
+
+    def to_internal_range(self, ord):
+        return u".".join([self.name, ord])
 
     def _bless(self, attr):
         boilerplate = { "created_at": datetime.datetime.utcnow().isoformat() }
         boilerplate.update(attr)
         return boilerplate
 
-    def range_of(self, index):
-        return u".".join([self.name, str(index)])
-
-    def new_item(self, key, at=0, attrs={}):
-        return self.table.new_item(range_key=self.range_of(at), hash_key=self.to_internal_key(key), attrs=self._bless(attrs))
+    # FIXME: inline
+    def new_item(self, hash, ord, attrs={}):
+        return self.table.new_item(range_key=self.to_internal_range(ord), hash_key=self.to_item_hash(hash), attrs=self._bless(attrs))
     
-    def get_item(self, key, at=0):
+    # FIXME: inline
+    def get_item(self, hash, ord):
         try:
-            return self.table.get_item(range_key=self.range_of(at), hash_key=self.to_internal_key(key))
+            return self.table.get_item(range_key=self.to_internal_range(ord), hash_key=self.to_item_hash(hash))
         except exceptions.DynamoDBKeyNotFoundError, ex:
             raise ItemNotFoundError(str(ex))
 
+    # FIXME: inline
     def insert_item(self, item, can_replace):
         try:
             if can_replace:
@@ -102,22 +105,23 @@ class Bag(object):
                 item.put(expected_value={ Store.hash_key_name: False, Store.range_key_name: False })
         except exceptions.DynamoDBConditionalCheckFailedError, ex:
             raise ItemInvalidError(str(ex))
-
-    def list_item(self, at):
-        filter = { Store.range_key_name: condition.EQ(self.range_of(at)) }
+    
+    # FIXME: inline
+    def list_item(self, ord):
+        filter = { Store.range_key_name: condition.BEGINS_WITH(self.to_internal_range(ord)) }
         return self.table.scan(scan_filter=filter)
 
     def add(self, m, can_replace=False):
         m.validate().raise_if_invalid()
-        self.insert_item(self.new_item(m.key, 0, m.to_item_values()), can_replace)
+        self.insert_item(self.new_item(hash=m.key, ord=m.ord, attrs=m.to_item_values()), can_replace)
 
-    def find(self, key):
+    def find(self, key, ord="0"):
         # FIXME: Better to wrap the exception?
-        return self.to_m(self.get_item(key, 0))
+        return self.to_m(self.get_item(key, ord))
 
-    def list(self):
+    def list(self, ord="0"):
         # FIXME: should use generator
-        return [ self.to_m(i) for i in self.list_item(0) ]
+        return [ self.to_m(i) for i in self.list_item(ord) ]
 
     def remove(self, m):
         m._item.delete()
@@ -145,6 +149,12 @@ class MockItem(object):
 
     def put(self, expected_value=None):
         self._table.put_item(self, expected_value)
+
+    def save(self):
+        self._table.put_item(self, None)
+
+    def put_attribute(self, name, value):
+        self.attrs[name] = value
 
     def get(self, name):
         return self.attrs.get(name)

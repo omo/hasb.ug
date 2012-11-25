@@ -34,6 +34,10 @@ class Shortener(object):
         return self.host
 
     @property
+    def ord(self):
+        return "0"
+
+    @property
     def host_upper(self):
         return self.host.upper()
 
@@ -57,6 +61,6 @@ class Shortener(object):
 
     @classmethod
     def from_item(cls, item):
-        return cls(store.Bag.from_internal_key(item.hash_key),
+        return cls(store.Bag.from_item_hash(item.hash_key),
                    item.get("pattern"), item.get("added_by"))
 

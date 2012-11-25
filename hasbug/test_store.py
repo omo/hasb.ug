@@ -14,41 +14,48 @@ class DatabaseTest(unittest.TestCase):
         tables = conn.list_tables()
         self.assertTrue(u'hello' in tables)
 
+
 class TestModel(object):
     pass
+
 
 class TestBag(hasbug.Bag):
     def __init__(self, *args, **kwargs):
         super(TestBag, self).__init__(*args, **kwargs)
         self.model_class = TestModel
+    
+    @classmethod
+    def fill_mock_table(cls, table):
+        pass
 
 
-@unittest.skipIf(not testing.enable_database, "Database test is disabled")
 class StoreTest(unittest.TestCase):
-
     def setUp(self):
-        self.target = hasbug.Store(testing.TABLE_NAME, [TestBag])        
+        self.target = hasbug.Store(testing.TABLE_NAME if testing.enable_database else None, [TestBag])
+
+    @unittest.skipIf(not testing.enable_database, "Database test is disabled")
+    def test_fresh(self):
+        self.assertFalse(self.target.fresh)
 
     def test_hello(self):
-        self.assertFalse(self.target.fresh)
         self.assertIsInstance(self.target.testbag, TestBag)
 
     def test_bag(self):
         target_bag = self.target.testbag
         self.assertEquals(target_bag.name, "testbag")
-        self.assertEquals(target_bag.range_of(0), u"testbag.0")
+        self.assertEquals(target_bag.to_internal_range("0"), u"testbag.0")
 
-        created = target_bag.new_item("foobar", 0, {"foo": "Foo"})
+        created = target_bag.new_item(hash="foobar", ord="0", attrs={"foo": "Foo"})
         created.put_attribute("bar", "Bar")
         created.put()
         created.save()
 
-        found = target_bag.get_item("foobar")
+        found = target_bag.get_item("foobar", "0")
         self.assertEquals("Foo", found.get("foo"))
         self.assertEquals("Bar", found.get("bar"))
 
         found.delete()
         def run():
-            deleted = target_bag.get_item("foobar")
+            deleted = target_bag.get_item("foobar", "0")
         self.assertRaises(store.ItemNotFoundError, run)
 

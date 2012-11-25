@@ -54,7 +54,11 @@ TODOs:
 + auth_hash computation is wrong. 
 + local login option
 
-- setup Yeoman
+. setup Yeoman
+> Store cleanup
+  + Kill mocks
+  - Make range key a first citizen
+  - Kill Bag subclasses
 
 - Poor HTML impl for adding shorteners.
   + "me" page (/me)
