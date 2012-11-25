@@ -61,16 +61,21 @@ class Store(object):
 
 class Stuff(object):
     default_ord_value = "0"
-    ord_prop_name = "no_such_ord"
-    key_prop_name = "no_such_key"
+    ord_prop_name = ""
+    key_prop_name = ""
 
     @property
     def ord(self):
-        return getattr(self, self.ord_prop_name, self.default_ord_value)
+        if self.ord_prop_name:
+            assert hasattr(self, self.ord_prop_name)
+            return getattr(self, self.ord_prop_name, None) or self.default_ord_value
+        return self.default_ord_value
 
     @property
     def key(self):
-        return getattr(self, self.key_prop_name, self.default_ord_value)
+        assert self.key_prop_name
+        assert hasattr(self, self.key_prop_name)
+        return getattr(self, self.key_prop_name, None)
 
 
 class Bag(object):
@@ -93,6 +98,10 @@ class Bag(object):
 
     def _to_item_range(self, ord):
         return u".".join([self.name, ord])
+
+    @property
+    def _item_range_prefix(self):
+        return self.name
 
     def _bless(self, attr):
         boilerplate = { "created_at": datetime.datetime.utcnow().isoformat() }
@@ -117,8 +126,12 @@ class Bag(object):
         except exceptions.DynamoDBConditionalCheckFailedError, ex:
             raise ItemInvalidError(str(ex))
     
-    def _list_item(self, ord):
-        filter = { Store.range_key_name: condition.BEGINS_WITH(self._to_item_range(ord)) }
+    def _list_item(self):
+        filter = { Store.range_key_name: condition.BEGINS_WITH(self._item_range_prefix) }
+        return self.table.scan(scan_filter=filter)
+
+    def _query_item(self):
+        filter = { Store.range_key_name: condition.BEGINS_WITH(self._item_range_prefix) }
         return self.table.scan(scan_filter=filter)
 
     @property
@@ -133,13 +146,24 @@ class Bag(object):
         # FIXME: Better to wrap the exception?
         return self.to_m(self._get_item(key, ord or self.model_class.default_ord_value))
 
-    def list(self, ord=None):
+    def list(self):
         # FIXME: should use generator
-        return [ self.to_m(i) for i in self._list_item(ord or self.model_class.default_ord_value) ]
+        return [ self.to_m(i) for i in self._list_item() ]
+
+    def query(self, key):
+        # FIXME: should use generator
+        return [ self.to_m(i) for i in self._query_item(key) ]
 
     def remove(self, m):
         m._item.delete()
 
+    def remove_found(self, key, ord=None):
+        try:
+            found = self.find(key, ord)
+            self.remove(found)
+        except ItemNotFoundError:
+            pass
+        
     def to_m(self, item):
         model = self.model_class.from_item(item)
         model._item = item

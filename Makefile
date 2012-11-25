@@ -2,7 +2,8 @@
 SSH_KEY         = ""
 PIP_REQUIREMENT = "requirements.txt"
 BOTOCONF        = "./confs/boto.conf"
-TEST_OPTIONS    = ""
+#TEST_OPTIONS    = ""
+TEST_OPTIONS    = -p test_ownership.py
 
 all:
 	echo "Not yet."

@@ -123,6 +123,7 @@ class User(store.Stuff):
         opened = urlopen(urllib2.Request(url))
         toadd = User(json.load(opened))
         bag.add(toadd, can_replace=True)
+        return toadd
 
     @classmethod
     def fill_mock_bag(cls, bag):

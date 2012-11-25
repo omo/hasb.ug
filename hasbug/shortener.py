@@ -2,6 +2,7 @@
 
 import hasbug.store as store
 import hasbug.validation as validation
+import hasbug.user as user
 
 class Shortener(store.Stuff):
     bag_name = "shorteners"
