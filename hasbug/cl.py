@@ -73,7 +73,7 @@ class AppController(controller.CementBaseController):
     def add_user(self):
         if not self.pargs.login:
             self._error_exit("login is missing")
-        hasbug.User.add_by_login(self._repo.users, self.pargs.login)
+        self._repo.users.add_by_login(self.pargs.login)
 
     @controller.expose(aliases=["lu"], help="List users.")
     def list_users(self):

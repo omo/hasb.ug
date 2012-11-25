@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import datetime
+import datetime, json, types
 import boto
 import boto.dynamodb.exceptions as exceptions
 import boto.dynamodb.condition as condition
@@ -59,10 +59,47 @@ class Store(object):
             conn.delete_table(conn.get_table(name))
 
 
+class StuffAttr(object):
+    def __init__(self, name):
+        self.name = name
+
+
+class StuffMeta(type):
+    @classmethod
+    def make_getter(cls, attr):
+        def generated_getter(self):
+            return self._dict.get(attr.name)
+        return generated_getter
+
+    def __new__(mcs, name, bases, dict):
+        cls = type.__new__(mcs, name, bases, dict)
+        for attr in dict.get("attributes", []):
+            setattr(cls, attr.name, property(StuffMeta.make_getter(attr)))
+        return cls
+
 class Stuff(object):
+    __metaclass__ = StuffMeta
+
     default_ord_value = "0"
     ord_prop_name = ""
     key_prop_name = ""
+
+    def __init__(self, dict={}):
+        self._dict = dict
+
+    def get_value(self, name):
+        return self._dict[name]
+
+    def __eq__(self, other):
+        return self.user_dict == other.user_dict
+
+    def to_item_values(self):
+        return { "dict": json.dumps(self._dict) }
+
+    @classmethod
+    def from_item(cls, item):
+        d = item.get("dict")
+        return cls(json.loads(d) if d else {})
 
     @property
     def ord(self):
@@ -78,6 +115,11 @@ class Stuff(object):
         return getattr(self, self.key_prop_name, None)
 
 
+def bagging(cm):
+    bagging.marked[cm] = True
+    return cm
+bagging.marked = {}
+
 class Bag(object):
     range_key_name = "range"
     table_key_name = "hash"
@@ -85,7 +127,18 @@ class Bag(object):
     def __init__(self, model_class, table, **kwargs):
         self.table = table
         self.model_class = model_class
+        self._delegate_baggings()
 
+    def _make_bagging_invoker(self, b):
+        def invoker(*args, **kwargs):
+            return b.__get__(self.model_class)(self, *args, **kwargs)
+        return invoker
+
+    def _delegate_baggings(self):
+        for k, v in self.model_class.__dict__.items():
+            if isinstance(v, classmethod) and v in bagging.marked:
+                setattr(self, k, self._make_bagging_invoker(v))
+            
     @classmethod
     def _to_item_hash(cls, k):
         return "#" + k

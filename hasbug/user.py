@@ -73,50 +73,26 @@ def add_fake_mojombo_to_urlopen():
 class User(store.Stuff):
     bag_name = "users"
     key_prop_name = "url"
-    
+    attributes = [store.StuffAttr("login"), store.StuffAttr("url"), store.StuffAttr("name")]
+
     def __init__(self, user_dict):
-        super(User, self).__init__()
-        self.user_dict = user_dict
-
-    @property
-    def url(self):
-        return self.user_dict["url"]      
-
-    @property
-    def login(self):
-        return self.user_dict["login"]
-
-    @property
-    def name(self):
-        return self.user_dict["name"]
-
-    @property
-    def dumps(self):
-        return json.dumps(self.user_dict)
+        super(User, self).__init__(user_dict)
 
     def validate(self):
         v = validation.Validator(self)
         return v
 
-    def __eq__(self, other):
-        return self.user_dict == other.user_dict
-
-    def to_item_values(self):
-        return { "dumps": self.dumps }
-
-    @classmethod
-    def from_item(cls, item):
-        return cls(json.loads(item.get("dumps")))
-
     @classmethod
     def url_from_login(cls, login):
         return "https://api.github.com/users/" + login
 
+    @store.bagging
     @classmethod
     def remove_by_url(cls, bag, url):
         toremove = bag.find(url)
         bag.remove(toremove)
 
+    @store.bagging
     @classmethod
     def add_by_login(cls, bag, login_name):
         url = User.url_from_login(login_name)
