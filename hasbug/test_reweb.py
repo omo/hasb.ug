@@ -7,7 +7,7 @@ class RedirectorTest(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        hasbug.reweb.app.r = hasbug.MockRepo()
+        hasbug.reweb.app.r = hasbug.Repo(name=None)
 
     def setUp(self):
         self.app = hasbug.reweb.app.test_client()

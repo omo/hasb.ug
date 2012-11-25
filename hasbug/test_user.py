@@ -38,7 +38,4 @@ class UserRepoTest(unittest.TestCase, UserRepoCommonCases):
 
 class MockUserRepoTest(unittest.TestCase, UserRepoCommonCases):
     def setUp(self):
-        class MockRepo:
-            def __init__(self):
-                self.users = hasbug.MockUsers()
-        self.repo = MockRepo()
+        self.repo = hasbug.Repo(name=None)

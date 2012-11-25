@@ -70,7 +70,11 @@ def add_fake_mojombo_to_urlopen():
     fake_user_dict[mojombo_dict["url"]] = mojombo_text
 
 
-class UserOps(object):
+class Users(store.Bag):
+    def __init__(self, *args, **kwargs):
+        super(Users, self).__init__(*args, **kwargs)
+        self.model_class = User
+
     def remove_by_url(self, url):
         toremove = self.find(url)
         self.remove(toremove)
@@ -81,18 +85,11 @@ class UserOps(object):
         toadd = User(json.load(opened))
         self.add(toadd, can_replace=True)
 
-
-class Users(store.Bag, store.BagOps, UserOps):
-    def __init__(self, *args, **kwargs):
-        super(Users, self).__init__(*args, **kwargs)
-        self.model_class = User
-
-
-class MockUsers(store.MockBag, UserOps):
-    def __init__(self, *args, **kwargs):
-        super(MockUsers, self).__init__(*args, **kwargs)
+    @classmethod
+    def fill_mock_table(cls, table):
         u = User(octocat_dict)
-        self._dict[u.url] = u
+        table.new_item(range_key="users.0", hash_key="#" + u.url, 
+                       attrs={ "dumps": u.dumps }).put()
 
 
 class User(object):

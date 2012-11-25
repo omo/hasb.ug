@@ -37,11 +37,11 @@ class AppController(controller.CementBaseController):
         return self.__repo
 
     def _make_repo(self):
+        table_name = hasbug.prod.TABLE_NAME if self.pargs.prod else hasbug.testing.TABLE_NAME
         if self.pargs.mock:
-            return hasbug.MockRepo()
-        else:
-            table_name = hasbug.prod.TABLE_NAME if self.pargs.prod else hasbug.testing.TABLE_NAME
-            return hasbug.Repo(table_name)
+            table_name = None 
+        return hasbug.Repo(table_name)
+        
 
     @controller.expose(aliases=["as"], help="Add a new shortener.")
     def add_shortener(self):

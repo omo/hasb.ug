@@ -18,7 +18,7 @@ class ConsoleTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         hasbug.coweb.app.config['DEBUG'] = True
-        hasbug.coweb.app.r = hasbug.MockRepo()
+        hasbug.coweb.app.r = hasbug.Repo(name=None)
         hasbug.oauth.urlopen = fake_urlopen
 
     def login_as_octocat(self):

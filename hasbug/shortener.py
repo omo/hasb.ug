@@ -3,26 +3,21 @@
 import hasbug.store as store
 import hasbug.validation as validation
 
-class ShortenersOps(object):
-    def remove_by_host(self, host):
-        toremove = self.find(host)
-        self.remove(toremove)
-
-
-class Shorteners(store.Bag, store.BagOps, ShortenersOps):
+class Shorteners(store.Bag):
     def __init__(self, *args, **kwargs):
         super(Shorteners, self).__init__(*args, **kwargs)
         self.model_class = Shortener
 
+    def remove_by_host(self, host):
+        toremove = self.find(host)
+        self.remove(toremove)
 
-class MockShorteners(store.MockBag, ShortenersOps):
-    def __init__(self, *args, **kwargs):
-        super(MockShorteners, self).__init__(*args, **kwargs)
-        self._dict["wkcheck.in"] = Shortener("wkcheck.in", 
-                                             "http://trac.webkit.org/changeset/{id}")
-        self._dict["wkb.ug"] = Shortener("wkb.ug", 
-                                         "https://bugs.webkit.org/show_bug.cgi?id={id}")
-
+    @classmethod
+    def fill_mock_table(cls, table):
+        table.new_item(range_key="shorteners.0", hash_key="#wkb.ug", 
+                       attrs={ "pattern": "https://bugs.webkit.org/show_bug.cgi?id={id}" }).put()
+        table.new_item(range_key="shorteners.0", hash_key="#wkcheck.in", 
+                       attrs={ "pattern": "http://trac.webkit.org/changeset/{id}" }).put()
 
 
 class Shortener(object):

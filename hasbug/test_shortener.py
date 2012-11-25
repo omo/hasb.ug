@@ -47,12 +47,10 @@ class ShortenerRepoCommonCases(object):
         self.assertRaises(store.ItemInvalidError, do)
 
 
+# XXX: Kill this
 class MockShortenerRepoTest(unittest.TestCase, ShortenerRepoCommonCases):
     def setUp(self):
-        class MockRepo:
-            def __init__(self):
-                self.shorteners = hasbug.MockShorteners()
-        self.repo = MockRepo()
+        self.repo = hasbug.Repo(name=None)
 
     def test_find_initials(self):
         target = self.repo.shorteners.find("wkb.ug")

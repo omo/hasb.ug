@@ -17,7 +17,7 @@ class DatabaseTest(unittest.TestCase):
 class TestModel(object):
     pass
 
-class TestBag(hasbug.Bag, hasbug.BagOps):
+class TestBag(hasbug.Bag):
     def __init__(self, *args, **kwargs):
         super(TestBag, self).__init__(*args, **kwargs)
         self.model_class = TestModel

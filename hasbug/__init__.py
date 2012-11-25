@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
 
-from hasbug.shortener import Shorteners, MockShorteners, Shortener
-from hasbug.user import Users, MockUsers, User
-from hasbug.repo import Repo, MockRepo
+from hasbug.shortener import Shorteners, Shortener
+from hasbug.user import Users, User
+from hasbug.repo import Repo
 from hasbug.app import App
-from hasbug.store import Store, Bag, BagOps, ItemNotFoundError, ItemInvalidError
-#import hasbug.conf as conf
+from hasbug.store import Store, Bag, ItemNotFoundError, ItemInvalidError
 import hasbug.oauth as oauth
