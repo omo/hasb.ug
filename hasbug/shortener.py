@@ -3,24 +3,18 @@
 import hasbug.store as store
 import hasbug.validation as validation
 
-class Shortener(object):
+class Shortener(store.Stuff):
     bag_name = "shorteners"
+    key_prop_name = "host"
 
     def __init__(self, host, pattern, added_by=None):
+        super(Shortener, self).__init__()
         self.host = host
         self.pattern = pattern
         self.added_by = added_by
 
     def url_for(self, id):
         return self.pattern.format(id = id)
-
-    @property
-    def key(self):
-        return self.host
-
-    @property
-    def ord(self):
-        return "0"
 
     @property
     def host_upper(self):
@@ -51,7 +45,7 @@ class Shortener(object):
 
     @classmethod
     def from_item(cls, item):
-        return cls(store.Bag.from_item_hash(item.hash_key),
+        return cls(store.Bag._from_item_hash(item.hash_key),
                    item.get("pattern"), item.get("added_by"))
 
     @classmethod

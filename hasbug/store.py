@@ -9,6 +9,7 @@ class ItemNotFoundError(Exception):
     def __init__(self, message):
         super(ItemNotFoundError, self).__init__(message)  
 
+
 class ItemInvalidError(Exception):
     def __init__(self, message):
         super(ItemInvalidError, self).__init__(message)  
@@ -58,6 +59,20 @@ class Store(object):
             conn.delete_table(conn.get_table(name))
 
 
+class Stuff(object):
+    default_ord_value = "0"
+    ord_prop_name = "no_such_ord"
+    key_prop_name = "no_such_key"
+
+    @property
+    def ord(self):
+        return getattr(self, self.ord_prop_name, self.default_ord_value)
+
+    @property
+    def key(self):
+        return getattr(self, self.key_prop_name, self.default_ord_value)
+
+
 class Bag(object):
     range_key_name = "range"
     table_key_name = "hash"
@@ -67,20 +82,16 @@ class Bag(object):
         self.model_class = model_class
 
     @classmethod
-    def to_item_hash(cls, k):
+    def _to_item_hash(cls, k):
         return "#" + k
 
     @classmethod
-    def from_item_hash(cls, i):
+    def _from_item_hash(clses, i):
         if i.find("#") < 0:
             raise ValueError(i + " is not a hash key")
         return i[1:]
 
-    @property
-    def name(self):
-        return self.model_class.bag_name
-
-    def to_internal_range(self, ord):
+    def _to_item_range(self, ord):
         return u".".join([self.name, ord])
 
     def _bless(self, attr):
@@ -88,16 +99,16 @@ class Bag(object):
         boilerplate.update(attr)
         return boilerplate
 
-    def new_item(self, hash, ord, attrs={}):
-        return self.table.new_item(range_key=self.to_internal_range(ord), hash_key=self.to_item_hash(hash), attrs=self._bless(attrs))
+    def _new_item(self, key, ord, attrs={}):
+        return self.table.new_item(range_key=self._to_item_range(ord), hash_key=self._to_item_hash(key), attrs=self._bless(attrs))
     
-    def get_item(self, hash, ord):
+    def _get_item(self, key, ord):
         try:
-            return self.table.get_item(range_key=self.to_internal_range(ord), hash_key=self.to_item_hash(hash))
+            return self.table.get_item(range_key=self._to_item_range(ord), hash_key=self._to_item_hash(key))
         except exceptions.DynamoDBKeyNotFoundError, ex:
             raise ItemNotFoundError(str(ex))
 
-    def insert_item(self, item, can_replace):
+    def _insert_item(self, item, can_replace):
         try:
             if can_replace:
                 item.put()
@@ -106,21 +117,25 @@ class Bag(object):
         except exceptions.DynamoDBConditionalCheckFailedError, ex:
             raise ItemInvalidError(str(ex))
     
-    def list_item(self, ord):
-        filter = { Store.range_key_name: condition.BEGINS_WITH(self.to_internal_range(ord)) }
+    def _list_item(self, ord):
+        filter = { Store.range_key_name: condition.BEGINS_WITH(self._to_item_range(ord)) }
         return self.table.scan(scan_filter=filter)
+
+    @property
+    def name(self):
+        return self.model_class.bag_name
 
     def add(self, m, can_replace=False):
         m.validate().raise_if_invalid()
-        self.insert_item(self.new_item(hash=m.key, ord=m.ord, attrs=m.to_item_values()), can_replace)
+        self._insert_item(self._new_item(key=m.key, ord=m.ord, attrs=m.to_item_values()), can_replace)
 
-    def find(self, key, ord="0"):
+    def find(self, key, ord=None):
         # FIXME: Better to wrap the exception?
-        return self.to_m(self.get_item(key, ord))
+        return self.to_m(self._get_item(key, ord or self.model_class.default_ord_value))
 
-    def list(self, ord="0"):
+    def list(self, ord=None):
         # FIXME: should use generator
-        return [ self.to_m(i) for i in self.list_item(ord) ]
+        return [ self.to_m(i) for i in self._list_item(ord or self.model_class.default_ord_value) ]
 
     def remove(self, m):
         m._item.delete()

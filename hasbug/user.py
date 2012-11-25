@@ -70,23 +70,17 @@ def add_fake_mojombo_to_urlopen():
     fake_user_dict[mojombo_dict["url"]] = mojombo_text
 
 
-class User(object):
+class User(store.Stuff):
     bag_name = "users"
-
+    key_prop_name = "url"
+    
     def __init__(self, user_dict):
+        super(User, self).__init__()
         self.user_dict = user_dict
 
     @property
     def url(self):
         return self.user_dict["url"]      
-
-    @property
-    def key(self):
-        return self.url
-
-    @property
-    def ord(self):
-        return "0"
 
     @property
     def login(self):

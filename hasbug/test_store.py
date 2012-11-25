@@ -43,19 +43,19 @@ class StoreTest(unittest.TestCase):
         target_bag = self.target.tests
         self.assertIsInstance(self.target.tests, store.Bag)
         self.assertEquals(target_bag.name, "tests")
-        self.assertEquals(target_bag.to_internal_range("0"), u"tests.0")
+        self.assertEquals(target_bag._to_item_range("0"), u"tests.0")
 
-        created = target_bag.new_item(hash="foobar", ord="0", attrs={"foo": "Foo"})
+        created = target_bag._new_item(key="foobar", ord="0", attrs={"foo": "Foo"})
         created.put_attribute("bar", "Bar")
         created.put()
         created.save()
 
-        found = target_bag.get_item("foobar", "0")
+        found = target_bag._get_item("foobar", "0")
         self.assertEquals("Foo", found.get("foo"))
         self.assertEquals("Bar", found.get("bar"))
 
         found.delete()
         def run():
-            deleted = target_bag.get_item("foobar", "0")
+            deleted = target_bag._get_item("foobar", "0")
         self.assertRaises(store.ItemNotFoundError, run)
 
