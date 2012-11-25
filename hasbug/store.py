@@ -16,7 +16,31 @@ class ItemInvalidError(Exception):
         super(ItemInvalidError, self).__init__(message)  
 
 
-class Store(object):
+def bagging(cm):
+    bagging.marked[cm] = True
+    return cm
+bagging.marked = {}
+
+
+def storing(cm):
+    storing.marked[cm] = True
+    return cm
+storing.marked = {}
+
+
+class DelegationHelper(object):
+    def _make_delegation_maker(self, cls, b):
+        def invoker(*args, **kwargs):
+            return b.__get__(cls)(self, *args, **kwargs)
+        return invoker
+
+    def _delegate_from_class(self, cls, marked):
+        for k, v in cls.__dict__.items():
+            if isinstance(v, classmethod) and v in marked:
+                setattr(self, k, self._make_delegation_maker(cls, v))
+
+
+class Store(DelegationHelper):
     READ_UNIT   = 1
     WRITE_UNIT  = 1
 
@@ -47,6 +71,7 @@ class Store(object):
         if not self._mock:
             self._make_connection(name, should_have_table)
         for mc in model_classes:
+            self._delegate_from_class(mc, storing.marked)
             setattr(self, mc.bag_name, self._make_bag(mc))
 
     @property
@@ -77,6 +102,7 @@ class StuffMeta(type):
         for attr in dict.get("attributes", []):
             setattr(cls, attr.name, property(StuffMeta.make_getter(attr)))
         return cls
+
 
 class Stuff(object):
     __metaclass__ = StuffMeta
@@ -124,29 +150,14 @@ class Stuff(object):
         pass
 
 
-def bagging(cm):
-    bagging.marked[cm] = True
-    return cm
-bagging.marked = {}
-
-class Bag(object):
+class Bag(DelegationHelper):
     range_key_name = "range"
     table_key_name = "hash"
 
     def __init__(self, model_class, table, **kwargs):
         self.table = table
         self.model_class = model_class
-        self._delegate_baggings()
-
-    def _make_bagging_invoker(self, b):
-        def invoker(*args, **kwargs):
-            return b.__get__(self.model_class)(self, *args, **kwargs)
-        return invoker
-
-    def _delegate_baggings(self):
-        for k, v in self.model_class.__dict__.items():
-            if isinstance(v, classmethod) and v in bagging.marked:
-                setattr(self, k, self._make_bagging_invoker(v))
+        self._delegate_from_class(self.model_class, bagging.marked)
             
     @classmethod
     def _to_item_hash(cls, k):

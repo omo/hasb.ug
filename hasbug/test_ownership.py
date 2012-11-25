@@ -20,5 +20,5 @@ class OwnershipTest(unittest.TestCase):
             self.repo.ownerships.remove_found(s.added_by, s.key)
 
     def test_add_shortener(self):
-        hasbug.Ownership.add_shortener(self.repo, self.sfoo)
-        hasbug.Ownership.add_shortener(self.repo, self.sbar)
+        self.repo.add_shortener(self.sfoo)
+        self.repo.add_shortener(self.sbar)
