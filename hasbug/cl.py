@@ -51,7 +51,7 @@ class AppController(controller.CementBaseController):
             self._error_exit("pattern is missing")
         if not self.pargs.user:
             self._error_exit("user is missing")
-        toadd = hasbug.Shortener(self.pargs.host, self.pargs.pattern, self.pargs.user)
+        toadd = hasbug.Shortener.make(self.pargs.host, self.pargs.pattern, self.pargs.user)
         self._repo.shorteners.add(toadd)
 
     @controller.expose(aliases=["ls"], help="List shorteners.")

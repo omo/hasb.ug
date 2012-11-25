@@ -11,8 +11,8 @@ class OwnershipTest(unittest.TestCase):
     def setUpClass(cls):
         cls.repo = hasbug.Repo(testing.TABLE_NAME if testing.enable_database else None)
         cls.mojombo = cls.repo.users.add_by_login("mojombo")
-        cls.sfoo = hasbug.Shortener("foo.com", "http://foo.obug.org/{id}", cls.mojombo.url)
-        cls.sbar = hasbug.Shortener("bar.com", "http://bar.obug.org/{id}", cls.mojombo.url)
+        cls.sfoo = hasbug.Shortener.make("foo.com", "http://foo.obug.org/{id}", cls.mojombo.url)
+        cls.sbar = hasbug.Shortener.make("bar.com", "http://bar.obug.org/{id}", cls.mojombo.url)
 
     def setUp(self):
         for s in [self.sfoo, self.sbar]:

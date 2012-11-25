@@ -6,13 +6,13 @@ import hasbug.testing as testing
 import hasbug.validation as validation
 
 def make_fresh(host="foo.hasb.ug"):
-    return hasbug.Shortener(host, "http://foo.bugtracker.org/{id}", "http://github.com/omo")
+    return hasbug.Shortener.make(host, "http://foo.bugtracker.org/{id}", "http://github.com/omo")
 
 def make_fresh_more():
-    return hasbug.Shortener("bar.hasb.ug", "http://bar.bugtracker.org/{id}", "http://github.com/omo")
+    return hasbug.Shortener.make("bar.hasb.ug", "http://bar.bugtracker.org/{id}", "http://github.com/omo")
 
 def make_bad():
-    return hasbug.Shortener("foo.hasb.ug", "bad/url", "http://github.com/omo")
+    return hasbug.Shortener.make("foo.hasb.ug", "bad/url", "http://github.com/omo")
 
 
 class ShortenerRepoCommonCases(object):
@@ -83,10 +83,10 @@ class ShortenerRepoTest(unittest.TestCase, ShortenerRepoCommonCases):
 
 class ShortenerTest(unittest.TestCase):
     def setUp(self):
-        self.target = hasbug.Shortener("foo.hasb.ug", "http://foo.bugtracker.org/{id}", "http://github.com/omo")        
+        self.target = hasbug.Shortener.make("foo.hasb.ug", "http://foo.bugtracker.org/{id}", "http://github.com/omo")        
 
     def test_eq(self):
-        b = hasbug.Shortener("foo.hasb.ug", "http://foo.bugtracker.org/{id}", "http://github.com/omo")
+        b = hasbug.Shortener.make("foo.hasb.ug", "http://foo.bugtracker.org/{id}", "http://github.com/omo")
         self.assertEquals(self.target, b)
 
     def test_url_for(self):
@@ -96,22 +96,22 @@ class ShortenerTest(unittest.TestCase):
         self.assertFalse(self.target.validate().invalid())
 
     def test_validate_bad(self):
-        s1 = hasbug.Shortener("foo/bar", 
-                              "http://foo.bugtracker.org/{id}", 
-                              "http://github.com/omo")        
+        s1 = hasbug.Shortener.make("foo/bar", 
+                                   "http://foo.bugtracker.org/{id}", 
+                                   "http://github.com/omo")        
         self.assertTrue(s1.validate().invalid())
 
-        s2 = hasbug.Shortener("foo.bar.baz", 
-                              "bad.url.bugtracker.org/{id}", 
-                              "http://github.com/omo")
+        s2 = hasbug.Shortener.make("foo.bar.baz", 
+                                   "bad.url.bugtracker.org/{id}", 
+                                   "http://github.com/omo")
         self.assertTrue(s2.validate().invalid())
 
-        s3 = hasbug.Shortener("foo.bar.baz", 
-                              "https://bugtracker.org/{notid}", 
-                              "http://github.com/omo")
+        s3 = hasbug.Shortener.make("foo.bar.baz", 
+                                   "https://bugtracker.org/{notid}", 
+                                   "http://github.com/omo")
         self.assertTrue(s3.validate().invalid())
 
-        s4 = hasbug.Shortener("foo.bar.baz", 
-                              "https://bugtracker.org/{notid}", 
-                              "notnurl")
+        s4 = hasbug.Shortener.make("foo.bar.baz", 
+                                   "https://bugtracker.org/{notid}", 
+                                   "notnurl")
         self.assertTrue(s4.validate().invalid())

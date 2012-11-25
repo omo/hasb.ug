@@ -78,10 +78,6 @@ class User(store.Stuff):
     def __init__(self, user_dict):
         super(User, self).__init__(user_dict)
 
-    def validate(self):
-        v = validation.Validator(self)
-        return v
-
     @classmethod
     def url_from_login(cls, login):
         return "https://api.github.com/users/" + login

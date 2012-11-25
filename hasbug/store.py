@@ -4,6 +4,7 @@ import datetime, json, types
 import boto
 import boto.dynamodb.exceptions as exceptions
 import boto.dynamodb.condition as condition
+import hasbug.validation as validation
 
 class ItemNotFoundError(Exception):
     def __init__(self, message):
@@ -91,10 +92,14 @@ class Stuff(object):
         return self._dict[name]
 
     def __eq__(self, other):
-        return self.user_dict == other.user_dict
+        return self._dict == other._dict
 
     def to_item_values(self):
         return { "dict": json.dumps(self._dict) }
+
+    def validate(self):
+        v = validation.Validator(self)
+        return v
 
     @classmethod
     def from_item(cls, item):
@@ -113,6 +118,10 @@ class Stuff(object):
         assert self.key_prop_name
         assert hasattr(self, self.key_prop_name)
         return getattr(self, self.key_prop_name, None)
+
+    @classmethod
+    def fill_mock_bag(cls, bag):
+        pass
 
 
 def bagging(cm):
@@ -267,8 +276,9 @@ class MockTable(object):
         if (expected_value):
             assert False == expected_value[Store.range_key_name]
             assert False == expected_value[Store.hash_key_name]
-            if self._items.get(self._key_from(item.range_key, item.hash_key)):
-                raise ItemInvalidError("conflict")
+            key = self._key_from(item.range_key, item.hash_key)
+            if self._items.get(key):
+                raise ItemInvalidError("conflict: " + key)
         self._items[self._key_from(item.range_key, item.hash_key)] = item
 
     def delete_item(self, item):
