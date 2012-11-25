@@ -19,7 +19,7 @@ class UserRepoCommonCases(object):
 
     def test_add_by_login(self):
         login = "mojombo"
-        self.repo.users.add_by_login(login)
+        hasbug.User.add_by_login(self.repo.users, login)
         self.assertEquals(self.repo.users.find(hasbug.User.url_from_login(login)).login, login)
 
 
@@ -31,7 +31,7 @@ class UserRepoTest(unittest.TestCase, UserRepoCommonCases):
 
     def setUp(self):
         try:
-            self.repo.users.remove_by_url(user.octocat_dict["url"])
+            hasbug.User.remove_by_url(self.repo.users, user.octocat_dict["url"])
         except store.ItemNotFoundError:
             pass
 

@@ -70,29 +70,9 @@ def add_fake_mojombo_to_urlopen():
     fake_user_dict[mojombo_dict["url"]] = mojombo_text
 
 
-class Users(store.Bag):
-    def __init__(self, *args, **kwargs):
-        super(Users, self).__init__(*args, **kwargs)
-        self.model_class = User
-
-    def remove_by_url(self, url):
-        toremove = self.find(url)
-        self.remove(toremove)
-
-    def add_by_login(self, login_name):
-        url = User.url_from_login(login_name)
-        opened = urlopen(urllib2.Request(url))
-        toadd = User(json.load(opened))
-        self.add(toadd, can_replace=True)
-
-    @classmethod
-    def fill_mock_table(cls, table):
-        u = User(octocat_dict)
-        table.new_item(range_key="users.0", hash_key="#" + u.url, 
-                       attrs={ "dumps": u.dumps }).put()
-
-
 class User(object):
+    bag_name = "users"
+
     def __init__(self, user_dict):
         self.user_dict = user_dict
 
@@ -137,3 +117,21 @@ class User(object):
     @classmethod
     def url_from_login(cls, login):
         return "https://api.github.com/users/" + login
+
+    @classmethod
+    def remove_by_url(cls, bag, url):
+        toremove = bag.find(url)
+        bag.remove(toremove)
+
+    @classmethod
+    def add_by_login(cls, bag, login_name):
+        url = User.url_from_login(login_name)
+        opened = urlopen(urllib2.Request(url))
+        toadd = User(json.load(opened))
+        bag.add(toadd, can_replace=True)
+
+    @classmethod
+    def fill_mock_table(cls, table):
+        u = User(octocat_dict)
+        table.new_item(range_key="users.0", hash_key="#" + u.url, 
+                       attrs={ "dumps": u.dumps }).put()

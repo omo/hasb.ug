@@ -61,7 +61,7 @@ class MockShortenerRepoTest(unittest.TestCase, ShortenerRepoCommonCases):
         host = "baz.hasb.ug"
         self.repo.shorteners.add(make_fresh(host))
         self.assertIsNotNone(self.repo.shorteners.find(host))
-        self.repo.shorteners.remove_by_host(host)
+        hasbug.Shortener.remove_by_host(self.repo.shorteners, host)
         def do():
             self.repo.shorteners.find(host)
         self.assertRaises(store.ItemNotFoundError, do)
@@ -76,7 +76,7 @@ class ShortenerRepoTest(unittest.TestCase, ShortenerRepoCommonCases):
     def setUp(self):
         for h in ["foo.hasb.ug", "bar.hasb.ug"]:
             try:
-                self.repo.shorteners.remove_by_host(h)
+                hasbug.Shortener.remove_by_host(self.repo.shorteners, h)
             except store.ItemNotFoundError:
                 pass
 

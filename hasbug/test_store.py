@@ -19,7 +19,9 @@ class TestModel(object):
     pass
 
 
-class TestBag(hasbug.Bag):
+class TestModel(object):
+    bag_name = "tests"
+
     def __init__(self, *args, **kwargs):
         super(TestBag, self).__init__(*args, **kwargs)
         self.model_class = TestModel
@@ -31,19 +33,17 @@ class TestBag(hasbug.Bag):
 
 class StoreTest(unittest.TestCase):
     def setUp(self):
-        self.target = hasbug.Store(testing.TABLE_NAME if testing.enable_database else None, [TestBag])
+        self.target = hasbug.Store(testing.TABLE_NAME if testing.enable_database else None, model_classes=[TestModel])
 
     @unittest.skipIf(not testing.enable_database, "Database test is disabled")
     def test_fresh(self):
         self.assertFalse(self.target.fresh)
 
-    def test_hello(self):
-        self.assertIsInstance(self.target.testbag, TestBag)
-
     def test_bag(self):
-        target_bag = self.target.testbag
-        self.assertEquals(target_bag.name, "testbag")
-        self.assertEquals(target_bag.to_internal_range("0"), u"testbag.0")
+        target_bag = self.target.tests
+        self.assertIsInstance(self.target.tests, store.Bag)
+        self.assertEquals(target_bag.name, "tests")
+        self.assertEquals(target_bag.to_internal_range("0"), u"tests.0")
 
         created = target_bag.new_item(hash="foobar", ord="0", attrs={"foo": "Foo"})
         created.put_attribute("bar", "Bar")

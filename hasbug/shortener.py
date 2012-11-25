@@ -3,24 +3,9 @@
 import hasbug.store as store
 import hasbug.validation as validation
 
-class Shorteners(store.Bag):
-    def __init__(self, *args, **kwargs):
-        super(Shorteners, self).__init__(*args, **kwargs)
-        self.model_class = Shortener
-
-    def remove_by_host(self, host):
-        toremove = self.find(host)
-        self.remove(toremove)
-
-    @classmethod
-    def fill_mock_table(cls, table):
-        table.new_item(range_key="shorteners.0", hash_key="#wkb.ug", 
-                       attrs={ "pattern": "https://bugs.webkit.org/show_bug.cgi?id={id}" }).put()
-        table.new_item(range_key="shorteners.0", hash_key="#wkcheck.in", 
-                       attrs={ "pattern": "http://trac.webkit.org/changeset/{id}" }).put()
-
-
 class Shortener(object):
+    bag_name = "shorteners"
+
     def __init__(self, host, pattern, added_by=None):
         self.host = host
         self.pattern = pattern
@@ -60,7 +45,18 @@ class Shortener(object):
         return { "pattern": self.pattern, "added_by": self.added_by }
 
     @classmethod
+    def remove_by_host(cls, bag, host):
+        toremove = bag.find(host)
+        bag.remove(toremove)
+
+    @classmethod
     def from_item(cls, item):
         return cls(store.Bag.from_item_hash(item.hash_key),
                    item.get("pattern"), item.get("added_by"))
 
+    @classmethod
+    def fill_mock_table(cls, table):
+        table.new_item(range_key="shorteners.0", hash_key="#wkb.ug", 
+                       attrs={ "pattern": "https://bugs.webkit.org/show_bug.cgi?id={id}" }).put()
+        table.new_item(range_key="shorteners.0", hash_key="#wkcheck.in", 
+                       attrs={ "pattern": "http://trac.webkit.org/changeset/{id}" }).put()

@@ -5,7 +5,7 @@ import hasbug.store as store
 import hasbug.user as user
 
 class Repo(store.Store):
-    BAG_CLASSES = [shortener.Shorteners, user.Users]
+    MODEL_CLASSES = [shortener.Shortener, user.User]
 
     def __init__(self, name, **kwarg):
-        super(Repo, self).__init__(name=name, bag_classes=Repo.BAG_CLASSES, **kwarg)
+        super(Repo, self).__init__(name=name, model_classes=Repo.MODEL_CLASSES, **kwarg)

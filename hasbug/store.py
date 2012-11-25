@@ -21,13 +21,13 @@ class Store(object):
     hash_key_name = 'hash'
     range_key_name = 'range'
 
-    def _create_bag(self, bag_class):
+    def _make_bag(self, model_class):
         if self._mock:
             table = MockTable()
-            bag_class.fill_mock_table(table)
-            return bag_class(table)
+            model_class.fill_mock_table(table)
+            return Bag(model_class=model_class, table=table)
         else:
-            return bag_class(self._table)
+            return Bag(model_class=model_class, table=self._table)
 
     def _make_connection(self, name, should_have_table):
         self._conn = boto.connect_dynamodb()
@@ -40,13 +40,12 @@ class Store(object):
             self._table = self._conn.create_table(name=name, schema=schema, read_units=self.READ_UNIT, write_units=self.WRITE_UNIT)
             self._fresh = True
 
-    def __init__(self, name, bag_classes=[], should_have_table=False):
+    def __init__(self, name, model_classes=[], should_have_table=False):
         self._mock = name == None
         if not self._mock:
             self._make_connection(name, should_have_table)
-        for bc in bag_classes:
-            bag = self._create_bag(bc)
-            setattr(self, bag.name, bag)
+        for mc in model_classes:
+            setattr(self, mc.bag_name, self._make_bag(mc))
 
     @property
     def fresh(self):
@@ -63,9 +62,9 @@ class Bag(object):
     range_key_name = "range"
     table_key_name = "hash"
 
-    def __init__(self, table, **kwargs):
+    def __init__(self, model_class, table, **kwargs):
         self.table = table
-        self.name = self.__class__.__name__.lower()
+        self.model_class = model_class
 
     @classmethod
     def to_item_hash(cls, k):
@@ -76,6 +75,10 @@ class Bag(object):
         if i.find("#") < 0:
             raise ValueError(i + " is not a hash key")
         return i[1:]
+
+    @property
+    def name(self):
+        return self.model_class.bag_name
 
     def to_internal_range(self, ord):
         return u".".join([self.name, ord])
@@ -130,14 +133,6 @@ class Bag(object):
         model = self.model_class.from_item(item)
         model._item = item
         return model
-
-    @property
-    def model_class(self):
-        return self._modeL_class
-
-    @model_class.setter
-    def model_class(self, val):
-        self._modeL_class = val
 
 
 class MockItem(object):
