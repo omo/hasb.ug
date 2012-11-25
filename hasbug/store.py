@@ -217,8 +217,8 @@ class StuffMeta(type):
         attrs = dict.get("attributes", [])
         for attr in attrs:
             setattr(cls, attr.name, property(StuffMeta.make_getter(attr)))
-        setattr(cls, "key_prop_name", cls.find_key_attr_name(attrs))
-        setattr(cls, "ord_prop_name", cls.find_ord_attr_name(attrs))
+        setattr(cls, "key_attr_name", cls.find_key_attr_name(attrs))
+        setattr(cls, "ord_attr_name", cls.find_ord_attr_name(attrs))
         return cls
 
 
@@ -226,8 +226,8 @@ class Stuff(object):
     __metaclass__ = StuffMeta
 
     default_ord_value = "0"
-    ord_prop_name = ""
-    key_prop_name = ""
+    ord_attr_name = ""
+    key_attr_name = ""
 
     def __init__(self, dict={}):
         self._dict = dict
@@ -252,16 +252,16 @@ class Stuff(object):
 
     @property
     def ord(self):
-        if self.ord_prop_name:
-            assert hasattr(self, self.ord_prop_name)
-            return getattr(self, self.ord_prop_name, None) or self.default_ord_value
+        if self.ord_attr_name:
+            assert hasattr(self, self.ord_attr_name)
+            return getattr(self, self.ord_attr_name, None) or self.default_ord_value
         return self.default_ord_value
 
     @property
     def key(self):
-        assert self.key_prop_name
-        assert hasattr(self, self.key_prop_name)
-        return getattr(self, self.key_prop_name, None)
+        assert self.key_attr_name
+        assert hasattr(self, self.key_attr_name)
+        return getattr(self, self.key_attr_name, None)
 
     @classmethod
     def fill_mock_bag(cls, bag):
