@@ -83,4 +83,4 @@ def debug_login():
     if not app.in_debug():
         return f.abort(401)
     login_as_octocat(f.session)
-    return f.redirect("/")
+    return f.redirect("/me")

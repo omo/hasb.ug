@@ -62,10 +62,18 @@ TODOs:
   + rewrite fill_mock_table to fill_mock_bag
   + kill ord and key method
 
++ update prod db
+
+> ownership
+  + add
+  . remove (atode)
+  . list per owner (atode)
+
 - Poor HTML impl for adding shorteners.
   + "me" page (/me)
-  - "shortener" page (/s/)
+  + Navigate login user to /me
   - Add and remove shorternes via /me
+  - "shortener" page (/s/)
 
 - Setup Asset distribution
   - less
@@ -76,6 +84,8 @@ TODOs:
   - /me page.
   - user page (~)
     - not found handling
+  - logout
+
 > User hasbuger user commands
   + list
   + add
