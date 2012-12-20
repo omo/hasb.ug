@@ -66,8 +66,8 @@ TODOs:
 
 > ownership
   + add
-  . remove (atode)
-  . list per owner (atode)
+  + remove
+  - list per owner (atode)
 
 > Poor HTML impl for adding shorteners.
   + "me" page (/me)

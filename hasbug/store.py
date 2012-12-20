@@ -104,12 +104,12 @@ class Bag(DelegationHelper):
             raise ValueError(i + " is not a hash key")
         return i[1:]
 
-    def _to_item_range(self, ord):
-        return u".".join([self.name, ord])
-
     @property
     def _item_range_prefix(self):
         return self.name
+
+    def _to_item_range(self, ord):
+        return u".".join([self._item_range_prefix, ord])
 
     def _bless(self, attr):
         boilerplate = { "created_at": datetime.datetime.utcnow().isoformat() }
@@ -138,9 +138,8 @@ class Bag(DelegationHelper):
         filter = { Store.range_key_name: condition.BEGINS_WITH(self._item_range_prefix) }
         return self.table.scan(scan_filter=filter)
 
-    def _query_item(self):
-        filter = { Store.range_key_name: condition.BEGINS_WITH(self._item_range_prefix) }
-        return self.table.scan(scan_filter=filter)
+    def _query_item(self, key):
+        return self.table.query(self._to_item_hash(key), condition.BEGINS_WITH(self._item_range_prefix))
 
     @property
     def name(self):
@@ -148,7 +147,10 @@ class Bag(DelegationHelper):
 
     def add(self, m, can_replace=False):
         m.validate().raise_if_invalid()
-        self._insert_item(self._new_item(key=m.key, ord=m.ord, attrs=m.to_item_values()), can_replace)
+        item_toadd = self._new_item(key=m.key, ord=m.ord, attrs=m.to_item_values())
+        self._insert_item(item_toadd, can_replace)
+        self._decorate(m, item_toadd)
+        return m
 
     def find(self, key, ord=None):
         # FIXME: Better to wrap the exception?
@@ -174,8 +176,11 @@ class Bag(DelegationHelper):
         
     def to_m(self, item):
         model = self.model_class.from_item(item)
-        model._item = item
+        self._decorate(model, item)
         return model
+
+    def _decorate(self, model, item):
+        model._item = item
 
 
 class StuffAttr(object):

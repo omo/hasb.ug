@@ -22,3 +22,27 @@ class OwnershipTest(unittest.TestCase):
     def test_add_shortener(self):
         self.repo.add_shortener(self.sfoo)
         self.repo.add_shortener(self.sbar)
+        sbar_ownership = self.repo.ownerships.find(self.sbar.added_by, self.sbar.key)
+        self.assertEquals(sbar_ownership.owner_key, self.sbar.added_by)
+
+    def test_remove_shortener(self):
+        added = self.repo.add_shortener(self.sfoo)
+        sfoo_ownership = self.repo.ownerships.find(self.sfoo.added_by, self.sfoo.key)
+        self.assertTrue(sfoo_ownership)
+        self.repo.remove_shortener(self.sfoo)
+        def run():
+            self.repo.ownerships.find(self.sfoo.added_by, self.sfoo.key)
+        self.assertRaises(hasbug.store.ItemNotFoundError, run)
+
+    @unittest.skipIf(not testing.enable_database, "Database test is disabled - query() needs it.")
+    def test_list_belongings(self):
+        self.repo.add_shortener(self.sfoo)
+        self.repo.add_shortener(self.sbar)
+        actual = self.repo.belongings_for(self.mojombo)
+        self.assertEquals(len(actual._ownerhips), 2)
+
+    def test_belongings_hello(self):
+        o1 = self.repo.add_shortener(self.sfoo)
+        o2 = self.repo.add_shortener(self.sbar)
+        actual = hasbug.Belongings([o1, o2]).shortener_hosts
+        self.assertEquals(["bar.com", "foo.com"], sorted(actual))
