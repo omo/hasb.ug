@@ -12,8 +12,7 @@ class App(flask.Flask):
     @property
     def r(self):
         if not self._r:
-            # Currently we have no way to conect test database.0
-            self._r = repo.Repo(prod.TABLE_NAME)
+            self._r = repo.Repo(self.config['TABLE_NAME'])
         return self._r
 
     @r.setter

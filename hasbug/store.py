@@ -245,6 +245,10 @@ class Stuff(object):
         v = validation.Validator(self)
         return v
 
+    @property
+    def dict(self):
+        return self._dict
+
     @classmethod
     def from_item(cls, item):
         d = item.get("dict")

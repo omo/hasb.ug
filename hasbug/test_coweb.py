@@ -7,6 +7,7 @@ import hasbug.oauth
 import hasbug.conf
 import hasbug.user
 import flask
+import json
 
 def fake_urlopen(req):
     if "https://github.com/login/oauth/access_token" == req.get_full_url():
@@ -76,3 +77,18 @@ class ConsoleTest(unittest.TestCase):
         self.login_as_octocat()
         resp = self.app.get("/me")
         self.assertTrue("octocat" in resp.data)
+
+    def test_shortener_post(self):
+        with self.app as c:
+            hostvalue = "foo.bar"
+            self.login_as_octocat()
+            resp = self.app.post("/s", data = { "host": hostvalue, "pattern": "http://bugs.foo.bar/{id}", "canary": flask.session['canary'] })
+            self.assertTrue("200" in resp.status)
+            added = json.loads(resp.data)
+            self.assertEquals(added["host"], hostvalue)
+        
+    def test_shortener_post_no_canary(self):
+        with self.app as c:
+            self.login_as_octocat()
+            resp = self.app.post("/s")
+            self.assertTrue("401" in resp.status)

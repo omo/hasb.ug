@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>hasb.ug</title>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+<script>
+$(document).ready(function() {
+  $("#add-shortener").on("click", addShortener);
+});
+
+function addShortener() {
+  var topost = {
+    host: $("#host").val(),
+    pattern: $("#pattern").val(),
+    canary: $("#canary").val()
+  };
+
+  console.log(topost);
+  $.ajax("/s", { type: "POST", data: topost });
+}
+
+</script>
+</head>
+<body>
+My {{ user.login }}!
+
+Add Shortenr:
+<form>
+<ul>
+ <li>Host: <input id="host" type="text" /> </li>
+ <li>Pattern: <input id="pattern" size="50" type="text" /> </li>
+ <input type="hidden" id="canary" value="{{canary}}">
+ <input type="button" id="add-shortener" value="Add">
+</ul>
+</form>
+</body>
+</html>

@@ -69,11 +69,13 @@ TODOs:
   . remove (atode)
   . list per owner (atode)
 
-- Poor HTML impl for adding shorteners.
+> Poor HTML impl for adding shorteners.
   + "me" page (/me)
   + Navigate login user to /me
-  - Add and remove shorternes via /me
-  - "shortener" page (/s/)
+  + Add shorternes via /me
+  - List owning shorteners at /me
+  - Remove shorteners at /me
+  - "shortener" page (/s/) : what's this?
 
 - Setup Asset distribution
   - less
