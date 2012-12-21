@@ -331,3 +331,7 @@ class MockTable(object):
 
     def scan(self, scan_filter):
         return self._items.values()
+
+    def query(self, hash, cond):
+        # This is wrong but somewhat works.
+        return self._items.values()

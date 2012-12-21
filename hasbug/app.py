@@ -12,7 +12,7 @@ class App(flask.Flask):
     @property
     def r(self):
         if not self._r:
-            self._r = repo.Repo(self.config['TABLE_NAME'])
+            self._r = repo.Repo(self.config['REPO_TABLE'])
         return self._r
 
     @r.setter

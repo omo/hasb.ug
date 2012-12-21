@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import re
 import hasbug.store as store
 import hasbug.validation as validation
 import hasbug.user as user
@@ -18,6 +19,11 @@ class Shortener(store.Stuff):
     @property
     def pattern_zero(self):
         return self.pattern % { "id": 12345 }
+
+    @property
+    def added_by_login(self):
+        m = re.search("/([^/]*)$", self.added_by)
+        return m.group(1)
 
     def validate(self):
         v = validation.Validator(self)

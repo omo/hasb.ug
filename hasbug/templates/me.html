@@ -5,7 +5,8 @@
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
 <script>
 $(document).ready(function() {
-  $("#add-shortener").on("click", addShortener);
+  $(".add-shortener-button").on("click", addShortener);
+  $(".delete-shortener-button").on("click", deleteShortener);
 });
 
 function addShortener() {
@@ -15,8 +16,13 @@ function addShortener() {
     canary: $("#canary").val()
   };
 
-  console.log(topost);
   $.ajax("/s", { type: "POST", data: topost });
+}
+
+function deleteShortener() {
+var host = this.dataset["host"];
+   var canary = $("#canary").val();
+   $.ajax("/s/" + host, { type: "DELETE", headers: { "x-hasbug-canary": canary } });
 }
 
 </script>
@@ -30,7 +36,10 @@ Add Shortenr:
  <li>Host: <input id="host" type="text" /> </li>
  <li>Pattern: <input id="pattern" size="50" type="text" /> </li>
  <input type="hidden" id="canary" value="{{canary}}">
- <input type="button" id="add-shortener" value="Add">
+ <input type="button" class="add-shortener-button" value="Add">
+{% for h in belongings.shortener_hosts %}
+ <div><a href="{{ url_for('shortener', host=h) }}">{{ h }}</a><input type="button" value="Delete" class="delete-shortener-button" data-host="{{ h }}"></div>
+{% endfor %}
 </ul>
 </form>
 </body>

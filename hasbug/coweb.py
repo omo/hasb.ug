@@ -27,13 +27,17 @@ def ensuring_login(fn):
         return fn(*args, **kwargs)
     return wrapper
 
+def find_canary(req):
+    return req.values.get("canary") or req.headers.get("x-hasbug-canary")
+
 def ensuring_canary(fn):
     @functools.wraps(fn)
     def wrapper(*args, **kwargs):
-        if not f.request.canary:
-            return f.abort(401)
-        if f.request.form.get("canary") != f.request.canary:
-            return f.abort(401)
+        if not f.request.method in ["GET", "HEAD", "OPTIONS"]:
+            if not f.request.canary:
+                return f.abort(401)
+            if find_canary(f.request) != f.request.canary:
+                return f.abort(401)
         return fn(*args, **kwargs)
     return wrapper
 
@@ -91,8 +95,9 @@ def login_callback():
 #
 @app.route('/me')
 @ensuring_login
-def user_home():
-    return f.render_template("me.html", user=f.request.user, canary=f.request.canary)
+def user_private():
+    belongings = app.r.belongings_for(f.request.user)
+    return f.render_template("me.html", user=f.request.user, canary=f.request.canary, belongings=belongings)
 
 @app.route('/~<user>')
 def user_public(user):
@@ -107,14 +112,32 @@ def make_json_response(data):
     resp.mimetype = "application/json"
     return resp
 
-@app.route('/s', methods=["POST", "GET"])
+@app.route('/s/<host>', methods=["GET", "DELETE"])
+@ensuring_canary
+def shortener(host):
+    try:
+        found = app.r.shorteners.find(host)
+        if f.request.method == "GET":
+            return f.render_template("s.html", shortener=found)
+        elif f.request.method == "DELETE":
+            if found.added_by != f.request.user.url:
+                f.abort(400)
+            app.r.remove_shortener(found)
+            return make_json_response({})
+    except hasbug.store.ItemNotFoundError:
+        return f.abort(404)
+
+@app.route('/s', methods=["POST"])
 @ensuring_login
 @ensuring_canary
-def shortener():
+def shortener_collection():
     if f.request.method == "POST":
         sner = hasbug.Shortener.make(f.request.form.get("host"), f.request.form.get("pattern"), f.request.user.url)
-        app.r.add_shortener(sner)
-        return make_json_response(sner.dict)
+        try:
+            app.r.add_shortener(sner)
+            return make_json_response(sner.dict)
+        except hasbug.store.ItemInvalidError:
+            return f.make_response("Invalid Request", 400)
     return make_json_response({})
 
 #

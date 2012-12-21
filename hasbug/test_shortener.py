@@ -5,14 +5,21 @@ import hasbug.store as store
 import hasbug.testing as testing
 import hasbug.validation as validation
 
-def make_fresh(host="foo.hasb.ug"):
-    return hasbug.Shortener.make(host, "http://foo.bugtracker.org/{id}", "http://github.com/omo")
+def make_fresh(host="foo.hasb.ug", owner="https://api.github.com/users/omo"):
+    return hasbug.Shortener.make(host, "http://foo.bugtracker.org/{id}", owner)
 
 def make_fresh_more():
-    return hasbug.Shortener.make("bar.hasb.ug", "http://bar.bugtracker.org/{id}", "http://github.com/omo")
+    return hasbug.Shortener.make("bar.hasb.ug", "http://bar.bugtracker.org/{id}", "http://api.github.com/users/omo")
 
 def make_bad():
-    return hasbug.Shortener.make("foo.hasb.ug", "bad/url", "http://github.com/omo")
+    return hasbug.Shortener.make("foo.hasb.ug", "bad/url", "https://api.github.com/users/omo")
+
+def cleanup_shorteners(repo, hosts):
+    for h in ["foo.hasb.ug", "bar.hasb.ug"]:
+        try:
+            hasbug.Shortener.remove_by_host(repo.shorteners, h)
+        except store.ItemNotFoundError:
+            pass
 
 
 class ShortenerRepoCommonCases(object):
@@ -74,11 +81,7 @@ class ShortenerRepoTest(unittest.TestCase, ShortenerRepoCommonCases):
         cls.repo = hasbug.Repo(testing.TABLE_NAME)
 
     def setUp(self):
-        for h in ["foo.hasb.ug", "bar.hasb.ug"]:
-            try:
-                hasbug.Shortener.remove_by_host(self.repo.shorteners, h)
-            except store.ItemNotFoundError:
-                pass
+        cleanup_shorteners(self.repo, ["foo.hasb.ug", "bar.hasb.ug"])
 
 
 class ShortenerTest(unittest.TestCase):
@@ -88,6 +91,9 @@ class ShortenerTest(unittest.TestCase):
     def test_eq(self):
         b = hasbug.Shortener.make("foo.hasb.ug", "http://foo.bugtracker.org/{id}", "http://github.com/omo")
         self.assertEquals(self.target, b)
+
+    def test_added_by_login(self):
+        self.assertEquals(self.target.added_by_login, "omo")
 
     def test_url_for(self):
         self.assertEquals(self.target.url_for(12345), "http://foo.bugtracker.org/12345")

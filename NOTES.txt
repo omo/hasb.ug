@@ -67,15 +67,18 @@ TODOs:
 > ownership
   + add
   + remove
-  - list per owner (atode)
+  + list per owner (atode)
 
 > Poor HTML impl for adding shorteners.
+  - "shortener" page (/s/:id)
   + "me" page (/me)
   + Navigate login user to /me
   + Add shorternes via /me
-  - List owning shorteners at /me
-  - Remove shorteners at /me
-  - "shortener" page (/s/) : what's this?
+  + List owning shorteners at /me
+  + Remove shorteners at /me
+
+- Switched to Server-side session
+  http://flask.pocoo.org/snippets/75/
 
 - Setup Asset distribution
   - less

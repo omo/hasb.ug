@@ -9,6 +9,8 @@ import hasbug.user
 import flask
 import json
 
+import hasbug.test_shortener as test_shortener
+
 def fake_urlopen(req):
     if "https://github.com/login/oauth/access_token" == req.get_full_url():
         return StringIO.StringIO('{ "access_token": "mytoken" }')
@@ -21,6 +23,9 @@ class ConsoleTest(unittest.TestCase):
         hasbug.coweb.app.config['DEBUG'] = True
         hasbug.coweb.app.r = hasbug.Repo(name=None)
         hasbug.oauth.urlopen = fake_urlopen
+
+    def setUp(self):
+        test_shortener.cleanup_shorteners(hasbug.coweb.app.r, ["foo.hasb.ug", "bar.hasb.ug"])
 
     def login_as_octocat(self):
         with self.app.session_transaction() as sess:
@@ -78,7 +83,7 @@ class ConsoleTest(unittest.TestCase):
         resp = self.app.get("/me")
         self.assertTrue("octocat" in resp.data)
 
-    def test_shortener_post(self):
+    def test_shortener_add(self):
         with self.app as c:
             hostvalue = "foo.bar"
             self.login_as_octocat()
@@ -87,8 +92,22 @@ class ConsoleTest(unittest.TestCase):
             added = json.loads(resp.data)
             self.assertEquals(added["host"], hostvalue)
         
+    def test_shortener_show(self):
+        s = test_shortener.make_fresh("foo.hasb.ug")
+        hasbug.coweb.app.r.add_shortener(s)
+        resp = self.app.get("/s/" + s.host)
+        self.assertTrue("200" in resp.status)
+
     def test_shortener_post_no_canary(self):
         with self.app as c:
             self.login_as_octocat()
             resp = self.app.post("/s")
             self.assertTrue("401" in resp.status)
+
+    def test_shortener_delete(self):
+        s = test_shortener.make_fresh("foo.hasb.ug", owner=hasbug.user.octocat_dict["url"])
+        hasbug.coweb.app.r.add_shortener(s)
+        with self.app as c:
+            self.login_as_octocat()
+            resp = self.app.delete("/s/" + s.host, headers={ "x-hasbug-canary" : flask.session['canary'] })
+            self.assertTrue("200" in resp.status)
