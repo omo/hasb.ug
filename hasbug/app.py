@@ -3,10 +3,14 @@
 import flask
 import hasbug.repo as repo
 import hasbug.prod as prod
+import hasbug.session as session
 
 class App(flask.Flask):
     def __init__(self, *args, **kwargs):
         flask.Flask.__init__(self, *args, **kwargs)
+        def get_repo():
+            return self.r
+        self.session_interface = session.SessionInterface(get_repo)
         self._r = None
 
     @property

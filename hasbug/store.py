@@ -168,6 +168,7 @@ class Bag(DelegationHelper):
         m._item.delete()
 
     def remove_found(self, key, ord=None):
+        # XXX: Use one-shot underling API.
         try:
             found = self.find(key, ord)
             self.remove(found)
