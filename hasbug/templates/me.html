@@ -1,35 +1,11 @@
-<!DOCTYPE html>
-<html>
-<head>
-<title>hasb.ug</title>
-<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
-<script>
-$(document).ready(function() {
-  $(".add-shortener-button").on("click", addShortener);
-  $(".delete-shortener-button").on("click", deleteShortener);
-});
+{% extends "base.html" %}
+{% block subpath %}/me{% endblock %}
 
-function addShortener() {
-  var topost = {
-    host: $("#host").val(),
-    pattern: $("#pattern").val(),
-    canary: $("#canary").val()
-  };
+{% block head %}
+{{ super() }}
+{% endblock %}
 
-  $.ajax("/s", { type: "POST", data: topost });
-}
-
-function deleteShortener() {
-var host = this.dataset["host"];
-   var canary = $("#canary").val();
-   $.ajax("/s/" + host, { type: "DELETE", headers: { "x-hasbug-canary": canary } });
-}
-
-</script>
-</head>
-<body>
-My {{ user.login }}!
-
+{% block content %}
 Add Shortenr:
 <form>
 <ul>
@@ -42,5 +18,4 @@ Add Shortenr:
 {% endfor %}
 </ul>
 </form>
-</body>
-</html>
+{% endblock %}

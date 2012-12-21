@@ -4,6 +4,9 @@ PIP_REQUIREMENT = "requirements.txt"
 BOTOCONF        = "./confs/boto.conf"
 TEST_OPTIONS    = ""
 #TEST_OPTIONS    = -p test_ownership.py
+CSS_BIN         = public/stylesheets/main.css
+LESS_DIR        = fe/less
+LESS_SRC        = ${LESS_DIR}/hasbug.less ${LESS_DIR}//variables.less
 
 all:
 	echo "Not yet."
@@ -21,6 +24,11 @@ deploy:
 	source ./bin/activate && fab -H hasb.ug -u ubuntu deploy
 
 freeze: ${PIP_REQUIREMENT}
+
+asset: ${CSS_BIN}
+
+${CSS_BIN}: ${LESS_SRC}
+	lessc --strict-import --include-path=${LESS_DIR}:components/bootstrap/less/ $< > $@
 
 ${PIP_REQUIREMENT}:
 	source ./bin/activate && pip freeze > $@

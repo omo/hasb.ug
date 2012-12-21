@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+{% block head %}
+<title>hasb.ug{% block subpath %}{% endblock %}</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='stylesheets/main.css' )}}" />
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js" defer></script>
+<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.3/angular.min.js" defer></script>
+<script src="{{ url_for('static', filename='javascript/main.js' )}}" defer></script>
+{% endblock %}
+</head>
+<body>
+{% block content %}{% endblock %}
+</body>
+</html>

@@ -3,3 +3,6 @@ pyenv
 run
 log
 confs/boto.conf
+components
+node_modules
+public/stylesheets/

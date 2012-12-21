@@ -1,0 +1,8 @@
+{
+  "name": "hasbug",
+  "version": "0.0.1",
+  "main": "./main.css",
+  "dependencies": {
+    "bootstrap": "<2.2.2"
+  }
+}

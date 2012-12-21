@@ -1,16 +1,15 @@
-<!DOCTYPE html>
-<html>
-<head>
-<title>hasb.ug</title>
-</head>
-<body>
-Shortener:
-<form>
+{% extends "base.html" %}
+{% block subpath %}/s/{{ shortener.host }}{% endblock %}
+{% block head %}
+{{ super() }}
+<script defer>
+</script>
+{% endblock %}
+
+{% block content %}
 <ul>
  <li>Host: {{ shortener.host }} </li>
  <li>Pattern: {{ shortener.pattern }}</li>
  <li>Added by: <a href="{{ url_for('user_public', user = shortener.added_by_login ) }}">{{ shortener.added_by_login }}</a></li>
 </ul>
-</form>
-</body>
-</html>
+{% endblock %}

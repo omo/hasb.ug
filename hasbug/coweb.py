@@ -3,7 +3,7 @@
 coweb: An app console. Provicing per-user data access, etc.
 """
 
-import urlparse, os
+import urlparse
 import functools
 import flask as f
 import json
@@ -14,8 +14,7 @@ import hasbug.user
 import hasbug.conf
 
 
-template_dir = os.path.join(os.path.dirname(__file__), "templates")
-app = hasbug.App(__name__, template_folder=template_dir)
+app = hasbug.App(__name__)
 
 app.secret_key = hasbug.conf.flask_secret_key()
 

@@ -70,26 +70,32 @@ TODOs:
   + list per owner (atode)
 
 > Poor HTML impl for adding shorteners.
-  - "shortener" page (/s/:id)
+  + "shortener" page (/s/:id)
   + "me" page (/me)
   + Navigate login user to /me
   + Add shorternes via /me
   + List owning shorteners at /me
   + Remove shorteners at /me
 
-- Switched to Server-side session
++ Switched to Server-side session
   http://flask.pocoo.org/snippets/75/
 
-- Setup Asset distribution
-  - less
+> Setup Asset distribution
+  + less
+  + template reorg to sharing layouts
   - favicon.ico
   # Don't worry about S3 for now.
 
+> deploy assets
+  - install node/nvm/npm on hasb.ug
+
 > User next round
-  - /me page.
+  . /me page.
   - user page (~)
     - not found handling
   - logout
+
+- Shortener bookmarklet
 
 > User hasbuger user commands
   + list

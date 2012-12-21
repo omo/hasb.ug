@@ -1,3 +1,6 @@
 
 . ./pyenv/bin/activate
+nvm use v0.8.14
+HERE=`pwd`
+export PATH=$PATH:$HERE/node_modules/.bin
 export BOTO_CONFIG=./confs/boto.conf
