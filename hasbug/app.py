@@ -19,6 +19,8 @@ class App(flask.Flask):
             return self.r
         self.session_interface = session.SessionInterface(get_repo)
         self._r = None
+        self.jinja_env.globals["user"] = None
+        self.jinja_env.globals["canary"] = None
 
     @property
     def r(self):

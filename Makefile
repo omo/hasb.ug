@@ -7,6 +7,8 @@ TEST_OPTIONS    = ""
 CSS_BIN         = public/stylesheets/main.css
 LESS_DIR        = fe/less
 LESS_SRC        = ${LESS_DIR}/hasbug.less ${LESS_DIR}//variables.less
+JS_VENDOR_DIR   = public/javascript/vendor
+JS_VENDOR_BS    = ${JS_VENDOR_DIR}/bootstrap.js
 
 all:
 	echo "Not yet."
@@ -25,10 +27,14 @@ deploy:
 
 freeze: ${PIP_REQUIREMENT}
 
-asset: ${CSS_BIN}
+
+asset: ${CSS_BIN} ${JS_VENDOR_BS}
+
+${JS_VENDOR_BS}:
+	cp components/bootstrap/docs/assets/js/bootstrap.js $@
 
 ${CSS_BIN}: ${LESS_SRC}
-	lessc --strict-import --include-path=${LESS_DIR}:components/bootstrap/less/ $< > $@
+	source ./bin/activate && lessc --strict-import --include-path=${LESS_DIR}:components/bootstrap/less/ $< > $@
 
 ${PIP_REQUIREMENT}:
 	source ./bin/activate && pip freeze > $@

@@ -45,6 +45,8 @@ def restore_user_from_session(sender, **extra):
     user_key = f.session.get('user')
     f.request.user = sender.r.users.find(user_key) if user_key else None
     f.request.canary = f.session.get('canary')
+    app.jinja_env.globals["user"] = f.request.user
+    app.jinja_env.globals["canary"] = f.request.canary
 
 def setup_user_session(sess, user):
     f.session['user'] = user.key

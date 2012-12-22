@@ -6,25 +6,34 @@ import hasbug.validation as validation
 
 octocat_text = """
 {
+  "type": "User",
+  "organizations_url": "https://api.github.com/users/octocat/orgs",
+  "gists_url": "https://api.github.com/users/octocat/gists{/gist_id}",
+  "avatar_url": "https://secure.gravatar.com/avatar/7ad39074b0584bc555d0417ae3e7d974?d=https://a248.e.akamai.net/assets.github.com%2Fimages%2Fgravatars%2Fgravatar-user-420.png",
+  "blog": "http://www.github.com/blog",
+  "events_url": "https://api.github.com/users/octocat/events{/privacy}",
+  "gravatar_id": "7ad39074b0584bc555d0417ae3e7d974",
+  "followers": 276,
+  "received_events_url": "https://api.github.com/users/octocat/received_events",
   "login": "octocat",
-  "id": 1,
-  "avatar_url": "https://github.com/images/error/octocat_happy.gif",
-  "gravatar_id": "somehexcode",
-  "url": "https://api.github.com/users/octocat",
-  "name": "monalisa octocat",
+  "created_at": "2011-01-25T18:44:36Z",
   "company": "GitHub",
-  "blog": "https://github.com/blog",
-  "location": "San Francisco",
-  "email": "octocat@github.com",
-  "hireable": false,
-  "bio": "There once was...",
-  "public_repos": 2,
-  "public_gists": 1,
-  "followers": 20,
-  "following": 0,
+  "subscriptions_url": "https://api.github.com/users/octocat/subscriptions",
+  "public_repos": 3,
+  "url": "https://api.github.com/users/octocat",
+  "public_gists": 4,
   "html_url": "https://github.com/octocat",
-  "created_at": "2008-01-14T04:33:35Z",
-  "type": "User"
+  "location": "San Francisco",
+  "hireable": false,
+  "name": "The Octocat",
+  "starred_url": "https://api.github.com/users/octocat/starred{/owner}{/repo}",
+  "bio": null,
+  "followers_url": "https://api.github.com/users/octocat/followers",
+  "id": 583231,
+  "following": 0,
+  "email": "octocat@github.com",
+  "repos_url": "https://api.github.com/users/octocat/repos",
+  "following_url": "https://api.github.com/users/octocat/following"
 }
 """
 
@@ -76,6 +85,10 @@ class User(store.Stuff):
 
     def __init__(self, user_dict):
         super(User, self).__init__(user_dict)
+
+    @property
+    def avatar_url(self):
+        return self.get_value("avatar_url")
 
     @classmethod
     def url_from_login(cls, login):

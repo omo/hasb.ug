@@ -6,3 +6,4 @@ confs/boto.conf
 components
 node_modules
 public/stylesheets/
+public/javascript/vendor

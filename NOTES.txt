@@ -50,11 +50,12 @@ TODOs:
   + User model
   + Save and Restore user from the session.
   + logout
+  + Show Icon on the nav menu.
 
 + auth_hash computation is wrong. 
 + local login option
+. setup Yeoman -> giveup
 
-. setup Yeoman
 > Store cleanup
   + Kill mocks
   + Make range key a first citizen
@@ -67,7 +68,7 @@ TODOs:
 > ownership
   + add
   + remove
-  + list per owner (atode)
+  + list per owner
 
 > Poor HTML impl for adding shorteners.
   + "shortener" page (/s/:id)
@@ -83,19 +84,19 @@ TODOs:
 > Setup Asset distribution
   + less
   + template reorg to sharing layouts
-  - favicon.ico
+  . favicon.ico -> atode.
   # Don't worry about S3 for now.
-
-> deploy assets
-  - install node/nvm/npm on hasb.ug
 
 > User next round
   . /me page.
   - user page (~)
-    - not found handling
+    . not found handling -> atode
   - logout
 
 - Shortener bookmarklet
+
+> deploy assets
+  - install node/nvm/npm on hasb.ug
 
 > User hasbuger user commands
   + list

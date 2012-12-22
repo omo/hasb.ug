@@ -1,15 +1,9 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>hasb.ug</title>
-</head>
-<body>
-{% if user %}
- {{ user.login }}
-{% else %}
- hehe
-{% endif %}
-Hello!
-<a href="/login">Login</a>
-</body>
-</html>
+{% extends "base.html" %}
+{% block subpath %}/me{% endblock %}
+
+{% block head %}
+{{ super() }}
+{% endblock %}
+
+{% block content %}
+{% endblock %}
