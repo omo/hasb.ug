@@ -1,15 +1,29 @@
 
 @import "bootstrap.less";
-@import "variables.less";
+@import "variables.less"; // From http://bootswatch.com/cerulean/
+
+// Copied from http://fortawesome.github.com/Font-Awesome/
+@import "third_party/FortAwesome-Font-Awesome/less/font-awesome.less";
+@font-face {
+  font-family: 'FontAwesome';
+  src: url('../font/fontawesome-webfont.eot');
+  src: url('../font/fontawesome-webfont.eot?#iefix') format('embedded-opentype'),
+       url('../font/fontawesome-webfont.woff') format('woff'),
+       url('../font/fontawesome-webfont.ttf') format('truetype'),
+       url('../font/fontawesome-webfont.svg#FontAwesome') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
 
 body {
   max-width: 1024px;
   margin-left: auto;
   margin-right: auto;
+  padding: 0em 1em 0em 1em;
 }
 
 .outer {
-  padding: 1em;
+  padding: 1em 0em 1em 0em;
 }
 
 .navlink:link, .navlink:visited {
@@ -18,7 +32,72 @@ body {
 
 .brand {
   font-weight: bold;
-  font-family: monospace;
+  font-family: @monoFontFamily;
+}
+
+//
+// Shortener Panel
+//
+.add-shortener-button {
+  .btn;
+}
+
+.group-label {
+  font-size: @baseFontSize;
+  font-weight: bold;
+
+  position: absolute;
+  top: -1px;
+  left: -1px;
+  padding: 3px 7px;
+
+  background-color: @wellBackground;
+  color: #9da0a4;
+
+  border: 1px solid #ddd;
+  .border-radius(4px 0 4px 0);
+}
+
+.group-label-holder {
+  position: relative;
+}
+
+.my-shortener-list {
+  .group-label-holder;
+  border: 1px solid @btnBorder;
+  .border-radius(@baseBorderRadius);
+  padding: 3em 1em 1em 1em;
+
+  &:after {
+    content: "Your Shortener";
+    .group-label;
+  }
+}
+
+
+.my-shortener {
+  .btn;
+  font-family: @monoFontFamily;
+  background-color: white;
+}
+
+.my-shortener-none {
+  font-family: @monoFontFamily;
+}
+
+.my-shortener-new {
+  input[type="text"] {
+    .input-mini;
+    font-family: @monoFontFamily;
+  }
+
+  #host {
+    width: 12em;
+  }
+
+  #pattern {
+    width: 32em;
+  }
 }
 
 img.avatar {

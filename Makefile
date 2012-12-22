@@ -9,6 +9,13 @@ LESS_DIR        = fe/less
 LESS_SRC        = ${LESS_DIR}/hasbug.less ${LESS_DIR}//variables.less
 JS_VENDOR_DIR   = public/javascript/vendor
 JS_VENDOR_BS    = ${JS_VENDOR_DIR}/bootstrap.js
+FONT_SRC_DIR    = third_party/FortAwesome-Font-Awesome/font
+FONT_SRC        = ${FONT_SRC_DIR}/fontawesome-webfont.eot \
+                  ${FONT_SRC_DIR}/fontawesome-webfont.svg \
+                  ${FONT_SRC_DIR}/fontawesome-webfont.ttf \
+                  ${FONT_SRC_DIR}/fontawesome-webfont.woff
+FONT_DST_DIR    = public/font
+FONT_DST        = $(subst ${FONT_SRC_DIR},${FONT_DST_DIR},${FONT_SRC})
 
 all:
 	echo "Not yet."
@@ -28,7 +35,11 @@ deploy:
 freeze: ${PIP_REQUIREMENT}
 
 
-asset: ${CSS_BIN} ${JS_VENDOR_BS}
+asset: ${CSS_BIN} ${JS_VENDOR_BS} ${FONT_DST}
+
+${FONT_DST}: ${FONT_SRC}
+	mkdir -p ${FONT_DST_DIR}
+	cp $? ${FONT_DST_DIR}
 
 ${JS_VENDOR_BS}:
 	cp components/bootstrap/docs/assets/js/bootstrap.js $@

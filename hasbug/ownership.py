@@ -13,6 +13,9 @@ class Belongings(object):
     def shortener_hosts(self):
         return [ o.which for o in self._ownerhips if o.what == hasbug.Shortener.bag_name ]
 
+    @property
+    def has_shortener_hosts(self):
+        return 0 < len(self.shortener_hosts)
 
 class Ownership(store.Stuff):
     bag_name = "ownerships"
