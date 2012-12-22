@@ -100,10 +100,6 @@ def user_private():
     belongings = app.r.belongings_for(f.request.user)
     return f.render_template("me.html", user=f.request.user, canary=f.request.canary, belongings=belongings)
 
-@app.route('/~<user>')
-def user_public(user):
-    return 'Hello, {user}!'.format(user=user)
-
 #
 # Shortener
 #
@@ -150,3 +146,10 @@ def debug_login():
         return f.abort(401)
     login_as_octocat(f.session)
     return f.redirect("/me")
+
+#
+# Filters
+#
+@app.template_filter('link_to_profile')
+def link_to_profile(s):
+    return "http://github.com/{0}".format(s)

@@ -57,10 +57,6 @@ class ConsoleTest(unittest.TestCase):
         resp = self.app.get(url)
         self.assertTrue("401" in resp.status)
 
-    def test_user_public(self):
-        resp = self.app.get("/~octocat")
-        self.assertTrue("200" in resp.status)
-
     def test_login_user(self):
         self.login_as_octocat()
         with self.app as c:

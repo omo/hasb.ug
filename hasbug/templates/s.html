@@ -10,6 +10,6 @@
 <ul>
  <li>Host: {{ shortener.host }} </li>
  <li>Pattern: {{ shortener.pattern }}</li>
- <li>Added by: <a href="{{ url_for('user_public', user = shortener.added_by_login ) }}">{{ shortener.added_by_login }}</a></li>
+ <li>Added by: <a href="{{ shortener.added_by_login | link_to_profile }}">{{ shortener.added_by_login }}</a></li>
 </ul>
 {% endblock %}

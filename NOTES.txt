@@ -89,11 +89,13 @@ TODOs:
 
 > User next round
   . /me page.
-  - user page (~)
+  . user page (~) -> don't implement this for now.
     . not found handling -> atode
-  - logout
+  + logout
 
 - Shortener bookmarklet
+
+- /me ui polish
 
 > deploy assets
   - install node/nvm/npm on hasb.ug
