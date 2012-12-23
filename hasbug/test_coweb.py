@@ -20,7 +20,7 @@ class ConsoleTest(unittest.TestCase):
         #hasbug.net.urlopen = fake_urlopen
         hasbug.net.add_fake_data("https://github.com/login/oauth/access_token", '{ "access_token": "mytoken" }')
         hasbug.net.add_fake_data("https://api.github.com/user?access_token=mytoken", hasbug.user.octocat_text)
-        hasbug.net.add_fake_data('https://www.googleapis.com/urlshortener/v1/url',
+        hasbug.net.add_fake_data('https://www.googleapis.com/urlshortener/v1/url?key=fake',
                                  """
 {
  "kind": "urlshortener#url",

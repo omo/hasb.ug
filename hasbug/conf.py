@@ -17,3 +17,9 @@ def github_client_secret():
 
 def flask_secret_key():
     return get("Credentials", "flask_secret_key")
+
+def google_api_key():
+    return get("Credentials", "google_api_key")
+
+def fake_google_api_key():
+    parser.set("Credentials", "google_api_key", "fake")
