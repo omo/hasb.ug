@@ -9,19 +9,24 @@
 
 <div class="my-shortener-list">
 
-<form class="my-shortener-new form-inline">
+<form class="my-shortener-new">
  
   <input type="hidden" id="canary" value="{{canary}}">
+
   <div class="input-prepend">
-    <span class="add-on">Host</span>
+    <span class="add-on"><span class="input-label">Host</span></span>
     <input id="host" type="text" placeholder="yourproj.hasb.ug" />
   </div>
+  <span class="help-block">Host name of the new shortener. You can pick one from either hab.ug subdomain or your own domain. (XXX: Add Help here.)</span>
+
   <div class="input-prepend">
-    <span class="add-on">Redirect</span>
+    <span class="add-on"><span class="input-label">Redirect</span></span>
     <input id="pattern" type="text"
            placeholder="http://bugs.yourproject.org/tracker.cgi?bug={id}"/>
   </div>
-  <button class="add-shortener-button" ><i class="icon-plus requested-cue-placeholder"></i></button>
+  <span class="help-block">Destination URL of the shortener. You need one "{id}" placeholder to substitude given bug ID.</span>
+
+  <button class="add-shortener-button" >Create!</button>
 </ul>
 </form>
 

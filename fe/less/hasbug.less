@@ -30,8 +30,13 @@ body {
   color: white;
 }
 
-.brand {
-  font-weight: bold;
+.navbar .brand {
+  img.brand-logo {
+    vertical-align: text-bottom;
+    height: 20px;
+    width: 20x;
+  }
+
   font-family: @monoFontFamily;
   a:link, a:visited, a:hover {
     color: white;
@@ -99,6 +104,11 @@ body {
     font-family: @monoFontFamily;
   }
 
+  .input-label {
+    display: inline-block;
+    width: 6em;
+  }
+
   #host {
     width: 12em;
   }
@@ -109,6 +119,7 @@ body {
 
   .add-shortener-button {
     .btn;
+    .btn-primary;
   }
 }
 
