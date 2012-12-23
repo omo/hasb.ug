@@ -33,6 +33,10 @@ body {
 .brand {
   font-weight: bold;
   font-family: @monoFontFamily;
+  a:link, a:visited, a:hover {
+    color: white;
+    text-decoration: none;
+  }
 }
 
 //
@@ -74,11 +78,15 @@ body {
   }
 }
 
-
 .my-shortener {
-  .btn;
+  display: inline-block;
   font-family: @monoFontFamily;
-  background-color: white;
+  margin-right: 0.5em;
+  .shortener-host {
+    background-color: white;
+    padding-right: 0.5em;
+    padding-left: 0.5em;
+  }
 }
 
 .my-shortener-none {
@@ -97,6 +105,10 @@ body {
 
   #pattern {
     width: 32em;
+  }
+
+  .add-shortener-button {
+    .btn;
   }
 }
 

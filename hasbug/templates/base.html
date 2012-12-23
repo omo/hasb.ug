@@ -2,7 +2,7 @@
 <html>
 <head>
 {% block head %}
-<title>hasb.ug{% block subpath %}{% endblock %}</title>
+<title>hasb.ug{{ subpath }}</title>
 <link rel="stylesheet" href="{{ url_for('static', filename='stylesheets/main.css' )}}" />
 <!-- FIXME: SHould be @defer -->
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
@@ -23,7 +23,7 @@
 <div class="navbar navbar-inverse">
       <div class="navbar-inner">
         <div class="container-fluid">
-          <a class="brand" href="/">hasb.ug</a>
+          <span class="brand"><a href="/">hasb.ug</a>{{ subpath }}</span>
           <div class="nav-collapse collapse">
             <div class="navbar-text pull-right">
 {% if user %}
@@ -31,17 +31,17 @@
               <li class="dropdown">
                 <a href="#" class="navlink dropdown-toggle" data-toggle="dropdown"><img class="avatar" src="{{ user.avatar_url }}" /> {{ user.login }} <b class="caret"></b></a>
                 <ul class="dropdown-menu">
-                  <li><a href="{{ url_for('user_private') }}">You</a></li>
-                  <li><a href="#" id="nav-signout">Sign out</a></li>
+                  <li><a href="{{ url_for('user_private') }}"><i class="icon-github"></i> You</a></li>
+                  <li><a href="#" id="nav-signout"><i class="icon-signout"></i> Sign out</a></li>
                 </ul>
               </div>
             </ul>
 {% else %}
-            <a class="nav" href="{{ url_for('login_oauth') }}">Sign in using Github</a>
+            <div class="nav">
+              <a class="navlink" href="{{ url_for('login_oauth') }}"><i class="icon-github"></i> Sign in</a>
+            </div>
 {% endif %}
             </div>
-            <ul class="nav">
-            </ul>
           </div><!--/.nav-collapse -->
         </div>
       </div>

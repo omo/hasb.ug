@@ -67,9 +67,9 @@ class ConsoleTest(unittest.TestCase):
             self.assertEquals(flask.request.user.login, "octocat")
 
     def test_logout(self):
-        self.login_as_octocat()
         with self.app as c:
-            c.post("/logout")
+            self.login_as_octocat()
+            c.post("/logout", data = { "canary": flask.session['canary'] })
             c.get("/")
             self.assertIsNone(flask.request.user)
 

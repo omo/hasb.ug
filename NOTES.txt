@@ -94,17 +94,26 @@ TODOs:
   + logout
 
 > Shortener bookmarklet
-  - Add PatternSignature
-  - Add /shorten/
-  - Add Bookmarklet
+  + Add PatternSignature
+  + Add /shorten/
 
-- /me ui polish
-- Minimize session hit
+. Minimize session hit -> atode.
 
 > /me UI polish
-  - Vlaidaton
-  - Delete
+  - Delete (with confirmation)
+  - Validaton
+    - custom domain / hasbug domamin notice
   - UI Update after change.
+
+> /s UI polish
+
+> /aka UI polish
+  - Make it selectable
+  - Add Bookmarklet
+
+> / polish
+  - Add explanation
+  - Redirect to /me if possible
 
 > deploy assets
   - install node/nvm/npm on hasb.ug

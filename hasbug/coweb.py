@@ -76,8 +76,8 @@ def login_oauth():
     return f.redirect(hasbug.oauth.redirect_url(state))
 
 @app.route('/logout', methods=["POST"])
+@ensuring_canary
 def logout():
-    # FIXME: Guard against CSRF
     f.session.clear()
     return f.redirect("/")
 
@@ -120,14 +120,13 @@ def shortener(host):
             return f.render_template("s.html", shortener=found)
         elif f.request.method == "DELETE":
             if found.added_by != f.request.user.url:
-                f.abort(400)
+                return f.abort(400)
             app.r.remove_shortener(found)
             return make_json_response({})
     except hasbug.store.ItemNotFoundError:
         return f.abort(404)
 
 @app.route('/s', methods=["POST"])
-@ensuring_login
 @ensuring_canary
 def shortener_collection():
     if f.request.method == "POST":
@@ -142,7 +141,6 @@ def shortener_collection():
 #
 # Shortener discovery
 #
-
 @app.route('/aka/<path:url>', methods=["GET"])
 def show_shorten(url):
     shortened = hasbug.shorten(app.r, url)

@@ -1,33 +1,45 @@
+{% set subpath = "/me" %}
 {% extends "base.html" %}
-{% block subpath %}/me{% endblock %}
 
 {% block head %}
 {{ super() }}
 {% endblock %}
 
 {% block content %}
+
 <div class="my-shortener-list">
 
 <form class="my-shortener-new form-inline">
  
- <input type="hidden" id="canary" value="{{canary}}">
- <div class="input-prepend">
-   <span class="add-on">Host</span>
-   <input id="host" type="text" placeholder="yourproj.hasb.ug" />
- </div>
- <div class="input-prepend">
-   <span class="add-on">Redirect</span>
-   <input id="pattern" type="text"
-          placeholder="http://bugs.yourproject.org/tracker.cgi?bug={id}"/>
- </div>
- <button class="add-shortener-button" ><i class="icon-plus"></i></button>
+  <input type="hidden" id="canary" value="{{canary}}">
+  <div class="input-prepend">
+    <span class="add-on">Host</span>
+    <input id="host" type="text" placeholder="yourproj.hasb.ug" />
+  </div>
+  <div class="input-prepend">
+    <span class="add-on">Redirect</span>
+    <input id="pattern" type="text"
+           placeholder="http://bugs.yourproject.org/tracker.cgi?bug={id}"/>
+  </div>
+  <button class="add-shortener-button" ><i class="icon-plus requested-cue-placeholder"></i></button>
 </ul>
 </form>
+
+<hr />
 
 {% if belongings.has_shortener_hosts %}
 {%   for h in belongings.shortener_hosts %}
   <div class="my-shortener">
-    <a href="{{ url_for('shortener', host=h) }}">{{ h }}</a>
+    <div class="input-prepend input-append">
+      <span class="shortener-host add-on"><a href="{{ url_for('shortener', host=h) }}">{{ h }}</a></span>
+      <div class="btn-group shortener-menu">
+        <ul class="dropdown-menu">
+          <li><a class="open-shortener" data-host="{{ h }}" href="{{ url_for('shortener', host=h) }}"><i class="icon-wrench"></i> Open</a></li>
+          <li><a class="delete-shortener-button" data-host="{{ h }}" href="#"><i class="icon-remove"></i> Delete</a></li>
+        </ul>
+        <button class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret requested-cue-placeholder"></span></button>
+      </div>
+    </div>
   </div>
 {%   endfor %}
 {% else %}
