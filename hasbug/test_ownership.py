@@ -16,8 +16,12 @@ class OwnershipTest(unittest.TestCase):
 
     def setUp(self):
         for s in [self.sfoo, self.sbar]:
-            self.repo.shorteners.remove_found(s.key)
-            self.repo.ownerships.remove_found(s.added_by, s.key)
+            #self.repo.shorteners.remove_found(s.key)
+            #self.repo.ownerships.remove_found(s.added_by, s.key)
+            try:
+                self.repo.remove_shortener(self.repo.shorteners.find(s.key))
+            except store.ItemNotFoundError:
+                pass
 
     def test_add_shortener(self):
         self.repo.add_shortener(self.sfoo)
@@ -46,3 +50,13 @@ class OwnershipTest(unittest.TestCase):
         o2 = self.repo.add_shortener(self.sbar)
         actual = hasbug.Belongings([o1, o2]).shortener_hosts
         self.assertEquals(["bar.com", "foo.com"], sorted(actual))
+
+    def test_signature_hello(self):
+        url = "http://foo.obug.org/12345"
+        self.repo.add_shortener(self.sfoo)
+        sig = self.repo.pattern_signatures.find_by_url(url)
+        self.assertEquals(sig.host, self.sfoo.host)
+        self.repo.remove_shortener(self.sfoo)
+        def run():
+            self.repo.pattern_signatures.find_by_url(url)
+        self.assertRaises(hasbug.store.ItemNotFoundError, run)

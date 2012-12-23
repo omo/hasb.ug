@@ -33,6 +33,9 @@ class Shortener(store.Stuff):
         v.should_be_web_url("added_by")
         return v
 
+    def make_signature(self):
+        return PatternSignature.make(self.host, self.pattern)
+
     @store.bagging
     @classmethod
     def remove_by_host(cls, bag, host):
@@ -47,3 +50,22 @@ class Shortener(store.Stuff):
     @classmethod
     def make(cls, host, pattern, added_by=None):
         return cls({ "host": host, "pattern": pattern, "added_by": added_by })
+
+
+class PatternSignature(store.Stuff):
+    bag_name = "pattern_signatures"
+    attributes = [store.StuffKey("signature"), store.StuffAttr("host")]
+
+    @classmethod
+    def compute_from_url(cls, url):
+        return re.sub("([^a-zA-Z])", "", re.sub("http(s)?://", "",  url))
+
+    @classmethod
+    def make(cls, host, pattern):
+        sig = PatternSignature.compute_from_url(pattern.format(id=0))
+        return PatternSignature(dict={ "signature": sig, "host": host })
+
+    @store.bagging
+    @classmethod
+    def find_by_url(cls, bag, url):
+        return bag.find(PatternSignature.compute_from_url(url))

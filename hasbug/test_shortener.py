@@ -121,3 +121,18 @@ class ShortenerTest(unittest.TestCase):
                                    "https://bugtracker.org/{notid}", 
                                    "notnurl")
         self.assertTrue(s4.validate().invalid())
+
+
+class PatternSignatureTest(unittest.TestCase):
+    def setUp(self):
+        self.target_shortener = hasbug.Shortener.make(
+            "foo.hasb.ug", "http://foo.bugtracker.org/{id}", "http://github.com/omo")
+
+    def test_compute(self):
+        url = "https://bugs.webkit.org/show_bug.cgi?id=101289"
+        sig = hasbug.PatternSignature.compute_from_url(url)
+        self.assertEquals("bugswebkitorgshowbugcgiid", sig)
+
+    def test_instantiate(self):
+        target = self.target_shortener.make_signature()
+        self.assertEquals(self.target_shortener.host, target.host)

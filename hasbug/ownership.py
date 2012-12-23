@@ -29,16 +29,18 @@ class Ownership(store.Stuff):
     @classmethod
     def add_shortener(cls, repo, shortener):
         repo.shorteners.add(shortener)
+        repo.pattern_signatures.add(shortener.make_signature())
         return repo.ownerships.add(Ownership.make(shortener.added_by, shortener.bag_name, shortener.key))
 
     @store.storing
     @classmethod
     def remove_shortener(cls, repo, shortener):
-        repo.ownerships.remove(repo.ownerships.find(shortener.added_by, shortener.key))
+        sig = shortener.make_signature()
+        repo.pattern_signatures.remove_found(sig.key)
+        repo.ownerships.remove_found(shortener.added_by, shortener.key)
         repo.shorteners.remove(shortener)
 
     @store.storing
     @classmethod
     def belongings_for(cls, repo, owner):
         return Belongings(repo.ownerships.query(owner.key))
-        

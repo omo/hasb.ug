@@ -93,9 +93,18 @@ TODOs:
     . not found handling -> atode
   + logout
 
-- Shortener bookmarklet
+> Shortener bookmarklet
+  - Add PatternSignature
+  - Add /shorten/
+  - Add Bookmarklet
 
 - /me ui polish
+- Minimize session hit
+
+> /me UI polish
+  - Vlaidaton
+  - Delete
+  - UI Update after change.
 
 > deploy assets
   - install node/nvm/npm on hasb.ug

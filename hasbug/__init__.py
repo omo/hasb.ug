@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from hasbug.shortener import Shortener
+from hasbug.shortener import Shortener, PatternSignature
 from hasbug.user import User
 from hasbug.ownership import Ownership, Belongings
 from hasbug.repo import Repo

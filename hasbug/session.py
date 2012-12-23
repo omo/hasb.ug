@@ -23,7 +23,6 @@ class SessionObject(CallbackDict, SessionMixin):
         self.new = new
         self.modified = False
 
-
 class SessionInterface(SessionInterface):
     serializer = json
     session_class = SessionObject
