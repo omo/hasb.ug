@@ -30,13 +30,17 @@ class OwnershipTest(unittest.TestCase):
         self.assertEquals(sbar_ownership.owner_key, self.sbar.added_by)
 
     def test_remove_shortener(self):
-        added = self.repo.add_shortener(self.sfoo)
+        self.repo.add_shortener(self.sfoo)
         sfoo_ownership = self.repo.ownerships.find(self.sfoo.added_by, self.sfoo.key)
         self.assertTrue(sfoo_ownership)
         self.repo.remove_shortener(self.sfoo)
         def run():
             self.repo.ownerships.find(self.sfoo.added_by, self.sfoo.key)
         self.assertRaises(hasbug.store.ItemNotFoundError, run)
+
+    def test_update_shortener(self):
+        self.repo.add_shortener(self.sfoo)
+        self.repo.update_shortener(self.sfoo)
 
     @unittest.skipIf(not testing.enable_database, "Database test is disabled - query() needs it.")
     def test_list_belongings(self):

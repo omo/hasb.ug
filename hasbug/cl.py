@@ -26,13 +26,16 @@ class AppController(controller.CementBaseController):
     def __init__(self, *args, **kwargs):
         super(AppController, self).__init__(*args, **kwargs)
         self.o = sys.stdout
+        self.__repo = None
+
+    def _set_repo(self, r):
+        self.__repo = r
 
     @property
     def _repo(self):
         # FIXME: Should have a way to use a mock.
-        repo = getattr(self, "__repo", None)
-        if repo:
-            return repo
+        if self.__repo:
+            return self.__repo
         self.__repo = self._make_repo()
         return self.__repo
 
@@ -52,7 +55,14 @@ class AppController(controller.CementBaseController):
         if not self.pargs.user:
             self._error_exit("user is missing")
         toadd = hasbug.Shortener.make(self.pargs.host, self.pargs.pattern, self.pargs.user)
-        self._repo.shorteners.add(toadd)
+        self._repo.add_shortener(toadd)
+
+    @controller.expose(aliases=["us"], help="Add a new shortener.")
+    def update_shortener(self):
+        if not self.pargs.host:
+            self._error_exit("host is missing")
+        toupdate = self._repo.shorteners.find(self.pargs.host)
+        self._repo.update_shortener(toupdate)
 
     @controller.expose(aliases=["ls"], help="List shorteners.")
     def list_shorteners(self):

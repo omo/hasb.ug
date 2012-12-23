@@ -42,5 +42,13 @@ class Ownership(store.Stuff):
 
     @store.storing
     @classmethod
+    def update_shortener(cls, repo, shortener):
+        toupdate = repo.shorteners.find(shortener.host)
+        # FIXME: Once we support named shorteer, this won't be able to this naive.
+        repo.remove_shortener(toupdate)
+        repo.add_shortener(shortener)
+
+    @store.storing
+    @classmethod
     def belongings_for(cls, repo, owner):
         return Belongings(repo.ownerships.query(owner.key))

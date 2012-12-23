@@ -1,4 +1,4 @@
 
-HERE=`dirname $0`
-source ${HERE}/activate
-python ${HERE}/hasbuger.py $*
+HASBUGER_HERE=`dirname $0`
+source ${HASBUGER_HERE}/activate
+python ${HASBUGER_HERE}/hasbuger.py $*

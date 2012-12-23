@@ -16,18 +16,29 @@ class ClTest(cement.utils.test.CementTestCase):
         self.reset_backend()
         self.faked_io = StringIO.StringIO()
 
-    def _run(self, argv):
+    def _run(self, argv, repo=None):
         app = self.make_app(argv=argv)
         app.setup()
         app.controller.o = self.faked_io
+        if repo:
+            app.controller._set_repo(repo)
         app.run()
         app.close()
+        return app
 
     def test_as_mock(self):
         self._run(['as', "--mock",
                    '--host', "example.com", 
                    "--pattern", "http://test.example.com/{id}",
                    "--user", "http://alice.example.com/"])
+
+    def test_us_mock(self):
+        app = self._run(['as', "--mock",
+                         '--host', "example.com", 
+                         "--pattern", "http://test.example.com/{id}",
+                         "--user", "http://alice.example.com/"])
+        self._run(['us', "--mock",
+                   '--host', "example.com"], app.controller._repo)
 
     @unittest.skipIf(not testing.enable_database, "Database test is disabled")
     def test_noop(self):
