@@ -3,6 +3,7 @@
 import json, urllib2, StringIO
 import hasbug.store as store
 import hasbug.validation as validation
+import hasbug.net as net
 
 octocat_text = """
 {
@@ -65,19 +66,8 @@ mojombo_text = """
 
 mojombo_dict = json.loads(mojombo_text)
 
-urlopen = urllib2.urlopen
-
-fake_user_dict = {}
-
-def fake_urlopen():
-    global urlopen
-    def faked(req):
-        return StringIO.StringIO(fake_user_dict[req.get_full_url()])
-    urlopen = faked
-
 def add_fake_mojombo_to_urlopen():
-    fake_user_dict[mojombo_dict["url"]] = mojombo_text
-
+    net.add_fake_data(mojombo_dict["url"], mojombo_text)
 
 class User(store.Stuff):
     bag_name = "users"
@@ -104,7 +94,7 @@ class User(store.Stuff):
     @classmethod
     def add_by_login(cls, bag, login_name):
         url = User.url_from_login(login_name)
-        opened = urlopen(urllib2.Request(url))
+        opened = net.urlopen(urllib2.Request(url))
         toadd = User(json.load(opened))
         bag.add(toadd, can_replace=True)
         return toadd

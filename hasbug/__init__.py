@@ -6,4 +6,5 @@ from hasbug.ownership import Ownership, Belongings
 from hasbug.repo import Repo
 from hasbug.app import App
 from hasbug.store import Store, Bag, ItemNotFoundError, ItemInvalidError
+from hasbug.shorten import shorten
 import hasbug.oauth as oauth

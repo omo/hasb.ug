@@ -52,11 +52,10 @@ class OwnershipTest(unittest.TestCase):
         self.assertEquals(["bar.com", "foo.com"], sorted(actual))
 
     def test_signature_hello(self):
-        url = "http://foo.obug.org/12345"
         self.repo.add_shortener(self.sfoo)
-        sig = self.repo.pattern_signatures.find_by_url(url)
+        sig = self.repo.pattern_signatures.find_by_url("http://foo.obug.org/12345")
         self.assertEquals(sig.host, self.sfoo.host)
         self.repo.remove_shortener(self.sfoo)
         def run():
-            self.repo.pattern_signatures.find_by_url(url)
+            self.repo.pattern_signatures.find_by_url("http://foo.obug.org/+++++")
         self.assertRaises(hasbug.store.ItemNotFoundError, run)

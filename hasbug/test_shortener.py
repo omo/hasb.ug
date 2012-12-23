@@ -17,7 +17,7 @@ def make_bad():
 def cleanup_shorteners(repo, hosts):
     for h in ["foo.hasb.ug", "bar.hasb.ug"]:
         try:
-            hasbug.Shortener.remove_by_host(repo.shorteners, h)
+            repo.remove_shortener(repo.shorteners.find(h))
         except store.ItemNotFoundError:
             pass
 
@@ -136,3 +136,12 @@ class PatternSignatureTest(unittest.TestCase):
     def test_instantiate(self):
         target = self.target_shortener.make_signature()
         self.assertEquals(self.target_shortener.host, target.host)
+        self.assertEquals(self.target_shortener.pattern, target.pattern)
+
+    def test_shorten(self):
+        target = self.target_shortener.make_signature()
+        self.assertEquals("http://foo.hasb.ug/12345",
+                          target.shorten("http://foo.bugtracker.org/12345"))
+        def run():
+            target.shorten("http://foo.bugtracker.org/+++++")
+        self.assertRaises(ValueError, run)

@@ -2,6 +2,7 @@
 
 import random, string, urllib2, json, datetime
 import hasbug.conf
+import hasbug.net as net
 
 # http://stackoverflow.com/questions/2257441/python-random-string-generation-with-upper-case-letters-and-digits
 def random_string(n=8):
@@ -12,9 +13,6 @@ def redirect_url(state):
                "state": state }
     return "https://github.com/login/oauth/authorize?client_id={client_id}&state={state}".format(**params)
 
-def urlopen(req):
-    return urllib2.urlopen(req)
-
 def authorize_user(code, state):
     url = "https://github.com/login/oauth/access_token"
     data = "client_id={id}&client_secret={secret}&code={code}&state={state}".format(
@@ -24,10 +22,9 @@ def authorize_user(code, state):
         state = state)
     req = urllib2.Request(url, data)
     req.add_header("Accept", "application/json")
-    res = urlopen(req)
+    res = net.urlopen(req)
     resdict = json.load(res)
     token = resdict["access_token"]
-        
     url = "https://api.github.com/user?access_token={token}".format(token=token)
-    res = urlopen(urllib2.Request(url))
+    res = net.urlopen(urllib2.Request(url))
     return json.load(res)

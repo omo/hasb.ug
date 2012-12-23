@@ -6,26 +6,28 @@ import hasbug.coweb
 import hasbug.oauth
 import hasbug.conf
 import hasbug.user
+import hasbug.net
 import flask
 import json
 
 import hasbug.test_shortener as test_shortener
-
-def fake_urlopen(req):
-    if "https://github.com/login/oauth/access_token" == req.get_full_url():
-        return StringIO.StringIO('{ "access_token": "mytoken" }')
-    if "https://api.github.com/user?access_token=mytoken" == req.get_full_url():
-        return StringIO.StringIO(hasbug.user.octocat_text)
 
 class ConsoleTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         hasbug.coweb.app.config['DEBUG'] = True
         hasbug.coweb.app.r = hasbug.Repo(name=None)
-        hasbug.oauth.urlopen = fake_urlopen
-
-    def setUp(self):
-        test_shortener.cleanup_shorteners(hasbug.coweb.app.r, ["foo.hasb.ug", "bar.hasb.ug"])
+        #hasbug.net.urlopen = fake_urlopen
+        hasbug.net.add_fake_data("https://github.com/login/oauth/access_token", '{ "access_token": "mytoken" }')
+        hasbug.net.add_fake_data("https://api.github.com/user?access_token=mytoken", hasbug.user.octocat_text)
+        hasbug.net.add_fake_data('https://www.googleapis.com/urlshortener/v1/url',
+                                 """
+{
+ "kind": "urlshortener#url",
+ "id": "http://goo.gl/fbsS",
+ "longUrl": "http://www.google.com/"
+}
+""")
 
     def login_as_octocat(self):
         with self.app.session_transaction() as sess:
@@ -35,6 +37,7 @@ class ConsoleTest(unittest.TestCase):
 
     def setUp(self):
         self.app = hasbug.coweb.app.test_client()
+        test_shortener.cleanup_shorteners(hasbug.coweb.app.r, ["foo.hasb.ug", "bar.hasb.ug"])
 
     def test_oauth(self):
         hasbug.oauth.redirect_url("foobar")
@@ -107,3 +110,13 @@ class ConsoleTest(unittest.TestCase):
             self.login_as_octocat()
             resp = self.app.delete("/s/" + s.host, headers={ "x-hasbug-canary" : flask.session['canary'] })
             self.assertTrue("200" in resp.status)
+
+    def test_show_shorten(self):
+        hasbug.coweb.app.r.add_shortener(test_shortener.make_fresh("foo.hasb.ug"))
+        resp = self.app.get("/aka/http://foo.bugtracker.org/12345")
+        self.assertTrue("200" in resp.status)
+
+    def test_show_shorten_unknown(self):
+        hasbug.coweb.app.r.add_shortener(test_shortener.make_fresh("foo.hasb.ug"))
+        resp = self.app.get("/aka/http://google.com/")
+        self.assertTrue("200" in resp.status)

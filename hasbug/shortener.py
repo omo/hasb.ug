@@ -51,10 +51,16 @@ class Shortener(store.Stuff):
     def make(cls, host, pattern, added_by=None):
         return cls({ "host": host, "pattern": pattern, "added_by": added_by })
 
-
 class PatternSignature(store.Stuff):
     bag_name = "pattern_signatures"
-    attributes = [store.StuffKey("signature"), store.StuffAttr("host")]
+    attributes = [store.StuffKey("signature"), store.StuffAttr("host"), store.StuffAttr("pattern")]
+
+    def shorten(self, url):
+        prefix, suffix = self.pattern.split("{id}")
+        id = url.replace(prefix, "").replace(suffix, "")
+        if not re.match("^[a-zA-Z0-9]+$", id):
+            raise ValueError("{id} is not valid id".format(id=id))
+        return "http://{host}/{id}".format(host=self.host, id=id)
 
     @classmethod
     def compute_from_url(cls, url):
@@ -63,7 +69,7 @@ class PatternSignature(store.Stuff):
     @classmethod
     def make(cls, host, pattern):
         sig = PatternSignature.compute_from_url(pattern.format(id=0))
-        return PatternSignature(dict={ "signature": sig, "host": host })
+        return PatternSignature(dict={ "signature": sig, "host": host, "pattern": pattern })
 
     @store.bagging
     @classmethod

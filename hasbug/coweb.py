@@ -7,11 +7,13 @@ import urlparse
 import functools
 import flask as f
 import json
+import urllib2
 
 import hasbug
 import hasbug.oauth
 import hasbug.user
 import hasbug.conf
+import hasbug.store
 
 
 app = hasbug.App(__name__)
@@ -136,6 +138,15 @@ def shortener_collection():
         except hasbug.store.ItemInvalidError:
             return f.make_response("Invalid Request", 400)
     return make_json_response({})
+
+#
+# Shortener discovery
+#
+
+@app.route('/aka/<path:url>', methods=["GET"])
+def show_shorten(url):
+    shortened = hasbug.shorten(app.r, url)
+    return f.render_template("aka.html", url=url, shortened=shortened)
 
 #
 # Debugging
