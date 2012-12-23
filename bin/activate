@@ -1,6 +1,11 @@
 
 . ./pyenv/bin/activate
-nvm use v0.8.14
+
+if [ -d $NVM_DIR ]; then
+   source $NVM_DIR/nvm.sh
+   nvm use v0.8.14
+fi
+
 HERE=`pwd`
 export PATH=$PATH:$HERE/node_modules/.bin
 export BOTO_CONFIG=./confs/boto.conf
