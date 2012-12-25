@@ -135,6 +135,7 @@ def shortener_collection():
             app.r.add_shortener(sner)
             return make_json_response(sner.dict)
         except hasbug.store.ItemInvalidError:
+            app.logger.exception("shortener_collection.")
             return f.make_response("Invalid Request", 400)
     return make_json_response({})
 
