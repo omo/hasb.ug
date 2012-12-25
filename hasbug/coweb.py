@@ -106,8 +106,8 @@ def user_private():
 # Shortener
 #
 
-def make_json_response(data):
-    resp = f.make_response(json.dumps(data), 200)
+def make_json_response(data, status=200):
+    resp = f.make_response(json.dumps(data), status)
     resp.mimetype = "application/json"
     return resp
 
@@ -134,12 +134,11 @@ def shortener_collection():
         try:
             app.r.add_shortener(sner)
             return make_json_response(sner.dict)
+        except hasbug.validation.ValidationError, ex:
+            return make_json_response({ "name": ex.invalids[0].name, "message": ex.invalids[0].message }, 403)
         except hasbug.store.ItemInvalidError:
             app.logger.exception("shortener_collection.")
-            if "application/json" in f.request.headers.get("Accept", ""):
-                return f.make_response(json.dumps({ "name": "host", "message": "Invalid request." }), 403, { "content-type": "application/json" })
-            else:
-                return f.make_response("Invalid request.", 403)
+            return make_json_response({ "message": "Invalid request." }, 403)
     return make_json_response({})
 
 #

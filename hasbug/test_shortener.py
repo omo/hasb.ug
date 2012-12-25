@@ -51,7 +51,7 @@ class ShortenerRepoCommonCases(object):
         self.repo.shorteners.add(fresh)
         def do():
             self.repo.shorteners.add(fresh)
-        self.assertRaises(store.ItemInvalidError, do)
+        self.assertRaises(validation.ValidationError, do)
 
 
 # XXX: Kill this

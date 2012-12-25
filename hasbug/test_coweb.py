@@ -98,9 +98,9 @@ class ConsoleTest(unittest.TestCase):
             hostvalue = "foo.bar"
             self.login_as_octocat()
             reqdata = { "host": hostvalue, "pattern": "http://bugs.foo.bar/{id}", "canary": flask.session['canary'] }
-            resp1 = self.app.post("/s", data = reqdata, headers = { "Accept": "application/json" })
+            resp1 = self.app.post("/s", data = reqdata)
             self.assertTrue("200" in resp1.status)
-            resp2 = self.app.post("/s", data = reqdata, headers = { "Accept": "application/json" })
+            resp2 = self.app.post("/s", data = reqdata)
             self.assertTrue("403" in resp2.status)
             self.assertTrue("message" in json.loads(resp2.data))
         

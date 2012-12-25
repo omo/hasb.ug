@@ -36,6 +36,12 @@ class Shortener(store.Stuff):
     def make_signature(self):
         return PatternSignature.make(self.host, self.pattern)
 
+    def translate_error(self, exception):
+        if isinstance(exception, store.ItemInvalidError):
+            v = validation.Validator(self)
+            return v.found_invalid("host", "{host} is already taken".format(host=self.host)).error()
+        return exception
+            
     @store.bagging
     @classmethod
     def remove_by_host(cls, bag, host):

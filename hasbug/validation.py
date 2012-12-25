@@ -25,6 +25,7 @@ class Validator(object):
 
     def found_invalid(self, name, message=None):
         self._invalids.append(Invalid(name, message))
+        return self
 
     def _target_attr(self, name):
         return getattr(self._target, name)
@@ -42,4 +43,8 @@ class Validator(object):
 
     def raise_if_invalid(self):
         if (self.invalid()):
-            raise ValidationError(self._invalids)
+            raise self.error()
+
+    def error(self):
+        return ValidationError(self._invalids)
+

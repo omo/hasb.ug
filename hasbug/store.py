@@ -6,15 +6,15 @@ import boto.dynamodb.exceptions as exceptions
 import boto.dynamodb.condition as condition
 import hasbug.validation as validation
 
-class ItemNotFoundError(Exception):
+class ItemError(Exception):
     def __init__(self, message):
-        super(ItemNotFoundError, self).__init__(message)  
+        super(ItemError, self).__init__(message)  
 
+class ItemNotFoundError(ItemError):
+    pass
 
-class ItemInvalidError(Exception):
-    def __init__(self, message):
-        super(ItemInvalidError, self).__init__(message)  
-
+class ItemInvalidError(ItemError):
+    pass
 
 def bagging(cm):
     bagging.marked[cm] = True
@@ -146,11 +146,14 @@ class Bag(DelegationHelper):
         return self.model_class.bag_name
 
     def add(self, m, can_replace=False):
-        m.validate().raise_if_invalid()
-        item_toadd = self._new_item(key=m.key, ord=m.ord, attrs=m.to_item_values())
-        self._insert_item(item_toadd, can_replace)
-        self._decorate(m, item_toadd)
-        return m
+        try:
+            m.validate().raise_if_invalid()
+            item_toadd = self._new_item(key=m.key, ord=m.ord, attrs=m.to_item_values())
+            self._insert_item(item_toadd, can_replace)
+            self._decorate(m, item_toadd)
+            return m
+        except ItemError, e:
+            raise m.translate_error(e)
 
     def find(self, key, ord=None):
         # FIXME: Better to wrap the exception?
@@ -250,6 +253,9 @@ class Stuff(object):
     def validate(self):
         v = validation.Validator(self)
         return v
+
+    def translate_error(self, exception):
+        return exception
 
     @property
     def dict(self):
