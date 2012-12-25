@@ -9,6 +9,7 @@ import hasbug.user
 import hasbug.net
 import flask
 import json
+import logging
 
 import hasbug.test_shortener as test_shortener
 
@@ -17,6 +18,7 @@ class ConsoleTest(unittest.TestCase):
     def setUpClass(cls):
         hasbug.coweb.app.config['DEBUG'] = True
         hasbug.coweb.app.r = hasbug.Repo(name=None)
+        hasbug.coweb.app.logger.setLevel(logging.CRITICAL)
         #hasbug.net.urlopen = fake_urlopen
         hasbug.net.add_fake_data("https://github.com/login/oauth/access_token", '{ "access_token": "mytoken" }')
         hasbug.net.add_fake_data("https://api.github.com/user?access_token=mytoken", hasbug.user.octocat_text)
@@ -37,7 +39,7 @@ class ConsoleTest(unittest.TestCase):
 
     def setUp(self):
         self.app = hasbug.coweb.app.test_client()
-        test_shortener.cleanup_shorteners(hasbug.coweb.app.r, ["foo.hasb.ug", "bar.hasb.ug"])
+        test_shortener.cleanup_shorteners(hasbug.coweb.app.r, ["foo.hasb.ug", "bar.hasb.ug", "foo.bar"])
 
     def test_oauth(self):
         hasbug.oauth.redirect_url("foobar")
@@ -90,6 +92,17 @@ class ConsoleTest(unittest.TestCase):
             self.assertTrue("200" in resp.status)
             added = json.loads(resp.data)
             self.assertEquals(added["host"], hostvalue)
+
+    def test_shortener_add_forbidden(self):
+        with self.app as c:
+            hostvalue = "foo.bar"
+            self.login_as_octocat()
+            reqdata = { "host": hostvalue, "pattern": "http://bugs.foo.bar/{id}", "canary": flask.session['canary'] }
+            resp1 = self.app.post("/s", data = reqdata, headers = { "Accept": "application/json" })
+            self.assertTrue("200" in resp1.status)
+            resp2 = self.app.post("/s", data = reqdata, headers = { "Accept": "application/json" })
+            self.assertTrue("403" in resp2.status)
+            self.assertTrue("message" in json.loads(resp2.data))
         
     def test_shortener_show(self):
         s = test_shortener.make_fresh("foo.hasb.ug")

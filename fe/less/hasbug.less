@@ -1,6 +1,7 @@
 
 @import "bootstrap.less";
 @import "variables.less"; // From http://bootswatch.com/cerulean/
+@import url("http://fonts.googleapis.com/css?family=Ubuntu:400,700");
 
 // Copied from http://fortawesome.github.com/Font-Awesome/
 @import "third_party/FortAwesome-Font-Awesome/less/font-awesome.less";
@@ -13,6 +14,18 @@
        url('../font/fontawesome-webfont.svg#FontAwesome') format('svg');
   font-weight: normal;
   font-style: normal;
+}
+
+// Further customize
+//@baseFontSize:          18px;
+//@baseLineHeight:        24px;
+@placeholderText:         lighten(@grayLight, 20%);
+
+a[disabled]:link,
+a[disabled]:visited,
+a[disabled]:hover {
+   text-decoration: none;
+   color: inherit;
 }
 
 body {
@@ -37,7 +50,7 @@ body {
     width: 20x;
   }
 
-  font-family: @monoFontFamily;
+  font-family: 'Ubuntu', @sansFontFamily;
   a:link, a:visited, a:hover {
     color: white;
     text-decoration: none;
@@ -100,7 +113,6 @@ body {
 
 .my-shortener-new {
   input[type="text"] {
-    .input-mini;
     font-family: @monoFontFamily;
   }
 

@@ -100,10 +100,14 @@ TODOs:
 . Minimize session hit -> atode.
 
 > /me UI polish
-  - Delete (with confirmation)
-  - Validaton
-    - custom domain / hasbug domamin notice
-  - UI Update after change.
+  + Delete (with confirmation)
+  + UI Update after change.
+  > Validaton
+    + pre-submit
+    - show server-side error
+    - server: taken host
+    - server: taken pattern
+  - custom domain / hasbug domamin switch
 
 > /s UI polish
 
@@ -141,6 +145,10 @@ TODOs:
 > User-enabled
   - Add login/auth page.
   - Add shortener adding page
+
+BUG:
+- Signature can conflict
+- Should we allow duplicated shortener? -> Probably no.
 
 - logrotate
 

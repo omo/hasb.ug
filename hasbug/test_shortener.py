@@ -14,8 +14,8 @@ def make_fresh_more():
 def make_bad():
     return hasbug.Shortener.make("foo.hasb.ug", "bad/url", "https://api.github.com/users/omo")
 
-def cleanup_shorteners(repo, hosts):
-    for h in ["foo.hasb.ug", "bar.hasb.ug"]:
+def cleanup_shorteners(repo, hosts=["foo.hasb.ug", "bar.hasb.ug"]):
+    for h in hosts:
         try:
             repo.remove_shortener(repo.shorteners.find(h))
         except store.ItemNotFoundError:
