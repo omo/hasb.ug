@@ -47,6 +47,9 @@ MePage.prototype.wire = function() {
     .on("requested", this.didRequestCreate.bind(this))
     .on("responded", this.didCreate.bind(this));
   $(".add-shortener-button").on("click", function(evt) { $(evt.target).closest("form").submit(); });
+  $(".host-type-hasbug").on("click", function() { $(".host-value-hasbug").show(); $(".host-value-custom").hide(); });
+  $(".host-type-custom").on("click", function() { $(".host-value-hasbug").hide(); $(".host-value-custom").show(); });
+  $(".host-type-hasbug").click();
 };
 
 MePage.prototype.prepareValidateCreation = function()
@@ -55,11 +58,20 @@ MePage.prototype.prepareValidateCreation = function()
   this.patternValidation = new FormValidation($("#pattern-validation-message"));
 };
 
+MePage.prototype.hostValue = function()
+{
+  return $(".host-type-hasbug").hasClass("active") ? ($(".host-value-hasbug input").val() + ".hasb.ug") : $(".host-value-custom input").val();
+};
+
+MePage.prototype.hostValueSelector = function()
+{
+  return $(".host-type-hasbug").hasClass("active") ? ".host-value-hasbug input" : ".host-value-custom input";
+};
+
 MePage.prototype.validateCreation = function()
 {
-
   var ok = true;
-  var host = $("#host").val();
+  var host = this.hostValue();
   var pattern = $("#pattern").val();
   
   if (!host.length)
@@ -86,7 +98,7 @@ MePage.prototype.didCreate = function(evt, error) {
     switch(error.name) {
     case "host":
       this.hostValidation.error(error.message);
-      toFocus = $(evt.delegateTarget).find("#host");
+      toFocus = $(evt.delegateTarget).find(this.hostValueSelector());
       break;
     case "pattern":
       this.patternValidation.error(error.message);
@@ -113,7 +125,7 @@ MePage.prototype.didRequestCreate = function(evt) {
 
 MePage.prototype.didSubmitCreate = function(evt) {
   var topost = {
-    host: $("#host").val(),
+    host: this.hostValue(),
     pattern: $("#pattern").val(),
     canary: $("#canary").val()
   };

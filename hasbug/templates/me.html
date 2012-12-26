@@ -34,10 +34,22 @@
   <input type="hidden" id="canary" value="{{canary}}">
 
   <div class="control-group">
-    <span class="input-prepend" style="display:inline-block;">
+    <div class="btn-group" data-toggle="buttons-radio">
+      <button type="button" class="btn host-type-hasbug">*.hasb.ug</button>
+      <button type="button" class="btn host-type-custom">Custom</button>
+    </div>
+
+    <span class="input-prepend host-value-custom">
       <span class="add-on"><span class="input-label">Host</span></span>
-      <input id="host" type="text" placeholder="yourproj.hasb.ug" />
+      <input id="host-custom" type="text" placeholder="hellobug.com" />
     </span>
+
+    <span class="input-prepend input-append host-value-hasbug">
+      <span class="add-on"><span class="input-label">Host</span></span>
+      <input id="host-hasbug" type="text" placeholder="hello" />
+      <span class="add-on"><span class="input-label">.hasb.ug</span></span>
+    </span>
+
     <span id="host-validation-message" class="help-inline"></span>
   </div>
   <span class="help-block">Host name of the new shortener. You can pick one from either hab.ug subdomain or your own domain. (XXX: Add Help here.)</span>
