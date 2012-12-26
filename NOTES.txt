@@ -107,11 +107,13 @@ TODOs:
     + show server-side error
     + server: taken host
     + server: taken pattern
-  - custom domain / hasbug domamin switch
+  + custom domain / hasbug domamin switch
+  - Help for custom domain setup
 
-- ensure session clean-ness
++ ensure session clean-ness
 
 > /s UI polish
+  - Better type setting and wording
 
 > /aka UI polish
   - Make it selectable

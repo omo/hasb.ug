@@ -165,3 +165,11 @@ def debug_login():
 @app.template_filter('link_to_profile')
 def link_to_profile(s):
     return "http://github.com/{0}".format(s)
+
+@app.template_filter('link_to_host')
+def link_to_host(s):
+    return "http://{0}/".format(s)
+
+@app.template_filter('pattern_to_ellipsis')
+def pattern_to_ellipsis(p):
+    return p.format(id="...")

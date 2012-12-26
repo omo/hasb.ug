@@ -7,9 +7,15 @@
 {% endblock %}
 
 {% block content %}
-<ul>
- <li>Host: {{ shortener.host }} </li>
- <li>Pattern: {{ shortener.pattern }}</li>
- <li>Added by: <a href="{{ shortener.added_by_login | link_to_profile }}">{{ shortener.added_by_login }}</a></li>
-</ul>
+<div class="lead explaining-shortener">
+
+{{ ("Brave", "Awesome", "Generous", "Handsome", "Crazy")|random }}
+<a class="explainig-profile" href="{{ shortener.added_by_login | link_to_profile }}">{{ shortener.added_by_login }}</a>
+made
+<div><span class="explainig-host"><a href="{{ shortener.host | link_to_host }}">{{ shortener.host }}</a></span>.</div>
+
+It {{ ("carries", "flies", "brings", "drives", "kicks",)|random }} you to
+<div><span class="explainig-pattern">{{ shortener.pattern | pattern_to_ellipsis }}</span>.</div>
+
+</div>
 {% endblock %}
