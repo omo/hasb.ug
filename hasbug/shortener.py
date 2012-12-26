@@ -33,14 +33,11 @@ class Shortener(store.Stuff):
         v.should_be_web_url("added_by")
         return v
 
-    def make_signature(self):
-        return PatternSignature.make(self.host, self.pattern)
-
     def translate_error(self, exception):
         if isinstance(exception, store.ItemInvalidError):
             v = validation.Validator(self)
             return v.found_invalid("host", "{host} is already taken".format(host=self.host)).error()
-        return exception
+        return None
             
     @store.bagging
     @classmethod
@@ -57,27 +54,80 @@ class Shortener(store.Stuff):
     def make(cls, host, pattern, added_by=None):
         return cls({ "host": host, "pattern": pattern, "added_by": added_by })
 
+
 class PatternSignature(store.Stuff):
     bag_name = "pattern_signatures"
-    attributes = [store.StuffKey("signature"), store.StuffAttr("host"), store.StuffAttr("pattern")]
+    attributes = [store.StuffKey("signature"), store.StuffAttr("patterns")]
 
-    def shorten(self, url):
+    def __init__(self, dict={}):
+        super(PatternSignature, self).__init__(dict)
+        if "patterns" not in self._dict:
+            self._dict["patterns"] = {}
+
+    def _shorten(self, url):
+        # FIXME:
         prefix, suffix = self.pattern.split("{id}")
         id = url.replace(prefix, "").replace(suffix, "")
         if not re.match("^[a-zA-Z0-9]+$", id):
             raise ValueError("{id} is not valid id".format(id=id))
         return "http://{host}/{id}".format(host=self.host, id=id)
 
+    def shorten(self, url):
+        best = None
+        for host, pattern in self.patterns.items():
+            prefix, suffix = pattern.split("{id}")
+            if not url.startswith(prefix) or not url.endswith(suffix):
+                continue
+            id = url.replace(prefix, "").replace(suffix, "")
+            if not re.match("^[a-zA-Z0-9]+$", id):
+                raise ValueError("{id} is not valid id".format(id=id))
+            candidate = "http://{host}/{id}".format(host=host, id=id)
+            if not best or len(candidate) < len(best):
+                best = candidate
+        if not best:
+            raise ValueError("{url} cannot be shortened".format(url=url))
+        return best
+            
+    def hosts_for(self, pattern):
+        return [ h for (h, p) in self.patterns.items() if p == pattern ]
+
+    def add(self, pattern, host):
+        assert self.signature_from_pattern(pattern) == self.signature
+        assert 0 == len(self.hosts_for(pattern))
+        self.patterns[host] = pattern
+
+    def remove(self, pattern):
+        for h in self.hosts_for(pattern):
+            self.patterns.pop(h)
+
     @classmethod
-    def compute_from_url(cls, url):
+    def signature_from_url(cls, url):
         return re.sub("([^a-zA-Z])", "", re.sub("http(s)?://", "",  url))
 
     @classmethod
-    def make(cls, host, pattern):
-        sig = PatternSignature.compute_from_url(pattern.format(id=0))
-        return PatternSignature(dict={ "signature": sig, "host": host, "pattern": pattern })
+    def signature_from_pattern(cls, pattern):
+        return cls.signature_from_url(pattern.format(id=0))
+
+    @classmethod
+    def make(cls, signature):
+        return PatternSignature(dict={ "signature": signature, "patterns": {} })
 
     @store.bagging
     @classmethod
     def find_by_url(cls, bag, url):
-        return bag.find(PatternSignature.compute_from_url(url))
+        return bag.find(PatternSignature.signature_from_url(url))
+
+    @store.bagging
+    @classmethod
+    def find_by_pattern(cls, bag, pattern):
+        return bag.find(PatternSignature.signature_from_pattern(pattern))
+
+    @store.bagging
+    @classmethod
+    def ensure(cls, bag, pattern):
+        sig = PatternSignature.signature_from_pattern(pattern)
+        try:
+            return bag.find(sig)
+        except store.ItemNotFoundError:
+            return PatternSignature.make(sig)
+

@@ -153,7 +153,7 @@ class Bag(DelegationHelper):
             self._decorate(m, item_toadd)
             return m
         except ItemError, e:
-            raise m.translate_error(e)
+            raise m.translate_error(e) or e
 
     def find(self, key, ord=None):
         # FIXME: Better to wrap the exception?
@@ -255,7 +255,7 @@ class Stuff(object):
         return v
 
     def translate_error(self, exception):
-        return exception
+        return None
 
     @property
     def dict(self):

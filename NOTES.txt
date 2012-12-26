@@ -105,9 +105,11 @@ TODOs:
   > Validaton
     + pre-submit
     + show server-side error
-    - server: taken host
-    - server: taken pattern
+    + server: taken host
+    + server: taken pattern
   - custom domain / hasbug domamin switch
+
+- ensure session clean-ness
 
 > /s UI polish
 
@@ -147,8 +149,8 @@ TODOs:
   - Add shortener adding page
 
 BUG:
-- add_shortener can result inconsistency.
-- Signature can conflict
+. add_shortener can result inconsistency.
++ Signature can conflict
 - Should we allow duplicated shortener? -> Probably no.
 
 - logrotate

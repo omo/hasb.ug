@@ -13,11 +13,10 @@ class OwnershipTest(unittest.TestCase):
         cls.mojombo = cls.repo.users.add_by_login("mojombo")
         cls.sfoo = hasbug.Shortener.make("foo.com", "http://foo.obug.org/{id}", cls.mojombo.url)
         cls.sbar = hasbug.Shortener.make("bar.com", "http://bar.obug.org/{id}", cls.mojombo.url)
+        cls.sbaz = hasbug.Shortener.make("baz.com", "http://foo2.obug.org/{id}", cls.mojombo.url)
 
     def setUp(self):
-        for s in [self.sfoo, self.sbar]:
-            #self.repo.shorteners.remove_found(s.key)
-            #self.repo.ownerships.remove_found(s.added_by, s.key)
+        for s in [self.sfoo, self.sbar, self.sbaz]:
             try:
                 self.repo.remove_shortener(self.repo.shorteners.find(s.key))
             except store.ItemNotFoundError:
@@ -56,10 +55,23 @@ class OwnershipTest(unittest.TestCase):
         self.assertEquals(["bar.com", "foo.com"], sorted(actual))
 
     def test_signature_hello(self):
+        url = "http://foo.obug.org/12345"
         self.repo.add_shortener(self.sfoo)
-        sig = self.repo.pattern_signatures.find_by_url("http://foo.obug.org/12345")
-        self.assertEquals(sig.host, self.sfoo.host)
+        self.repo.add_shortener(self.sbaz)
+        sig = self.repo.pattern_signatures.find_by_url(url)
+        self.assertTrue(self.sfoo.host in sig.patterns.keys())
+        self.assertTrue(self.sbaz.host in sig.patterns.keys())
+
+        # Signature can conflict
+        url2 = "http://foo2.obug.org/12345"
+        sig2 = self.repo.pattern_signatures.find_by_url(url2)
+        self.assertTrue(self.sfoo.host in sig2.patterns.keys())
+        self.assertTrue(self.sbaz.host in sig2.patterns.keys())
+
+        # Even after removal, signatures (now empty) remain.
         self.repo.remove_shortener(self.sfoo)
-        def run():
-            self.repo.pattern_signatures.find_by_url("http://foo.obug.org/+++++")
-        self.assertRaises(hasbug.store.ItemNotFoundError, run)
+        self.repo.remove_shortener(self.sbaz)
+
+        sig3 = self.repo.pattern_signatures.find_by_url(url)
+        self.assertTrue(self.sfoo.host not in sig3.patterns.keys())
+        self.assertTrue(self.sbaz.host not in sig3.patterns.keys())

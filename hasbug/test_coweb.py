@@ -95,14 +95,15 @@ class ConsoleTest(unittest.TestCase):
 
     def test_shortener_add_forbidden(self):
         with self.app as c:
-            hostvalue = "foo.bar"
             self.login_as_octocat()
-            reqdata = { "host": hostvalue, "pattern": "http://bugs.foo.bar/{id}", "canary": flask.session['canary'] }
-            resp1 = self.app.post("/s", data = reqdata)
+            resp1 = self.app.post("/s", data = { "host": "foo.bar", "pattern": "http://bugs.foo.bar/{id}", "canary": flask.session['canary'] })
             self.assertTrue("200" in resp1.status)
-            resp2 = self.app.post("/s", data = reqdata)
-            self.assertTrue("403" in resp2.status)
-            self.assertTrue("message" in json.loads(resp2.data))
+            resp2 = self.app.post("/s", data = { "host": "foo.baz", "pattern": "http://bugs.foo.bar/{id}", "canary": flask.session['canary'] })
+            self.assertTrue("403" in resp2.status) # Pattern conflict
+            self.assertEquals("pattern", json.loads(resp2.data)["name"])
+            resp3 = self.app.post("/s", data = { "host": "foo.bar", "pattern": "http://bugs.foo.baz/{id}", "canary": flask.session['canary'] })
+            self.assertTrue("403" in resp3.status) # Host conflict
+            self.assertEquals("host", json.loads(resp3.data)["name"])
         
     def test_shortener_show(self):
         s = test_shortener.make_fresh("foo.hasb.ug")

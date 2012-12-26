@@ -130,18 +130,25 @@ class PatternSignatureTest(unittest.TestCase):
 
     def test_compute(self):
         url = "https://bugs.webkit.org/show_bug.cgi?id=101289"
-        sig = hasbug.PatternSignature.compute_from_url(url)
+        sig = hasbug.PatternSignature.signature_from_url(url)
+        self.assertEquals("bugswebkitorgshowbugcgiid", sig)
+        pattern = "https://bugs.webkit.org/show_bug.cgi?id={id}"
+        sig = hasbug.PatternSignature.signature_from_pattern(pattern)
         self.assertEquals("bugswebkitorgshowbugcgiid", sig)
 
-    def test_instantiate(self):
-        target = self.target_shortener.make_signature()
-        self.assertEquals(self.target_shortener.host, target.host)
-        self.assertEquals(self.target_shortener.pattern, target.pattern)
+    def test_hello(self):
+        sig = hasbug.PatternSignature.signature_from_pattern("https://bugs.webkit.org/show_bug.cgi?id={id}")
+        target = hasbug.PatternSignature.make(sig)
+        self.assertEquals(target.signature, sig)
+        target.add("https://bugs.webkit.org/show_bug.cgi?id={id}", "wkb.ug")
+        target.add("https://bugs2.webkit.org/show_bug.cgi?id={id}", "wkb2.ug")
+        self.assertEquals(2, len(target.patterns))
 
-    def test_shorten(self):
-        target = self.target_shortener.make_signature()
-        self.assertEquals("http://foo.hasb.ug/12345",
-                          target.shorten("http://foo.bugtracker.org/12345"))
-        def run():
-            target.shorten("http://foo.bugtracker.org/+++++")
-        self.assertRaises(ValueError, run)
+        self.assertEquals(target.shorten("https://bugs.webkit.org/show_bug.cgi?id=12345"), "http://wkb.ug/12345")
+        self.assertEquals(target.shorten("https://bugs2.webkit.org/show_bug.cgi?id=12345"), "http://wkb2.ug/12345")
+        def badid():
+            target.shorten("https://bugs.webkit.org/show_bug.cgi?id=+++++")
+        self.assertRaises(ValueError, badid)
+        def nomatch():
+            target.shorten("https://bugs3.webkit.org/show_bug.cgi?id=12345")
+        self.assertRaises(ValueError, nomatch)
