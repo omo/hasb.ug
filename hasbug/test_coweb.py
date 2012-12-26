@@ -89,15 +89,16 @@ class ConsoleTest(unittest.TestCase):
             hostvalue = "foo.bar"
             self.login_as_octocat()
             resp = self.app.post("/s", data = { "host": hostvalue, "pattern": "http://bugs.foo.bar/{id}", "canary": flask.session['canary'] })
-            self.assertTrue("200" in resp.status)
+            self.assertTrue("201" in resp.status)
+            self.assertEquals("http://localhost/s/foo.bar", resp.headers.get("location"))
             added = json.loads(resp.data)
-            self.assertEquals(added["host"], hostvalue)
+            self.assertEquals(added["location"], "/s/foo.bar")
 
     def test_shortener_add_forbidden(self):
         with self.app as c:
             self.login_as_octocat()
             resp1 = self.app.post("/s", data = { "host": "foo.bar", "pattern": "http://bugs.foo.bar/{id}", "canary": flask.session['canary'] })
-            self.assertTrue("200" in resp1.status)
+            self.assertTrue("201" in resp1.status)
             resp2 = self.app.post("/s", data = { "host": "foo.baz", "pattern": "http://bugs.foo.bar/{id}", "canary": flask.session['canary'] })
             self.assertTrue("403" in resp2.status) # Pattern conflict
             self.assertEquals("pattern", json.loads(resp2.data)["name"])

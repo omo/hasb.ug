@@ -150,8 +150,8 @@ def user_private():
 # Shortener
 #
 
-def make_json_response(data, status=200):
-    resp = f.make_response(json.dumps(data), status)
+def make_json_response(data, status=200, headers={}):
+    resp = f.make_response(json.dumps(data), status, headers)
     resp.mimetype = "application/json"
     return resp
 
@@ -174,16 +174,19 @@ def shortener(host):
 @ensuring_canary
 def shortener_collection():
     if f.request.method == "POST":
-        sner = hasbug.Shortener.make(f.request.form.get("host"), f.request.form.get("pattern"), f.request.user.url)
+        host = f.request.form.get("host")
+        patt = f.request.form.get("pattern")
+        sner = hasbug.Shortener.make(host, patt, f.request.user.url)
         try:
             app.r.add_shortener(sner)
-            return make_json_response(sner.dict)
+            location = f.url_for("shortener", host=host)
+            return make_json_response({ "location": location }, 201, headers={ "location": location })
         except hasbug.validation.ValidationError, ex:
             return make_json_response({ "name": ex.invalids[0].name, "message": ex.invalids[0].message }, 403)
         except hasbug.store.ItemInvalidError:
             app.logger.exception("shortener_collection.")
             return make_json_response({ "message": "Invalid request." }, 403)
-    return make_json_response({})
+    return make_json_response({}, 200)
 
 #
 # Shortener discovery

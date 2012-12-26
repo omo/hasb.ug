@@ -45,7 +45,8 @@ MePage.prototype.wire = function() {
   $(".my-shortener-new")
     .on("submit", this.didSubmitCreate.bind(this))
     .on("requested", this.didRequestCreate.bind(this))
-    .on("responded", this.didCreate.bind(this));
+    .on("done", this.didCreate.bind(this))
+    .on("failed", this.didFailCreate.bind(this));
   $(".add-shortener-button").on("click", function(evt) { $(evt.target).closest("form").submit(); });
   $(".host-type-hasbug").on("click", function() { $(".host-value-hasbug").show(); $(".host-value-custom").hide(); });
   $(".host-type-custom").on("click", function() { $(".host-value-hasbug").hide(); $(".host-value-custom").show(); });
@@ -91,32 +92,31 @@ MePage.prototype.validateCreation = function()
   return this.hostValidation.validate() & this.patternValidation.validate();
 }
 
-MePage.prototype.didCreate = function(evt, error) {
-
-  if (error) {
-    var toFocus = null;
-    switch(error.name) {
-    case "host":
-      this.hostValidation.error(error.message);
-      toFocus = $(evt.delegateTarget).find(this.hostValueSelector());
-      break;
-    case "pattern":
-      this.patternValidation.error(error.message);
-      toFocus = $(evt.delegateTarget).find("#pattern");
-      break;
-    default:
-      console.log(error);
-      break;
-    }
-
-    $(evt.delegateTarget).find("input,button").attr("disabled", null);
-    this.validateCreation();
-    if (toFocus)
-      toFocus.focus();
-    return;
+MePage.prototype.didFailCreate = function(evt, error) {
+  var toFocus = null;
+  switch(error.name) {
+  case "host":
+    this.hostValidation.error(error.message);
+    toFocus = $(evt.delegateTarget).find(this.hostValueSelector());
+    break;
+  case "pattern":
+    this.patternValidation.error(error.message);
+    toFocus = $(evt.delegateTarget).find("#pattern");
+    break;
+  default:
+    console.log(error);
+    break;
   }
 
-  window.location.reload();
+  $(evt.delegateTarget).find("input,button").attr("disabled", null);
+  this.validateCreation();
+  if (toFocus)
+    toFocus.focus();
+  return;
+};
+
+MePage.prototype.didCreate = function(evt, result) {
+  window.location = result.location;
 };
 
 MePage.prototype.didRequestCreate = function(evt) {
@@ -141,11 +141,13 @@ MePage.prototype.didSubmitCreate = function(evt) {
   $.ajax(
     "/s", 
     { type: "POST", data: topost,  headers: { "accept": "application/json" } }
-  ).done(function(xhr) {
-    $(target).trigger("responded");
+  ).done(function(message) {
+    $(target).trigger("done", message);
   }.bind(this)).fail(function(xhr) {
     if (xhr.status == 403)
-      $(target).trigger("responded", JSON.parse(xhr.responseText));
+      $(target).trigger("failed", JSON.parse(xhr.responseText));
+    else
+      console.log(xhr);
   }.bind(this));
 
   $(target).trigger("requested");
@@ -155,6 +157,9 @@ MePage.prototype.didSubmitCreate = function(evt) {
 MePage.prototype.didClickDelete = function(evt) {
   var host = evt.delegateTarget.dataset["host"];
   var canary = $("#canary").val();
+
+  if (!window.confirm("Are you deleting shortener '" + host + "'?"))
+    return;
 
   $.ajax(
     "/s/" + host, 
