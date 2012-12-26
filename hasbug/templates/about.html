@@ -1,0 +1,57 @@
+{% set subpath = "/about" %}
+{% extends "base.html" %}
+
+{% block content %}
+<div class="longtext">
+<h2>What is hasb.ug?</h2>
+
+<p>
+Hasb.ug is a URL shortener for bug tracker URLs.
+For example, hasb.ug shortens a long Bugzilla URL <a href="https://bugs.webkit.org/show_bug.cgi?id=63606">https://bugs.webkit.org/show_bug.cgi?id=63606</a>
+to <a href="http://wkb.ug/63606">http://wkb.ug/63606</a>.
+</p>
+<p>
+You can register your own host name (like "wkb.ug") to hasb.ug server and associate specific URL pattern to that host name.
+Then hasb.ug redirect the short version to the associated long version.
+You need to <a href="{{ url_for('login_oauth') }}">sign in</a> using your Github account to tell hasb.ug about your shortener.
+</p>
+
+<p>
+Hasb.ug also provides its sub-domain for you.
+For example, you can create <a href="http://less.hasb.ug/">less.hasb.ug</a> as a short version of
+<a href="https://github.com/cloudhead/less.js/issues/">https://github.com/cloudhead/less.js/issues/</a>.
+You don't need to own your own domain if you use hasb.ug sub-domains.
+</p>
+
+<h2>Domain Setup</h2>
+
+<p>
+Once purchased a domain for your bug, you need to 
+</p>
+<ul>
+  <li>Point 50.19.127.155 as your domain's A record. This is the IP address of hasb.ug server and</li>
+  <li>Pell the domain to hasb.ug through <a href="{{ url_for('user_private') }}">the console page</a>.</li>
+</ul>
+</p>
+Note: For hasb.ug sub-domaains, what you need to do is just to tell it from the cosole. No DNS configuration is needed.
+</p>
+
+<h2>Bookmarklet</h2>
+
+<p>
+You can use this bookmarklet to shorten the bug URL:
+<a href="javascript:window.location = 'http://hasb.ug/aka/' + encodeURIComponent(window.location);">Shorten Bug!</a>
+</p>
+
+<h2>Who Runs This?</h2>
+
+<p>
+<a href="http://github.com/omo">Hajime Morrita</a>.
+</p>
+<p>
+Hasb.ug development is hosted at Github and you can report bugs or feature requests using <a href="bug tracker is ">the issue tracker</a>. Any feedback would be appreciated :-)
+</p>
+
+</div>
+
+{% endblock %}

@@ -1,10 +1,8 @@
-{% set subpath = " - A bug URL abbreviator" %}
-{% extends "base.html" %}
-{% block subpath %}/me{% endblock %}
+{% set subpath = " - A bug URL shortener" %}
+{% set background  = background %}
+{% extends "imaging.html" %}
 
-{% block head %}
-{{ super() }}
-{% endblock %}
-
-{% block content %}
+{% block image_text %}
+Every software has bugs. Give them shorter names. <br />
+<a href="{{ url_for('login_oauth') }}">Sign in to give yours</a>.
 {% endblock %}

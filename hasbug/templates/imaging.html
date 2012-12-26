@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="explaining-shortener" style="{{ background.inline_style }}">
+<div class="text">
+{% block image_text %}{% endblock %}
+</div>
+</div>
+<div class="image-credit">The image is from <a href="{{ background.credit_url }}">{{ background.credit_name }}</a>.
+{% endblock %}

@@ -28,11 +28,42 @@ a[disabled]:hover {
    color: inherit;
 }
 
-body {
+.body {
+  padding: 0px;
+  margin: 0px;
+}
+
+.inner-body {
   max-width: 1024px;
   margin-left: auto;
   margin-right: auto;
   padding: 0em 1em 0em 1em;
+}
+
+.imaging-background {
+  padding: 6em 4em 0em 4em;
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  background-repeat: no-repeat;
+  background-size: 100% auto;
+
+  .text {
+     .lead;
+     padding: 1em;
+     background-color: white;
+     opacity: 0.7;
+  }
+}
+
+.image-credit {
+  text-align: right;
+  font-size: @fontSizeMini;
+  a:link, a:visited { color: @textColor; }
+}
+
+.longtext {
+  width: 50%;
+  min-width: 640px;
 }
 
 .outer {
@@ -141,30 +172,34 @@ img.avatar {
 
 // /s
 
+.explaining {
+   .imaging-background;
+   div.explaining-box {
+     padding: 0em 1em 0em 1em;
+     font-family: @monoFontFamily;
+   }
+
+   em {
+     font-weight: bold; 
+     font-style: normal;
+   }
+
+   a:focus {
+     outline: none;
+   } 
+}
+
+
 .explaining-shortener {
-
-   font-size: @baseFontSize * 2.5;
-   line-height: @baseLineHeight * 2.5;
-
-   .explaining-profile {
-
-   }
-
-   div {
-     padding: 0.2em 1em 0.2em 1em;
-   }
-
+   .explaining;
+  
    .explainig-host {
-     font-family: @headingsFontFamily;
-     font-weight: bold;
-
      a:link, a:visited {
        color: @textColor;
      }
    }
+}
 
-   .explainig-pattern {
-     font-family: @headingsFontFamily;
-     font-weight: bold;
-   }
+.explaining-shortened {
+   .explaining;
 }

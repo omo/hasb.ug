@@ -12,6 +12,8 @@
 {% endblock %}
 </head>
 <body>
+{% block bodytop %}{% endblock %}
+<div class="inner-body">
 
 <div style="display: none;">
   <form id="form-signout" action="{{ url_for('logout') }}" method="POST">
@@ -53,5 +55,6 @@
 
 </div>
 
+</div>
 </body>
 </html>

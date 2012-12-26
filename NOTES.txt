@@ -113,15 +113,24 @@ TODOs:
 + ensure session clean-ness
 
 > /s UI polish
-  - Better type setting and wording
+  + Better type setting and wording
 
 > /aka UI polish
-  - Make it selectable
-  - Add Bookmarklet
+  + Make it selectable
 
 > / polish
-  - Add explanation
-  - Redirect to /me if possible
+  + Add explanation
+  . Redirect to /me if possible
+
++ /about
+  + Add Bookmarklet
+
+> Add footer
+
+> Add social buttons
+  - /s
+  - /
+
 
 > deploy assets
   - install node/nvm/npm on hasb.ug
@@ -130,12 +139,6 @@ TODOs:
   + list
   + add
   - delete: Should be just a flagging?
-
-> UI
-  - Design the first version: UI, model, etc.
-  - Rough mock for initial UI (?)
-  - Implmement it with Stub login
-- Implement OAuth login stub
 
 . Setup Flask configuration
 

@@ -1,5 +1,11 @@
-{% extends "base.html" %}
-{% block subpath %}/aka/{{ url }}{% endblock %}
-{% block content %}
-{{ url }} is {{ shortened }}
+{% set subpath  = "/aka/" + url %}
+{% set background  = background %}
+{% extends "imaging.html" %}
+
+{% block image_text %}
+The long URL
+<div class="explaining-box"><a href="{{ url }}">{{ url }}</a></div>
+can be reached through
+<div class="explaining-box"><a class="shortened-url" href="{{ shortened }}">{{ shortened }}</a>.</div>
+We've selected it for you so that you can just copy it.
 {% endblock %}

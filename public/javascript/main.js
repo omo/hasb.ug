@@ -171,13 +171,24 @@ function signout() {
   $("#form-signout").submit();
 }
 
+AkaPage = function() { };
+AkaPage.prototype.wire = function() {
+  var target = document.querySelector(".shortened-url");
+  target.focus();
+  var sel = window.getSelection();
+  sel.selectAllChildren(target);
+};
+
 $(document).ready(function() {
   // For global navigation
   $("#nav-signout").on("click", signout);
   $(document).on("click", "a[disabled]", function(evt) { evt.preventDefault(); });
 
   if (0 == window.location.pathname.indexOf("/me")) {
-    var f = new MePage();
-    f.wire();
+    var p = new MePage();
+    p.wire();
+  } else if (0 == window.location.pathname.indexOf("/aka")) {
+    var p = new AkaPage();
+    p.wire();
   }
 });

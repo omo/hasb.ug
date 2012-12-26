@@ -134,3 +134,9 @@ class ConsoleTest(unittest.TestCase):
         hasbug.coweb.app.r.add_shortener(test_shortener.make_fresh("foo.hasb.ug"))
         resp = self.app.get("/aka/http://google.com/")
         self.assertTrue("200" in resp.status)
+
+
+class BackgroundImageTest(unittest.TestCase):
+    def test_hello(self):
+        target = hasbug.coweb.BackgroundImage('http://farm4.staticflickr.com/3127/3308532489_6a1bbf61fa_b.jpg', 681, "http://www.flickr.com/photos/rnw/3308532489/")
+        self.assertEquals(target.credit_name, "rnw")
