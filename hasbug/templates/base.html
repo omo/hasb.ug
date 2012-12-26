@@ -51,8 +51,17 @@
         </div>
       </div>
 </div>
+
 {% block content %}{% endblock %}
 
+<div class="about-block">
+<a href="{{ url_for('about') }}">about</a>
+-
+<a href="https://twitter.com/search?q=hasbug">#hasbug</a>
+-
+<a href="https://github.com/omo/hasb.ug/issues">this.hasb.ug</a>
+-
+<a href="https://github.com/yukop/sandbox/tree/master/study/hasbee"><img class="hasbee" src="{{ url_for('static', filename='images/hasbee_32x32.png') }}" /></a>
 </div>
 
 </div>

@@ -40,6 +40,27 @@ a[disabled]:hover {
   padding: 0em 1em 0em 1em;
 }
 
+// Footer
+.about-block {
+
+  text-align: right;
+  .border-radius(@baseBorderRadius);
+  background-color: @wellBackground;
+  border: 1px solid darken(@wellBackground, 7%);
+  padding: 0.5em 1em 0.5em 1em;
+  margin: 1em 0em 1em 0em;
+
+  a:link, a:visited { color: @textColor; }
+
+  .hasbee {
+    width: 16px;
+    height: 16px;
+    vertical-align: text-bottom;
+  }
+}
+
+// Imaging
+
 .imaging-background {
   padding: 6em 4em 0em 4em;
   box-sizing: border-box;
@@ -57,13 +78,8 @@ a[disabled]:hover {
 
 .image-credit {
   text-align: right;
-  font-size: @fontSizeMini;
+  font-size: @fontSizeSmall;
   a:link, a:visited { color: @textColor; }
-}
-
-.longtext {
-  width: 50%;
-  min-width: 640px;
 }
 
 .outer {
@@ -153,7 +169,7 @@ a[disabled]:hover {
   }
 
   #host-custom { width: 12em; }
-  #host-hasbug { width: 4em; }
+  #host-hasbug { width: 4em; text-align: right; }
 
   #pattern {
     width: 32em;
@@ -200,6 +216,16 @@ img.avatar {
    }
 }
 
+// /aka
+
 .explaining-shortened {
    .explaining;
 }
+
+// /about
+
+.longtext {
+  width: 50%;
+  min-width: 640px;
+}
+
