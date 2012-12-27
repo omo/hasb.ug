@@ -146,7 +146,7 @@ TODOs:
 + Fix strange image scaling
 
 + Setup S3
-- logrotate
++ logrotate
 
 + Analytics
 + add redirect from reweb root to coweb /s/*

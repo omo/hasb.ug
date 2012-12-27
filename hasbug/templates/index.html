@@ -1,8 +1,10 @@
+{% set title = "Hasb.ug - A bug URL shortener" %}
+{% set description = "Every software has bugs. Give them shorter names." %}
 {% set subpath = " - A bug URL shortener" %}
 {% set background  = background %}
 {% extends "imaging.html" %}
 
 {% block image_text %}
-Every software has bugs. Give them shorter names. <br />
+{{ description }}<br />
 <a href="{{ url_for('login_oauth') }}">Sign in to make yours</a>.
 {% endblock %}

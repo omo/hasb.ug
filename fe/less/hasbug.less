@@ -123,17 +123,20 @@ a[disabled]:hover {
   color: white;
 }
 
-.navbar .brand {
-  img.brand-logo {
-    vertical-align: text-bottom;
-    height: 20px;
-    width: 20x;
-  }
 
+
+
+
+.navbar .brand {
   font-family: 'Ubuntu', @sansFontFamily;
   a:link, a:visited, a:hover {
     color: white;
     text-decoration: none;
+  }
+
+  a:hover {
+    .transition(color .1s ease-in-out);
+    color: lighten(@linkColor, 20%);
   }
 }
 
