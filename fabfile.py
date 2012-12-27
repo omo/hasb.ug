@@ -5,7 +5,8 @@ import os
 # http://stackoverflow.com/questions/1180411/activate-a-virtualenv-via-fabric-as-deploy-user
 # FIXME: These should be env. variables.
 PROJECT_DIR   = "/home/ubuntu/work/hasb.ug"
-VENV_ACTIVATE = os.path.join(PROJECT_DIR, "pyenv/bin/activate")
+NVM_DIR       = "/home/ubuntu/.nvm"
+VENV_ACTIVATE = os.path.join(PROJECT_DIR, "bin/activate")
 
 env.use_ssh_config = True
 
@@ -25,8 +26,12 @@ def hello():
 def update():
     with cd(PROJECT_DIR):
         run("git pull origin master")
+        run("export NVM_DIR={dir}".format(dir=NVM_DIR))
+        run("make all")
         put("confs/boto.conf", "confs/boto.conf")
         virtualenv("pip install -r requirements.txt")
+        virtualenv("npm install")
+        virtualenv("bower install")
 
 def reload_gunicorn():
     with cd(PROJECT_DIR):

@@ -149,14 +149,15 @@ TODOs:
 > Dogfood
   - Move wkb.ug
 
+> publish
+  - Write README
+  - Flip repo to public
+  - Write a blog post
+
 BUG:
 . add_shortener can result inconsistency.
 + Signature can conflict
-- Should we allow duplicated shortener? -> Probably no.
-
-BUG:
-- Signature can conflict
-- Should we allow duplicated shortener? -> Probably no.
++ Should we allow duplicated shortener? -> Probably no.
 
 - logrotate
 
@@ -274,6 +275,8 @@ EC2 setup (should be fabrified eventually):
 
 $ sudo aptitude install make build-essential git python python-dev python-distribute python-virtualenv
 $ git clone https://github.com/omo/hasb.ug
+$ virtualenv pyenv --distribute
+# install nvm, npm
 
 
 Links

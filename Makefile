@@ -17,8 +17,8 @@ FONT_SRC        = ${FONT_SRC_DIR}/fontawesome-webfont.eot \
 FONT_DST_DIR    = public/font
 FONT_DST        = $(subst ${FONT_SRC_DIR},${FONT_DST_DIR},${FONT_SRC})
 
-all:
-	echo "Not yet."
+all: asset
+	echo "Done."
 
 grun:
 	source ./bin/activate && gunicorn --config==confs/gunicorn.conf.py web:app
