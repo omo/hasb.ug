@@ -13,5 +13,7 @@ if os.environ.get("HASBUG_PROD"):
     pidfile    = os.path.join(prod_dir, "run/gunicorn.pid")
     #debug = True
 else:
+    accesslog  = '-'
+    errorlog   = '-'
     bind = "0.0.0.0:8000"
     debug = True

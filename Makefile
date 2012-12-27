@@ -21,7 +21,7 @@ all: asset
 	echo "Done."
 
 grun:
-	. ./bin/activate && gunicorn --config==confs/gunicorn.conf.py web:app
+	. ./bin/activate && gunicorn --config=confs/gunicorn.conf.py web:app
 run:
 	. ./bin/activate && python web.py
 
