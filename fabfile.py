@@ -11,7 +11,7 @@ VENV_ACTIVATE = os.path.join(PROJECT_DIR, "bin/activate")
 env.use_ssh_config = True
 
 def virtualenv(command):
-    run("source " + VENV_ACTIVATE + ' && ' + command)
+    run(". " + VENV_ACTIVATE + ' && ' + command)
 
 # Invokable commands:
 
@@ -27,11 +27,11 @@ def update():
     with cd(PROJECT_DIR):
         run("git pull origin master")
         run("export NVM_DIR={dir}".format(dir=NVM_DIR))
-        run("make all")
-        put("confs/boto.conf", "confs/boto.conf")
         virtualenv("pip install -r requirements.txt")
         virtualenv("npm install")
         virtualenv("bower install")
+        put("confs/boto.conf", "confs/boto.conf")
+        run("make all")
 
 def reload_gunicorn():
     with cd(PROJECT_DIR):
