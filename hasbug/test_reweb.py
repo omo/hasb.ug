@@ -27,3 +27,7 @@ class RedirectorTest(unittest.TestCase):
     def test_wkcheckin_root(self):
         resp = self.app.get("/", headers = { "Host": "wkcheck.in" })
         self.assert_redirect_to(resp, "http://hasb.ug/s/wkcheck.in")
+
+    def test_wkcheckin_noop(self):
+        resp = self.app.get("/noop", headers = { "Host": "wkcheck.in" })
+        self.assertTrue("200" in resp.status)

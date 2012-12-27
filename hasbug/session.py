@@ -45,16 +45,18 @@ class SessionInterface(SessionInterface):
             return self.session_class(sid=self.generate_sid(), new=True)
 
     def save_session(self, app, session, response):
+        if not session.modified:
+            # For saving database access, we don't save any unmodified session even if it is created.
+            # This means we create fresh session each time for non-login user.
+            return
         domain = self.get_cookie_domain(app)
         if not session:
             self.get_store().sessions.remove_found(session.sid)
-            if session.modified:
-                response.delete_cookie(app.session_cookie_name,
-                                       domain=domain)
+            response.delete_cookie(app.session_cookie_name,
+                                   domain=domain)
             return
         cookie_exp = self.get_expiration_time(app, session)
         val = self.serializer.dumps(dict(session))
-        self.serializer.loads(val)
         self.get_store().sessions.add(Session(dict={ "sid": session.sid, "pickle": val }), can_replace=True)
         response.set_cookie(app.session_cookie_name, session.sid,
                             expires=cookie_exp, httponly=True,

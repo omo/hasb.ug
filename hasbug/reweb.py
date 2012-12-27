@@ -15,7 +15,7 @@ def find_host():
     return re.sub("\\:\\d+$", "", host_may_with_port)
     
 @app.route('/')
-def hello_world():
+def index():
     host = find_host()
     return f.redirect("http://hasb.ug/s/{host}".format(host=host))
 
@@ -27,3 +27,7 @@ def redirect(bugid):
         return f.redirect(shortener.url_for(bugid))
     except hasbug.ItemNotFoundError, e:
         return f.abort(404)
+
+@app.route('/noop')
+def noop():
+    return "<html><body>Hello</body></html>"

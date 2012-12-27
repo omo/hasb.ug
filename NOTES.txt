@@ -131,7 +131,7 @@ TODOs:
 > Add social buttons
   + /s
   + /
-  - Add social metadata (OGP, Twitter Cards)
+  + Add social metadata (OGP, Twitter Cards)
 
 > deploy assets
   + install node/nvm/npm on hasb.ug
@@ -151,11 +151,11 @@ TODOs:
 + Analytics
 + add redirect from reweb root to coweb /s/*
 
-> Revisit deploy
-  - Switch to faster instance (?) -> later.
-
 > Dogfood
   - Move wkb.ug
+
+> Revisit deploy
+  - Switch to faster instance (?) -> later.
 
 > publish
   - Write README
