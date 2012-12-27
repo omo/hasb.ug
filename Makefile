@@ -44,8 +44,9 @@ ${JS_VENDOR_BS}:
 	mkdir -p ${JS_VENDOR_DIR}
 	cp components/bootstrap/docs/assets/js/bootstrap.js $@
 
+# This runs on the prod server where bash isn't default.
 ${CSS_BIN}: ${LESS_SRC}
-	. ./bin/activate && lessc --strict-import --include-path=${LESS_DIR}:components/bootstrap/less/ $< > $@
+	bash -c ". ./bin/activate && lessc --strict-import --include-path=${LESS_DIR}:components/bootstrap/less/ $< > $@"
 
 ${PIP_REQUIREMENT}:
 	. ./bin/activate && pip freeze > $@
