@@ -12,7 +12,6 @@
 {% endblock %}
 </head>
 <body>
-{% block bodytop %}{% endblock %}
 <div class="inner-body">
 
 <div style="display: none;">
@@ -26,28 +25,22 @@
       <div class="navbar-inner">
         <div class="container-fluid">
           <span class="brand">
-            <!--img src="{{ url_for('static', filename='images/hasbee_32x32.png' )}}" class="brand-logo" /-->
             <a href="/">hasb.ug</a>{{ subpath }}
           </span>
-          <div class="nav-collapse collapse">
-            <div class="navbar-text pull-right">
+          <div class="navbar-text pull-right">
 {% if user %}
-            <ul class="nav">
-              <li class="dropdown">
-                <a href="#" class="navlink dropdown-toggle" data-toggle="dropdown"><img class="avatar" src="{{ user.avatar_url }}" /> {{ user.login }} <b class="caret"></b></a>
-                <ul class="dropdown-menu">
-                  <li><a href="{{ url_for('user_private') }}"><i class="icon-github"></i> You</a></li>
-                  <li><a href="#" id="nav-signout"><i class="icon-signout"></i> Sign out</a></li>
-                </ul>
-              </div>
-            </ul>
+              <ul class="nav">
+                <li class="{% if request.path == url_for('user_private') %}active{% endif %}">
+                   <a href="{{ url_for('user_private') }}" title="You"><img class="avatar" src="{{ user.avatar_url }}" /></i></a>
+                </li>
+                <li><a href="#" id="nav-signout"><i class="icon-signout" title="Sign out"></i></a></li>
+              </ul>
 {% else %}
-            <div class="nav">
-              <a class="navlink" href="{{ url_for('login_oauth') }}"><i class="icon-github"></i> Sign in</a>
-            </div>
+              <div class="nav">
+                <a class="navlink" href="{{ url_for('login_oauth') }}"><i class="icon-github"></i> Sign in</a>
+              </div>
 {% endif %}
-            </div>
-          </div><!--/.nav-collapse -->
+          </div>
         </div>
       </div>
 </div>

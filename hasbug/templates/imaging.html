@@ -1,7 +1,22 @@
 {% extends "base.html" %}
 
+{% block head %}
+{{ super() }}
+<style>
+.imaging-holder {
+  background-image: url('{{ background.url }}');
+}
+
+/* min-width is set to 640px. See hasbug.less */
+@media                        (max-width:  640px) { .imaging-holder { height: {{ background.height*(640.0/1024.0) }}px; } }
+@media (min-width: 640px) and (max-width:  768px) { .imaging-holder { height: {{ background.height*(768.0/1024.0) }}px; } }
+@media (min-width: 768px) and (max-width:  896px) { .imaging-holder { height: {{ background.height*(896.0/1024.0) }}px; } }
+@media (min-width: 896px)                         { .imaging-holder { height: {{ background.height }}px; } }
+</style>
+{% endblock %}
+
 {% block content %}
-<div class="explaining-shortener" style="{{ background.inline_style }}">
+<div class="explaining-shortener imaging-holder">
 <div class="text">
 {% block image_text %}{% endblock %}
 </div>
