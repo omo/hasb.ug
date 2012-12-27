@@ -23,3 +23,7 @@ class RedirectorTest(unittest.TestCase):
         self.assert_redirect_to(resp, "http://trac.webkit.org/changeset/12345")
         resp = self.app.get("/12345", headers = { "Host": "wkb.ug" })
         self.assert_redirect_to(resp, "https://bugs.webkit.org/show_bug.cgi?id=12345")
+
+    def test_wkcheckin_root(self):
+        resp = self.app.get("/", headers = { "Host": "wkcheck.in" })
+        self.assert_redirect_to(resp, "http://hasb.ug/s/wkcheck.in")

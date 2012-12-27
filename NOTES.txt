@@ -145,10 +145,11 @@ TODOs:
 
 + Fix strange image scaling
 
-- Setup S3
++ Setup S3
 - logrotate
 
-- Analytics
++ Analytics
+- add redirect from reweb root to coweb /s/*
 
 > Revisit deploy
   - Switch to faster instance (?) -> later.
