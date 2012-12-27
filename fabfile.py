@@ -39,6 +39,7 @@ def reload_gunicorn():
         with settings(warn_only=True):
             sudo("stop gunicorn")
         sudo("cp confs/gunicorn-upstart.conf /etc/init/gunicorn.conf")
+        sudo("cp confs/logrotate.conf /etc/logrotate.d/gunicorn")
         sudo("start --verbose gunicorn")
 
 def deploy():

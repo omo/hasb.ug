@@ -149,7 +149,7 @@ TODOs:
 - logrotate
 
 + Analytics
-- add redirect from reweb root to coweb /s/*
++ add redirect from reweb root to coweb /s/*
 
 > Revisit deploy
   - Switch to faster instance (?) -> later.
