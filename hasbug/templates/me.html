@@ -35,12 +35,12 @@
       <button type="button" class="btn host-type-custom">Custom</button>
     </div>
 
-    <span class="input-prepend host-value-custom">
+    <span class="input-prepend host-value-custom" {{ hide_at_firt() }}>
       <span class="add-on"><span class="input-label">Host</span></span>
       <input id="host-custom" type="text" placeholder="hellobug.com" />
     </span>
 
-    <span class="input-prepend input-append host-value-hasbug">
+    <span class="input-prepend input-append host-value-hasbug" {{ hide_at_firt() }}>
       <span class="add-on"><span class="input-label">Host</span></span>
       <input id="host-hasbug" type="text" placeholder="hello" />
       <span class="add-on"><span class="input-label">.hasb.ug</span></span>

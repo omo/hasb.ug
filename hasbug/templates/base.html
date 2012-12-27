@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+
 {% macro social() -%}
 <div class="social-button">
   <div class="g-plusone" data-size="medium" data-annotation="none"></div>
@@ -12,14 +13,16 @@
   <div class="fb-like" data-href="{{ request.url }}" data-send="false" data-layout="button_count" data-width="450" data-show-faces="false" data-font="verdana"></div>
 </div>
 {%- endmacro %}
+
+{%- macro hide_at_firt() %}style="display:none;"{%- endmacro %}
 {% block head %}
 <title>hasb.ug{{ subpath }}</title>
 <link rel="stylesheet" href="{{ url_for('static', filename='stylesheets/main.css' )}}" />
 <link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.ico' )}}" type="image/x-icon">
 <!-- FIXME: SHould be @defer -->
-<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
-<script src="{{ url_for('static', filename='javascript/vendor/bootstrap.js' )}}"></script>
-<script src="{{ url_for('static', filename='javascript/main.js' )}}"></script>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js" defer></script>
+<script src="{{ url_for('static', filename='javascript/vendor/bootstrap.js' )}}" defer></script>
+<script src="{{ url_for('static', filename='javascript/main.js' )}}" defer></script>
 {% endblock %}
 </head>
 <body>
