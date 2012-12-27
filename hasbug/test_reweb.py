@@ -23,6 +23,12 @@ class RedirectorTest(unittest.TestCase):
         self.assert_redirect_to(resp, "http://trac.webkit.org/changeset/12345")
         resp = self.app.get("/12345", headers = { "Host": "wkb.ug" })
         self.assert_redirect_to(resp, "https://bugs.webkit.org/show_bug.cgi?id=12345")
+        resp = self.app.get("/01234", headers = { "Host": "wkcheck.in" })
+        self.assert_redirect_to(resp, "http://trac.webkit.org/changeset/01234")
+
+    def test_wkcheckin_nondigit(self):
+        resp = self.app.get("/0123a", headers = { "Host": "wkcheck.in" })
+        self.assertTrue("403" in resp.status)
 
     def test_wkcheckin_root(self):
         resp = self.app.get("/", headers = { "Host": "wkcheck.in" })
@@ -31,3 +37,4 @@ class RedirectorTest(unittest.TestCase):
     def test_wkcheckin_noop(self):
         resp = self.app.get("/noop", headers = { "Host": "wkcheck.in" })
         self.assertTrue("200" in resp.status)
+

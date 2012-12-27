@@ -19,8 +19,10 @@ def index():
     host = find_host()
     return f.redirect("http://hasb.ug/s/{host}".format(host=host))
 
-@app.route('/<int:bugid>') # FIXME: should be digits rather than a number
+@app.route('/<string:bugid>')
 def redirect(bugid):
+    if not re.match("^\d+$", bugid):
+        return f.make_response("Non-digit response is not allowed", 403)
     try:
         host = find_host()
         shortener = app.r.shorteners.find(host)
