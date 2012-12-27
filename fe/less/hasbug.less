@@ -1,6 +1,7 @@
 
 @import "bootstrap.less";
 @import "variables.less"; // From http://bootswatch.com/cerulean/
+@import "functions.less";
 @import url("http://fonts.googleapis.com/css?family=Ubuntu:400,700");
 
 // Copied from http://fortawesome.github.com/Font-Awesome/
@@ -15,6 +16,7 @@
   font-weight: normal;
   font-style: normal;
 }
+
 
 // Further customize
 
@@ -44,19 +46,6 @@ a[disabled]:hover {
   margin-left: auto;
   margin-right: auto;
   padding: 0em 1em 0em 1em;
-}
-
-.box-sizing(@value) {
-  box-sizing: @value;
-  -moz-box-sizing: @value;
-}
-
-.filter(@exp) {
-  -webkit-filter: @exp;
-  -moz-filter: @exp;
-  -ms-filter: @exp;
-  -o-filter: @exp;
-  filter: @exp;
 }
 
 // Footer
@@ -266,4 +255,3 @@ img.avatar {
 .longtext {
   width: 50%;
 }
-
