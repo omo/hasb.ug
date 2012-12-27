@@ -184,8 +184,13 @@ def shortener_collection():
             return make_json_response({ "name": ex.invalids[0].name, "message": ex.invalids[0].message }, 403)
         except hasbug.store.ItemInvalidError:
             app.logger.exception("shortener_collection.")
+<<<<<<< HEAD
             return make_json_response({ "message": "Invalid request." }, 403)
     return make_json_response({}, 200)
+=======
+            return f.make_response("Invalid Request", 400)
+    return make_json_response({})
+>>>>>>> origin/master
 
 #
 # Shortener discovery

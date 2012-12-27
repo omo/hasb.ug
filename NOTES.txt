@@ -154,6 +154,10 @@ BUG:
 + Signature can conflict
 - Should we allow duplicated shortener? -> Probably no.
 
+BUG:
+- Signature can conflict
+- Should we allow duplicated shortener? -> Probably no.
+
 - logrotate
 
 Features:
