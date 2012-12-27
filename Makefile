@@ -52,7 +52,7 @@ ${PIP_REQUIREMENT}:
 	. ./bin/activate && pip freeze > $@
 
 clean:
-	find hasbug -name "*.pyc" | xargs rm
+	-find hasbug -name "*.pyc" | xargs rm
 	-rm *.pyc
 	-rm ${CSS_BIN}
 
