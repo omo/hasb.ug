@@ -46,6 +46,11 @@ em {
   padding: 0em 1em 0em 1em;
 }
 
+.box-sizing(@value) {
+  box-sizing: @value;
+  -moz-box-sizing: @value;
+}
+
 .filter(@exp) {
   -webkit-filter: @exp;
   -moz-filter: @exp;
@@ -76,17 +81,21 @@ em {
 // Imaging
 
 .imaging-background {
-  padding: 6em 4em 0em 4em;
-  box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  background-repeat: no-repeat;
-  background-size: 100% auto;
+ .box-sizing(border-box);
+  position: relative;
+  padding: 0px;
 
   .text {
-     .lead;
+    .box-sizing(border-box);
+     position: absolute;
+     top:    4em;
+     left:   5%;
+     width: 90%;
      padding: 1em;
      background-color: white;
      opacity: 0.7;
+
+     .lead;
   }
 }
 

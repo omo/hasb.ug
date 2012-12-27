@@ -134,7 +134,7 @@ TODOs:
   - Add social metadata (OGP, Twitter Cards)
 
 > deploy assets
-  - install node/nvm/npm on hasb.ug
+  + install node/nvm/npm on hasb.ug
 
 > User hasbuger user commands
   + list
@@ -143,8 +143,15 @@ TODOs:
 
 . Setup Flask configuration
 
++ Fix strange image scaling
+
+- Analytics
+
+- Setup S3
+- logrotate
+
 > Revisit deploy
-  - Switch to faster instance
+  - Switch to faster instance (?) -> later.
 
 > Dogfood
   - Move wkb.ug
@@ -159,7 +166,7 @@ BUG:
 + Signature can conflict
 + Should we allow duplicated shortener? -> Probably no.
 
-- logrotate
+
 
 Features:
 ---------------------------------------------

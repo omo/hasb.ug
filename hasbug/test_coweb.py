@@ -139,5 +139,5 @@ class ConsoleTest(unittest.TestCase):
 
 class BackgroundImageTest(unittest.TestCase):
     def test_hello(self):
-        target = hasbug.coweb.BackgroundImage('http://farm4.staticflickr.com/3127/3308532489_6a1bbf61fa_b.jpg', 681, "http://www.flickr.com/photos/rnw/3308532489/")
+        target = hasbug.coweb.BackgroundImage('http://farm4.staticflickr.com/3127/3308532489_6a1bbf61fa_b.jpg', "http://www.flickr.com/photos/rnw/3308532489/")
         self.assertEquals(target.credit_name, "rnw")
