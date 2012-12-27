@@ -34,12 +34,11 @@ deploy:
 
 freeze: ${PIP_REQUIREMENT}
 
-
 asset: ${CSS_BIN} ${JS_VENDOR_BS} ${FONT_DST}
 
 ${FONT_DST}: ${FONT_SRC}
 	mkdir -p ${FONT_DST_DIR}
-	cp $? ${FONT_DST_DIR}
+	cp $^ ${FONT_DST_DIR}
 
 ${JS_VENDOR_BS}:
 	mkdir -p ${JS_VENDOR_DIR}
@@ -53,6 +52,7 @@ ${PIP_REQUIREMENT}:
 
 clean:
 	find hasbug -name "*.pyc" | xargs rm
-	-rm rm *.pyc
+	-rm *.pyc
+	-rm ${CSS_BIN}
 
 .PHONY: ${PIP_REQUIREMENT} deploy run clean test

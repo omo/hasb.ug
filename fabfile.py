@@ -31,7 +31,7 @@ def update():
         virtualenv("npm install")
         virtualenv("bower install")
         put("confs/boto.conf", "confs/boto.conf")
-        run("make all")
+        run("make clean all")
 
 def reload_gunicorn():
     with cd(PROJECT_DIR):
