@@ -32,7 +32,7 @@ def update():
         virtualenv("bower install")
         put("confs/boto.conf", "confs/boto.conf")
         run("make clean all")
-        virtualenv("bin/hasbuger upload-asset --dir public/")
+        run("bin/hasbuger upload-asset --dir public/")
 
 def reload_gunicorn():
     with cd(PROJECT_DIR):

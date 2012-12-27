@@ -17,20 +17,20 @@
 }
 
 // Further customize
-//@baseFontSize:          18px;
-//@baseLineHeight:        24px;
+
 @placeholderText:         lighten(@grayLight, 20%);
 
+em {
+  font-weight: bold; 
+  font-style: normal;
+}
+
+// Disabling link decoration when @disabled is given
 a[disabled]:link,
 a[disabled]:visited,
 a[disabled]:hover {
    text-decoration: none;
    color: inherit;
-}
-
-em {
-  font-weight: bold; 
-  font-style: normal;
 }
 
 .body {
