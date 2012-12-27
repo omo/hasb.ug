@@ -42,7 +42,8 @@ ${FONT_DST}: ${FONT_SRC}
 	cp $? ${FONT_DST_DIR}
 
 ${JS_VENDOR_BS}:
-	install components/bootstrap/docs/assets/js/bootstrap.js $@
+	mkdir -p ${JS_VENDOR_DIR}
+	cp components/bootstrap/docs/assets/js/bootstrap.js $@
 
 ${CSS_BIN}: ${LESS_SRC}
 	. ./bin/activate && lessc --strict-import --include-path=${LESS_DIR}:components/bootstrap/less/ $< > $@
