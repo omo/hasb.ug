@@ -21,5 +21,9 @@
 {% block image_text %}{% endblock %}
 </div>
 </div>
-<div class="image-credit">The image is from <a href="{{ background.credit_url }}">{{ background.credit_name }}</a>.</div>
+<div class="imaging-footer">
+  <div class="social">{{ social() }}</div>
+  <div class="credit">The image is from <a href="{{ background.credit_url }}">{{ background.credit_name }}</a>.</div>
+  <div class="clear"></div>
+</div>
 {% endblock %}

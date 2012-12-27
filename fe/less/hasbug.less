@@ -28,6 +28,11 @@ a[disabled]:hover {
    color: inherit;
 }
 
+em {
+  font-weight: bold; 
+  font-style: normal;
+}
+
 .body {
   padding: 0px;
   margin: 0px;
@@ -39,6 +44,14 @@ a[disabled]:hover {
   margin-left: auto;
   margin-right: auto;
   padding: 0em 1em 0em 1em;
+}
+
+.filter(@exp) {
+  -webkit-filter: @exp;
+  -moz-filter: @exp;
+  -ms-filter: @exp;
+  -o-filter: @exp;
+  filter: @exp;
 }
 
 // Footer
@@ -77,11 +90,32 @@ a[disabled]:hover {
   }
 }
 
-.image-credit {
-  text-align: right;
-  font-size: @fontSizeSmall;
-  a:link, a:visited { color: @textColor; }
+.imaging-footer {
+  .social {
+    float: left;
+    position: relative;
+    top: 5px;
+    .social-button {
+      .filter(grayscale(100%));
+      display: inline-block;
+      vertical-align: top;
+
+      &:hover { .filter(none); }
+    }
+  }
+
+  .credit {
+    float: right;
+    text-align: right;
+    font-size: @fontSizeSmall;
+    a:link, a:visited { color: @textColor; }
+  }
+
+  .clear {
+    clear: both;
+  }
 }
+
 
 .outer {
   padding: 1em 0em 1em 0em;
@@ -194,11 +228,6 @@ img.avatar {
    div.explaining-box {
      padding: 0em 1em 0em 1em;
      font-family: @monoFontFamily;
-   }
-
-   em {
-     font-weight: bold; 
-     font-style: normal;
    }
 
    a:focus {

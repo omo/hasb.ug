@@ -8,8 +8,7 @@ import functools
 import flask as f
 import json
 import re
-import urllib2
-import urlparse
+import urllib, urllib2, urlparse
 import zlib
 
 import hasbug
@@ -221,3 +220,7 @@ def link_to_host(s):
 @app.template_filter('pattern_to_ellipsis')
 def pattern_to_ellipsis(p):
     return p.format(id="...")
+
+@app.template_filter('urlencode')
+def urlencode_filter(s):
+    return urllib.quote_plus(s)

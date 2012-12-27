@@ -82,7 +82,7 @@ class ConsoleTest(unittest.TestCase):
     def test_me_after_login(self):
         self.login_as_octocat()
         resp = self.app.get("/me")
-        self.assertTrue("octocat" in resp.data)
+        self.assertTrue("200" in resp.status)
 
     def test_shortener_add(self):
         with self.app as c:

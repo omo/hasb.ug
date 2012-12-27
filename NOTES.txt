@@ -126,12 +126,11 @@ TODOs:
   + Add Bookmarklet
 
 + Add footer
-- Kill dropdown on navbar.
++ Kill dropdown on navbar.
 
 > Add social buttons
-  - /s
-  - /
-
+  + /s
+  + /
 
 > deploy assets
   - install node/nvm/npm on hasb.ug
