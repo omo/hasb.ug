@@ -131,6 +131,7 @@ TODOs:
 > Add social buttons
   + /s
   + /
+  - Add social metadata (OGP, Twitter Cards)
 
 > deploy assets
   - install node/nvm/npm on hasb.ug
@@ -142,16 +143,11 @@ TODOs:
 
 . Setup Flask configuration
 
-> UI boilerplate
-  - Setup Jinja2 layout template
-  - Setup build pipeline like less
-> Read-only
-  - Add myself as a (built-in) user
-  - Move wkb.ug, wkcheck.in, webkit.hasb.ug as myself-added shortener.
-  - Make it work.
-> User-enabled
-  - Add login/auth page.
-  - Add shortener adding page
+> Revisit deploy
+  - Switch to faster instance
+
+> Dogfood
+  - Move wkb.ug
 
 BUG:
 . add_shortener can result inconsistency.
