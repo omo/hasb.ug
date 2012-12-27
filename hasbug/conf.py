@@ -9,6 +9,12 @@ parser.read([CONFIG_FILE_NAME])
 def get(section, name):
     return parser.get(section, name)
 
+def aws_access_key_id():
+    return get("Credentials", "aws_access_key_id")
+
+def aws_secret_access_key():
+    return get("Credentials", "aws_secret_access_key")
+
 def github_client_id():
     return get("Credentials", "github_client_id")
 

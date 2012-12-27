@@ -9,6 +9,7 @@ import hasbug.session as session
 
 template_dir = os.path.join(os.path.dirname(__file__), "templates")
 static_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "public")
+s3_endpoint = "http://hasbug-asset.s3-website-us-east-1.amazonaws.com"
 
 class App(flask.Flask):
     def __init__(self, *args, **kwargs):
@@ -21,6 +22,12 @@ class App(flask.Flask):
         self._r = None
         self.jinja_env.globals["user"] = None
         self.jinja_env.globals["canary"] = None
+        self.jinja_env.globals["url_for"] = self.s3_aware_url_for
+
+    def s3_aware_url_for(self, endpoint, **values):
+        if prod.in_prod and endpoint == "static":
+            return s3_endpoint + flask.url_for(endpoint, **values)
+        return flask.url_for(endpoint, **values)
 
     @property
     def r(self):

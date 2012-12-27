@@ -145,10 +145,10 @@ TODOs:
 
 + Fix strange image scaling
 
-- Analytics
-
 - Setup S3
 - logrotate
+
+- Analytics
 
 > Revisit deploy
   - Switch to faster instance (?) -> later.
