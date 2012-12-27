@@ -21,16 +21,16 @@ all: asset
 	echo "Done."
 
 grun:
-	source ./bin/activate && gunicorn --config==confs/gunicorn.conf.py web:app
+	. ./bin/activate && gunicorn --config==confs/gunicorn.conf.py web:app
 run:
-	source ./bin/activate && python web.py
+	. ./bin/activate && python web.py
 
 test:
-	source ./bin/activate && python -m unittest discover ${TEST_OPTIONS}
+	. ./bin/activate && python -m unittest discover ${TEST_OPTIONS}
 dbtest:
-	source ./bin/activate && HASBUG_TEST_DATABASE=1 python -m unittest discover ${TEST_OPTIONS}
+	. ./bin/activate && HASBUG_TEST_DATABASE=1 python -m unittest discover ${TEST_OPTIONS}
 deploy:
-	source ./bin/activate && fab -H hasb.ug -u ubuntu deploy
+	. ./bin/activate && fab -H hasb.ug -u ubuntu deploy
 
 freeze: ${PIP_REQUIREMENT}
 
@@ -45,10 +45,10 @@ ${JS_VENDOR_BS}:
 	cp components/bootstrap/docs/assets/js/bootstrap.js $@
 
 ${CSS_BIN}: ${LESS_SRC}
-	source ./bin/activate && lessc --strict-import --include-path=${LESS_DIR}:components/bootstrap/less/ $< > $@
+	. ./bin/activate && lessc --strict-import --include-path=${LESS_DIR}:components/bootstrap/less/ $< > $@
 
 ${PIP_REQUIREMENT}:
-	source ./bin/activate && pip freeze > $@
+	. ./bin/activate && pip freeze > $@
 
 clean:
 	find hasbug -name "*.pyc" | xargs rm

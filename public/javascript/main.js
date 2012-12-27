@@ -36,18 +36,10 @@ function MePage() {
 };
 
 MePage.prototype.wire = function() {
-<<<<<<< HEAD
-=======
-  $(".my-shortener-new").on("submit", this.didSubmitCreate.bind(this));
-  $(".add-shortener-button").on("click", function(evt) { $(evt.target).closest("form").submit(); });
-  $(".delete-shortener-button").on("click", this.didClickDelete.bind(this));
-
->>>>>>> origin/master
   $(".my-shortener").on("requested", function(evt) {
     $(evt.delegateTarget).find("a").attr("disabled", "true");
     $(evt.delegateTarget).find(".requested-cue-placeholder").attr("class", "icon-time");
   });
-<<<<<<< HEAD
   $(".delete-shortener-button").on("click", this.didClickDelete.bind(this)); // FIXME: convert to global data-* handler + <form>
 
   $(".my-shortener-new")
@@ -81,21 +73,6 @@ MePage.prototype.validateCreation = function()
 {
   var ok = true;
   var host = this.hostValue();
-=======
-
-  $(".my-shortener-new").on("requested", function(evt) {
-    $(evt.delegateTarget).find("input,button").attr("disabled", "true");
-  });
-};
-
-MePage.prototype.validateCreation = function()
-{
-  this.hostValidation = new FormValidation($("#host-validation-message"));
-  this.patternValidation = new FormValidation($("#pattern-validation-message"));
-
-  var ok = true;
-  var host = $("#host").val();
->>>>>>> origin/master
   var pattern = $("#pattern").val();
   
   if (!host.length)
@@ -115,7 +92,6 @@ MePage.prototype.validateCreation = function()
   return this.hostValidation.validate() & this.patternValidation.validate();
 }
 
-<<<<<<< HEAD
 MePage.prototype.didFailCreate = function(evt, error) {
   var toFocus = null;
   switch(error.name) {
@@ -147,8 +123,6 @@ MePage.prototype.didRequestCreate = function(evt) {
   $(evt.delegateTarget).find("input,button").attr("disabled", "true");
 };
 
-=======
->>>>>>> origin/master
 MePage.prototype.didSubmitCreate = function(evt) {
   var topost = {
     host: this.hostValue(),
@@ -156,16 +130,12 @@ MePage.prototype.didSubmitCreate = function(evt) {
     canary: $("#canary").val()
   };
 
-<<<<<<< HEAD
   this.prepareValidateCreation();
-=======
->>>>>>> origin/master
   if (!this.validateCreation()) {
     evt.preventDefault();
     return;
   }
 
-<<<<<<< HEAD
   var target = evt.delegateTarget;
 
   $.ajax(
@@ -181,17 +151,6 @@ MePage.prototype.didSubmitCreate = function(evt) {
   }.bind(this));
 
   $(target).trigger("requested");
-=======
-  $.ajax(
-    "/s", 
-    { type: "POST", data: topost }
-  ).done(function() {
-    window.location.reload();
-  }).fail(function() {
-  });
-
-  $(evt.delegateTarget).trigger("requested");
->>>>>>> origin/master
   evt.preventDefault();
 }
 
@@ -199,12 +158,9 @@ MePage.prototype.didClickDelete = function(evt) {
   var host = evt.delegateTarget.dataset["host"];
   var canary = $("#canary").val();
 
-<<<<<<< HEAD
   if (!window.confirm("Are you deleting shortener '" + host + "'?"))
     return;
 
-=======
->>>>>>> origin/master
   $.ajax(
     "/s/" + host, 
     { type: "DELETE", headers: { "x-hasbug-canary": canary } }
@@ -234,15 +190,10 @@ $(document).ready(function() {
   $(document).on("click", "a[disabled]", function(evt) { evt.preventDefault(); });
 
   if (0 == window.location.pathname.indexOf("/me")) {
-<<<<<<< HEAD
     var p = new MePage();
     p.wire();
   } else if (0 == window.location.pathname.indexOf("/aka")) {
     var p = new AkaPage();
     p.wire();
-=======
-    var f = new MePage();
-    f.wire();
->>>>>>> origin/master
   }
 });
