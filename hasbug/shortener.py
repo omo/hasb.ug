@@ -91,9 +91,12 @@ class PatternSignature(store.Stuff):
     def hosts_for(self, pattern):
         return [ h for (h, p) in self.patterns.items() if p == pattern ]
 
+    def worth_adding(self, pattern, host):
+        return not any([len(h) <= len(host) for h in self.hosts_for(pattern)])
+            
     def add(self, pattern, host):
         assert self.signature_from_pattern(pattern) == self.signature
-        assert 0 == len(self.hosts_for(pattern))
+        assert self.worth_adding(pattern, host)
         self.patterns[host] = pattern
 
     def remove(self, pattern):

@@ -11,9 +11,14 @@ class OwnershipTest(unittest.TestCase):
     def setUpClass(cls):
         cls.repo = hasbug.Repo(testing.TABLE_NAME if testing.enable_database else None)
         cls.mojombo = cls.repo.users.add_by_login("mojombo")
-        cls.sfoo = hasbug.Shortener.make("foo.com", "http://foo.obug.org/{id}", cls.mojombo.url)
+        foo_pattern = "http://foo.obug.org/{id}"
+        cls.sfoo = hasbug.Shortener.make("foo.com", foo_pattern, cls.mojombo.url)
         cls.sbar = hasbug.Shortener.make("bar.com", "http://bar.obug.org/{id}", cls.mojombo.url)
         cls.sbaz = hasbug.Shortener.make("baz.com", "http://foo2.obug.org/{id}", cls.mojombo.url)
+
+        cls.sfoo_longer = hasbug.Shortener.make("foolong.com", foo_pattern, cls.mojombo.url)
+        cls.sfoo_shorter = hasbug.Shortener.make("foo.jp", foo_pattern, cls.mojombo.url)
+        cls.sfoo_similar = hasbug.Shortener.make("foo.edu", foo_pattern, cls.mojombo.url)
 
     def setUp(self):
         for s in [self.sfoo, self.sbar, self.sbaz]:
@@ -27,6 +32,23 @@ class OwnershipTest(unittest.TestCase):
         self.repo.add_shortener(self.sbar)
         sbar_ownership = self.repo.ownerships.find(self.sbar.added_by, self.sbar.key)
         self.assertEquals(sbar_ownership.owner_key, self.sbar.added_by)
+
+    def test_add_conflict_longer(self):
+        self.repo.add_shortener(self.sfoo)
+        def run():
+            self.repo.add_shortener(self.sfoo_longer)
+        self.assertRaises(validation.ValidationError, run)
+
+    def test_add_conflict_similar(self):
+        self.repo.add_shortener(self.sfoo)
+        def run():
+            self.repo.add_shortener(self.sfoo_similar)
+        self.assertRaises(validation.ValidationError, run)
+
+    def test_add_not_conflict_shorter(self):
+        self.repo.add_shortener(self.sfoo)
+        self.repo.add_shortener(self.sfoo_shorter)
+        
 
     def test_remove_shortener(self):
         self.repo.add_shortener(self.sfoo)

@@ -152,3 +152,11 @@ class PatternSignatureTest(unittest.TestCase):
         def nomatch():
             target.shorten("https://bugs3.webkit.org/show_bug.cgi?id=12345")
         self.assertRaises(ValueError, nomatch)
+
+    def test_shorten_shorter_should_win(self):
+        pattern = "https://bugs.webkit.org/show_bug.cgi?id={id}"
+        target = hasbug.PatternSignature.make(hasbug.PatternSignature.signature_from_pattern(pattern))
+        target.add(pattern, "foolong.com")
+        target.add(pattern, "foo.com")
+        target.add(pattern, "foo.jp")
+        self.assertEquals(target.shorten("https://bugs.webkit.org/show_bug.cgi?id=12345"), "http://foo.jp/12345")

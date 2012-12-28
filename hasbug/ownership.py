@@ -36,8 +36,8 @@ class Ownership(store.Stuff):
     @classmethod
     def add_shortener(cls, repo, shortener):
         sig = repo.pattern_signatures.ensure(shortener.pattern)
-        covered_by = sig.hosts_for(shortener.pattern)
-        if covered_by:
+        if not sig.worth_adding(shortener.pattern, shortener.host):
+            covered_by = sig.hosts_for(shortener.pattern)
             raise validation.Validator(shortener).found_invalid(
                 "pattern", "The pattern is covered by {host}".format(host=covered_by[0])).raise_if_invalid()
         sig.add(shortener.pattern, shortener.host)

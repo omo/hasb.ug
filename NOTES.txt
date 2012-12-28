@@ -154,6 +154,8 @@ TODOs:
 > Dogfood
   - Move wkb.ug
 
++ this.hasb.ug/2: Shorter name should win
+
 > Revisit deploy
   - Switch to faster instance (?) -> later.
 
