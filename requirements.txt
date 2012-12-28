@@ -9,6 +9,5 @@ distribute==0.6.28
 gunicorn==0.17.0
 nose==1.2.1
 pycrypto==2.6
-s3cmd==1.1.0-beta3
 ssh==1.7.14
 wsgiref==0.1.2

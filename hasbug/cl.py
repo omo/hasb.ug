@@ -93,23 +93,6 @@ class AppController(controller.CementBaseController):
             self.o.write("{:<16} {:<30}\n".format(i.login, i.name))
         self.o.write("total {} users found.\n".format(len(listed)))
 
-    def _setup_s3cmd_conf(self):
-        confname = "confs/s3cmd.conf"
-        conftmpl = "confs/s3cmd.conf.tmpl"
-        f = open(confname, "w")
-        f.write(open(conftmpl).read().format(access_key=hasbug.conf.aws_access_key_id(), 
-                                             secret_key=hasbug.conf.aws_secret_access_key()))
-        f.close()
-        return confname
-        
-    @controller.expose(aliases=["upload-asset"], help="Upload asset.")
-    def upload_asset(self):
-        if not self.pargs.dir:
-            self._error_exit("dir is missing")
-        confname = self._setup_s3cmd_conf()
-        args = ["s3cmd", "-c", confname, "sync", "--acl-public", self.pargs.dir, "s3://hasbug-asset/public/"]
-        subprocess.call(args, stdin=sys.stdin, stdout=sys.stdout, stderr=sys.stderr)
-
     @controller.expose(aliases=["noop"], help="Do nothing.")
     def do_nothing(self):
         self._repo # To instantiate Repo explicitly.
