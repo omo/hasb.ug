@@ -7,6 +7,7 @@ import hasbug.oauth
 import hasbug.conf
 import hasbug.user
 import hasbug.net
+import hasbug.app
 import flask
 import json
 import logging
@@ -19,7 +20,8 @@ class ConsoleTest(unittest.TestCase):
         hasbug.coweb.app.config['DEBUG'] = True
         hasbug.coweb.app.r = hasbug.Repo(name=None)
         hasbug.coweb.app.logger.setLevel(logging.CRITICAL)
-        #hasbug.net.urlopen = fake_urlopen
+        hasbug.app.fake_static_file_computation()
+        hasbug.net.fake_urlopen()
         hasbug.net.add_fake_data("https://github.com/login/oauth/access_token", '{ "access_token": "mytoken" }')
         hasbug.net.add_fake_data("https://api.github.com/user?access_token=mytoken", hasbug.user.octocat_text)
         hasbug.net.add_fake_data('https://www.googleapis.com/urlshortener/v1/url?key=fake',
@@ -140,8 +142,24 @@ class ConsoleTest(unittest.TestCase):
         s = test_shortener.make_fresh("foo.hasb.ug")        
         self.assertEquals("http://foo.bugtracker.org/", hasbug.coweb.pattern_to_guessed_root_filter(s.pattern))
         self.assertEquals("http://foo.bugtracker.org", hasbug.coweb.pattern_to_guessed_root_filter("http://foo.bugtracker.org{id}"))
-        
+
+
 class BackgroundImageTest(unittest.TestCase):
     def test_hello(self):
         target = hasbug.coweb.BackgroundImage('http://farm4.staticflickr.com/3127/3308532489_6a1bbf61fa_b.jpg', "http://www.flickr.com/photos/rnw/3308532489/")
         self.assertEquals(target.credit_name, "rnw")
+
+
+class StaticFilePathTest(unittest.TestCase):
+    def test_hello(self):
+        fake_original_path = "foo/baz.jpg"        
+        fake_modified_path = "11111111111111111111111111111111.hash/foo/baz.jpg"
+
+        class TestingStaticFilePath(hasbug.app.StaticFilePath):
+            def compute_modifiers(self):
+                return { fake_original_path: "11111111111111111111111111111111.hash" }
+
+        target = TestingStaticFilePath("myfolder/")
+        mod_path = target.to_modified_filename(fake_original_path)
+        self.assertEquals(mod_path, fake_modified_path)
+        self.assertEquals(target.to_original_filename(mod_path), fake_original_path)

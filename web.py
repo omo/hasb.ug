@@ -22,6 +22,7 @@ def set_config(key, val):
 app = AppDispatcher()
 set_config('DEBUG', not hasbug.prod.in_prod or force_debug)
 set_config('REPO_TABLE', hasbug.prod.TABLE_NAME if hasbug.prod.in_prod else hasbug.testing.TABLE_NAME)
+set_config('SEND_FILE_MAX_AGE_DEFAULT', 24 * 60 * 60 * 30) # A month - We don't rely on the age. We use hash signature embedding for invalidation.
 
 if __name__ == '__main__':
     werkzeug.serving.run_simple('localhost', 8000, app, use_debugger=True, use_reloader=True, passthrough_errors=True)

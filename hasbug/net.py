@@ -11,7 +11,8 @@ def fake_urlopen():
     global urlopen
     def faked(req):
         return StringIO.StringIO(fake_dict[req.get_full_url()])
-    urlopen = faked
+    if urlopen is not faked:
+        urlopen = faked
 
 def add_fake_data(url, data):
     fake_dict[url] = data
