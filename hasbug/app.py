@@ -13,7 +13,7 @@ import hasbug.session as session
 
 template_dir = os.path.join(os.path.dirname(__file__), "templates")
 static_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "public")
-s3_endpoint = "http://hasbug-asset.s3-website-us-east-1.amazonaws.com"
+cf_endpoint = "http://d2e0gotni2vnll.cloudfront.net/"
 
 class StaticFilePath(object):
     
@@ -59,17 +59,19 @@ class App(flask.Flask):
         self._r = None
         self.jinja_env.globals["user"] = None
         self.jinja_env.globals["canary"] = None
-        self.jinja_env.globals["url_for"] = self.s3_aware_url_for
+        self.jinja_env.globals["url_for"] = self.cf_aware_url_for
 
-    def s3_aware_url_for(self, endpoint, **values):
+    def cf_aware_url_for(self, endpoint, **values):
         if endpoint == "static":
             values['filename'] = self._static_file_path.to_modified_filename(values['filename'])
             if prod.in_prod:
-                return s3_endpoint + flask.url_for(endpoint, **values)
+                return cf_endpoint + flask.url_for(endpoint, **values)
         return flask.url_for(endpoint, **values)
 
     def send_static_file(self, filename):
-        return super(App, self).send_static_file(self._static_file_path.to_original_filename(filename))
+        resp = super(App, self).send_static_file(self._static_file_path.to_original_filename(filename))
+        resp.headers["Access-Control-Allow-Origin"] = "*" # For taking care of Forefix CORS font loading.
+        return resp
 
     @property
     def r(self):
