@@ -123,6 +123,14 @@ class ShortenerTest(unittest.TestCase):
         self.assertTrue(s4.validate().invalid())
 
 
+    def test_guessed_root(self):
+        s1 = hasbug.Shortener.make("foo.hasb.ug", "http://foo.bugtracker.org/{id}", "http://api.github.com/users/omo")
+        self.assertEquals("http://foo.bugtracker.org/", s1.guessed_root)
+        s2 = hasbug.Shortener.make("foo.hasb.ug", "http://foo.bugtracker.org/show_cgi?id={id}", "http://api.github.com/users/omo")
+        self.assertEquals("http://foo.bugtracker.org/", s2.guessed_root)
+        s3 = hasbug.Shortener.make("foo.hasb.ug", "http://foo.bugtracker.org{id}", "http://api.github.com/users/omo")
+        self.assertEquals("http://foo.bugtracker.org", s3.guessed_root)
+
 class PatternSignatureTest(unittest.TestCase):
     def setUp(self):
         self.target_shortener = hasbug.Shortener.make(

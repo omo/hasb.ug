@@ -138,11 +138,6 @@ class ConsoleTest(unittest.TestCase):
         resp = self.app.get("/aka/http://google.com/")
         self.assertTrue("200" in resp.status)
 
-    def test_filter_guessed_root(self):
-        s = test_shortener.make_fresh("foo.hasb.ug")        
-        self.assertEquals("http://foo.bugtracker.org/", hasbug.coweb.pattern_to_guessed_root_filter(s.pattern))
-        self.assertEquals("http://foo.bugtracker.org", hasbug.coweb.pattern_to_guessed_root_filter("http://foo.bugtracker.org{id}"))
-
 
 class BackgroundImageTest(unittest.TestCase):
     def test_hello(self):

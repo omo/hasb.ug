@@ -25,6 +25,14 @@ class Shortener(store.Stuff):
         m = re.search("/([^/]*)$", self.added_by)
         return m.group(1)
 
+    @property
+    def guessed_root(self):
+        p = self.pattern.format(id="")
+        index = p.rfind("/")
+        if index < len("https://"):
+            return p
+        return p[0:index+1]
+
     def validate(self):
         v = validation.Validator(self)
         v.should_match("host_upper", "^([A-Z0-9\-]{2,63}\.)*[A-Z]{2,63}$")
@@ -38,7 +46,7 @@ class Shortener(store.Stuff):
             v = validation.Validator(self)
             return v.found_invalid("host", "{host} is already taken".format(host=self.host)).error()
         return None
-            
+
     @store.bagging
     @classmethod
     def remove_by_host(cls, bag, host):
