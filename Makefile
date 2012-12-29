@@ -31,6 +31,8 @@ dbtest:
 	. ./bin/activate && HASBUG_TEST_DATABASE=1 python -m unittest discover ${TEST_OPTIONS}
 deploy:
 	. ./bin/activate && fab -H hasb.ug -u ubuntu deploy
+restart:
+	. ./bin/activate && fab -H hasb.ug -u ubuntu reload_gunicorn
 
 freeze: ${PIP_REQUIREMENT}
 

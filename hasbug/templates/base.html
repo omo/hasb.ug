@@ -2,7 +2,7 @@
 <html>
 <head>
 
-{% macro social() -%}
+{% macro social(show_github_btn) -%}
 <div class="social-button">
   <div class="g-plusone" data-size="medium" data-annotation="none"></div>
 </div>
@@ -12,6 +12,12 @@
 <div class="social-button">
   <div class="fb-like" data-href="{{ request.url }}" data-send="false" data-layout="button_count" data-width="450" data-show-faces="false" data-font="verdana"></div>
 </div>
+{% if show_github_btn %}
+<div class="social-button">
+  <iframe src="http://ghbtns.com/github-btn.html?user=omo&repo=hasb.ug&type=watch&count=true"
+          allowtransparency="true" frameborder="0" scrolling="0" width="85" height="20"></iframe>
+</div>
+{% endif %}
 {%- endmacro %}
 
 {%- macro hide_at_firt() %}style="display:none;"{%- endmacro %}

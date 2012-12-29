@@ -22,7 +22,7 @@
 </div>
 </div>
 <div class="imaging-footer">
-  <div class="social">{{ social() }}</div>
+  <div class="social">{{ social("/" == request.path) }}</div>
   <div class="credit">The image is from <a href="{{ background.credit }}">{{ background.credit_name }}</a>.</div>
   <div class="clear"></div>
 </div>
