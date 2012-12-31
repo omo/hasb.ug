@@ -16,13 +16,17 @@
 {% endblock %}
 {% block content %}
 <div class="explaining-shortener imaging-holder">
-<img src="{{ background.url }}" width="100%" />
+<img class="background-image" src="{{ background.url }}" width="100%" />
 <div class="text">
 {% block image_text %}{% endblock %}
 </div>
 </div>
 <div class="imaging-footer">
-  <div class="social">{{ social("/" == request.path) }}</div>
+  <div class="social"
+       data-animation="true"
+       data-placement="right"
+       data-title="Share this!"
+   >{{ social("/" == request.path) }}</div>
   <div class="credit">The image is from <a href="{{ background.credit }}">{{ background.credit_name }}</a>.</div>
   <div class="clear"></div>
 </div>

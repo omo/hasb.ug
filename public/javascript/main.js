@@ -116,6 +116,8 @@ MePage.prototype.didFailCreate = function(evt, error) {
 };
 
 MePage.prototype.didCreate = function(evt, result) {
+  if (window.localStorage)
+    window.localStorage["justCreated"] = "true";
   window.location = result.location;
 };
 
@@ -184,6 +186,24 @@ AkaPage.prototype.wire = function() {
   sel.selectAllChildren(target);
 };
 
+SitePage = function() { };
+SitePage.prototype.wire = function() {
+  this.showPromotionIfNeeded();
+};
+
+SitePage.prototype.showPromotionIfNeeded = function() {
+  if (!window.localStorage || !window.localStorage["justCreated"])
+    return;
+  delete window.localStorage["justCreated"];
+
+  $(".background-image").on("load", function() {
+    var message = "Tell  " + $(".explainig-host").text() + " to your friends!";
+    var target = $(".social");
+    window.setTimeout(function() { target.popover({ "content": message }).popover("show"); }, 1000);
+    window.setTimeout(function() { target.popover("hide"); }, 8000);
+  });
+};
+
 $(document).ready(function() {
   // For global navigation
   $("#nav-signout").on("click", signout);
@@ -194,6 +214,9 @@ $(document).ready(function() {
     p.wire();
   } else if (0 == window.location.pathname.indexOf("/aka")) {
     var p = new AkaPage();
+    p.wire();
+  } else if (0 == window.location.pathname.indexOf("/s/")) {
+    var p = new SitePage();
     p.wire();
   }
 });
