@@ -37,9 +37,12 @@ def reload_gunicorn():
     with cd(PROJECT_DIR):
         with settings(warn_only=True):
             sudo("stop gunicorn")
+            sudo("/etc/init.d/nginx stop")
         sudo("cp confs/gunicorn-upstart.conf /etc/init/gunicorn.conf")
+        sudo("cp confs/nginx.conf /etc/nginx/sites-enabled/hasbug.conf")
         sudo("cp confs/logrotate.conf /etc/logrotate.d/gunicorn")
         sudo("start --verbose gunicorn")
+        sudo("/etc/init.d/nginx start")
 
 def deploy():
     update()

@@ -9,3 +9,4 @@ node_modules
 public/stylesheets
 public/font
 public/javascript/vendor
+target/

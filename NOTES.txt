@@ -283,10 +283,14 @@ $ fab -i ~/.ssh/omokey.pem  -H ubuntu@hasb.ug deploy
 EC2 setup (should be fabrified eventually):
 ---------------------------------------------
 
-$ sudo aptitude install make build-essential git python python-dev python-distribute python-virtualenv
+$ sudo aptitude install make build-essential git python python-dev python-distribute python-virtualenv nginx
 $ git clone https://github.com/omo/hasb.ug
 $ virtualenv pyenv --distribute
 # install nvm, npm
+
+## nginx setup
+$ sudo mv    /etc/nginx/sites-enabled/ /etc/nginx/sites-enabled.org
+$ sudo mkdir /etc/nginx/sites-enabled/
 
 
 Links
