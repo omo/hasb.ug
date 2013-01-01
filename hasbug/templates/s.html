@@ -1,4 +1,4 @@
-{% set socio_title = shortener.host if shortener.is_subdomain else shortener.host + shortener.host + " @hasb.ug" %}
+{% set socio_title = shortener.host if shortener.is_subdomain else shortener.host + " @hasb.ug" %}
 {% set socio_description =  "A hasb.ug shortener for " + shortener.guessed_root + " made by @" + shortener.added_by_login + "." %}
 {% set subpath  = "/s/" + shortener.host %}
 {% set background  = background %}

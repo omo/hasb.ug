@@ -1,3 +1,4 @@
+BeautifulSoup==3.2.1
 Fabric==1.4.3
 Flask==0.9
 Jinja2==2.6

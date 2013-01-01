@@ -1,5 +1,7 @@
 
 import unittest
+from BeautifulSoup import BeautifulSoup
+
 import hasbug
 import hasbug.reweb
 
@@ -33,6 +35,8 @@ class RedirectorTest(unittest.TestCase):
     def test_wkcheckin_root(self):
         resp = self.app.get("/", headers = { "Host": "wkcheck.in" })
         self.assertTrue("200" in resp.status)
+        soup = BeautifulSoup(resp.data)
+        self.assertEquals(u"wkcheck.in @hasb.ug", soup.title.string)
 
     def test_wkcheckin_noop(self):
         resp = self.app.get("/noop", headers = { "Host": "wkcheck.in" })
