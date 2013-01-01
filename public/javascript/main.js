@@ -197,7 +197,7 @@ SitePage.prototype.showPromotionIfNeeded = function() {
   delete window.localStorage["justCreated"];
 
   $(".background-image").on("load", function() {
-    var message = "Tell  " + $(".explainig-host").text() + " to your friends!";
+    var message = "Tell  " + $(".explaining-host").text() + " to your friends!";
     var target = $(".social");
     window.setTimeout(function() { target.popover({ "content": message }).popover("show"); }, 1000);
     window.setTimeout(function() { target.popover("hide"); }, 8000);
