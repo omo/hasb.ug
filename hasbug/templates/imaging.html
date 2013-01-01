@@ -2,16 +2,16 @@
 
 {% block head %}
 {{ super() }}
-<meta property="og:title" content="{{ title }}"/>
-<meta property="og:description" content="{{ description }}"/>
+<meta property="og:title" content="{{ socio_title }}"/>
+<meta property="og:description" content="{{ socio_description }}"/>
 <meta property="og:type" content="article"/>
 <meta property="og:url" content="{{ request.url }}"/>
 <meta property="og:image" content="{{ background.url }}"/>
 <meta property="og:site_name" content="Hasb.ug"/>
 <meta name="twitter:site" content="@hasbug">
 <meta name="twitter:url" content="{{ request.url }}"/>
-<meta name="twitter:title" content="{{ title }}"/>
-<meta name="twitter:description" content="{{ description }}"/>
+<meta name="twitter:title" content="{{ socio_title }}"/>
+<meta name="twitter:description" content="{{ socio_description }}"/>
 <meta name="twitter:image" content="{{ background.url }}"/>
 {% endblock %}
 {% block content %}

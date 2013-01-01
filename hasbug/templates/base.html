@@ -22,7 +22,7 @@
 
 {%- macro hide_at_firt() %}style="display:none;"{%- endmacro %}
 {% block head %}
-<title>hasb.ug{{ subpath }}</title>
+<title>{% block title %}hasb.ug{{ subpath }}{% endblock %}</title>
 <link rel="stylesheet" href="{{ url_for('static', filename='stylesheets/main.css' )}}" />
 <link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.ico' )}}" type="image/x-icon">
 <!-- FIXME: SHould be @defer -->
@@ -80,7 +80,9 @@
       <div class="navbar-inner">
         <div class="container-fluid">
           <span class="brand">
+{% block brand %}
             <a href="{{ url_for('index') }}">hasb.ug</a> {{ subpath }}
+{% endblock %}
           </span>
           <div class="navbar-text pull-right">
               <ul class="nav">

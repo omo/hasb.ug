@@ -123,6 +123,13 @@ class ShortenerTest(unittest.TestCase):
         self.assertTrue(s4.validate().invalid())
 
 
+    def test_subdmain(self):
+        withsub = hasbug.Shortener.make("foo.hasb.ug", "http://foo.bugtracker.org/{id}", "http://api.github.com/users/omo")
+        self.assertTrue(withsub.is_subdomain)
+        self.assertEquals("foo", withsub.subdomain)
+        nosub = hasbug.Shortener.make("bar.jp", "http://bar.bugtracker.org/{id}", "http://api.github.com/users/omo")
+        self.assertFalse(nosub.is_subdomain)
+
     def test_guessed_root(self):
         s1 = hasbug.Shortener.make("foo.hasb.ug", "http://foo.bugtracker.org/{id}", "http://api.github.com/users/omo")
         self.assertEquals("http://foo.bugtracker.org/", s1.guessed_root)

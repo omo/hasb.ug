@@ -1,8 +1,18 @@
-{% set title = shortener.host|upper %}
-{% set description = shortener.host|upper + " - A hasb.ug shortener for " + shortener.guessed_root + " made by @" + shortener.added_by_login + "." %}
+{% set socio_title = shortener.host if shortener.is_subdomain else shortener.host + shortener.host + " @hasb.ug" %}
+{% set socio_description =  "A hasb.ug shortener for " + shortener.guessed_root + " made by @" + shortener.added_by_login + "." %}
 {% set subpath  = "/s/" + shortener.host %}
 {% set background  = background %}
 {% extends "imaging.html" %}
+
+{% block title %}{{ socio_title }}{% endblock %}
+
+{% block brand %}
+{%   if shortener.is_subdomain %}
+{{ shortener.subdomain }}<a href="{{url_for('index')}}">.hasb.ug</a>
+{%   else %}
+{{ shortener.host }} <a href="{{url_for('index')}}">@hasb.ug</a>
+{%   endif %}
+{% endblock %}
 
 {% block image_text %}
 {{ ("Brave", "Awesome", "Generous", "Handsome", "Crazy")|random }}

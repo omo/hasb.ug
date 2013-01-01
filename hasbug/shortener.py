@@ -33,6 +33,15 @@ class Shortener(store.Stuff):
             return p
         return p[0:index+1]
 
+    @property
+    def is_subdomain(self):
+        return self.host.endswith(".hasb.ug")
+
+    @property
+    def subdomain(self):
+        assert self.is_subdomain
+        return re.sub("\\.hasb\\.ug$", "", self.host)
+
     def validate(self):
         v = validation.Validator(self)
         v.should_match("host_upper", "^([A-Z0-9\-]{2,63}\.)*[A-Z]{2,63}$")

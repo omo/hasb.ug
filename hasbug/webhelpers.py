@@ -55,3 +55,4 @@ def register_helpers(app):
     @app.template_filter('urlencode')
     def urlencode_filter(s):
         return urllib.quote_plus(s)
+
