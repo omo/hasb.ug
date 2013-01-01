@@ -8,6 +8,7 @@ import hashlib
 import flask
 import hasbug.repo as repo
 import hasbug.prod as prod
+import hasbug.conf as conf
 import hasbug.session as session
 
 
@@ -60,6 +61,7 @@ class App(flask.Flask):
         self.jinja_env.globals["user"] = None
         self.jinja_env.globals["canary"] = None
         self.jinja_env.globals["url_for"] = self.cf_aware_url_for
+        self.secret_key = conf.flask_secret_key()
 
     def cf_aware_url_for(self, endpoint, **values):
         if endpoint == "static":

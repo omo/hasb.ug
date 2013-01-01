@@ -3,6 +3,7 @@
 import unittest, StringIO
 import hasbug
 import hasbug.coweb
+import hasbug.webhelpers
 import hasbug.oauth
 import hasbug.conf
 import hasbug.user
@@ -112,7 +113,7 @@ class ConsoleTest(unittest.TestCase):
         s = test_shortener.make_fresh("foo.hasb.ug")
         hasbug.coweb.app.r.add_shortener(s)
         resp = self.app.get("/s/" + s.host)
-        self.assertTrue("200" in resp.status)
+        self.assert_redirect_to(resp, "http://foo.hasb.ug/")
 
     def test_shortener_post_no_canary(self):
         with self.app as c:
@@ -141,7 +142,7 @@ class ConsoleTest(unittest.TestCase):
 
 class BackgroundImageTest(unittest.TestCase):
     def test_hello(self):
-        target = hasbug.coweb.BackgroundImage('http://farm4.staticflickr.com/3127/3308532489_6a1bbf61fa_b.jpg', "http://www.flickr.com/photos/rnw/3308532489/")
+        target = hasbug.webhelpers.BackgroundImage('http://farm4.staticflickr.com/3127/3308532489_6a1bbf61fa_b.jpg', "http://www.flickr.com/photos/rnw/3308532489/")
         self.assertEquals(target.credit_name, "rnw")
 
 
