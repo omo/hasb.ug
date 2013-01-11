@@ -28,7 +28,9 @@
 
 <form class="my-shortener-new" action="#">
   <input type="hidden" id="canary" value="{{canary}}">
-
+{% if belongings.reaches_upper_limit %}
+  <div class="alert alert-info notice-upper-limit"><em>Oh ya!</em> You made so many shorteners. We're full now!</div>
+{% else %}
   <div class="control-group">
     <div class="btn-group" data-toggle="buttons-radio">
       <button type="button" class="btn host-type-hasbug">*.hasb.ug</button>
@@ -66,8 +68,7 @@
   <span class="help-block">Destination URL of the shortener. You need one "{id}" placeholder to substitude given bug ID.</span>
 
   <button class="add-shortener-button" >Create!</button>
-</ul>
+{% endif %}
 </form>
-
 </div>
 {% endblock %}

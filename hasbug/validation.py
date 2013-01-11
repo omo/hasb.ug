@@ -8,6 +8,9 @@ class ValidationError(Exception):
         super(ValidationError, self).__init__()
         self.invalids = invalids
 
+    def __str__(self):
+        return ",".join([ i.message for i in self.invalids ])
+
 
 class Invalid(object):
     def __init__(self, name, message=None):
@@ -48,3 +51,5 @@ class Validator(object):
     def error(self):
         return ValidationError(self._invalids)
 
+def raise_validation_error(target, name, message):
+    Validator(target).found_invalid(name, message).raise_if_invalid()

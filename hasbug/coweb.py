@@ -35,9 +35,9 @@ def ensuring_canary(fn):
     def wrapper(*args, **kwargs):
         if not f.request.method in ["GET", "HEAD", "OPTIONS"]:
             if not f.request.canary:
-                return f.abort(401)
+                return f.abort(401, "No canary is associated.")
             if find_canary(f.request) != f.request.canary:
-                return f.abort(401)
+                return f.abort(401, "Bad or no canary.")
         return fn(*args, **kwargs)
     return wrapper
 

@@ -340,5 +340,6 @@ class MockTable(object):
         return self._items.values()
 
     def query(self, hash, cond):
-        # This is wrong but somewhat works.
-        return self._items.values()
+        assert hash
+        assert isinstance(cond, condition.BEGINS_WITH)
+        return [ i for i in self._items.values() if i.hash_key == hash and i.range_key.startswith(cond.v1) ]

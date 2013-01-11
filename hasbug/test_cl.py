@@ -55,7 +55,7 @@ class ClTest(cement.utils.test.CementTestCase):
         self._run(['ls', '--mock'])
 
     def test_au_mock(self):
-        hasbug.user.add_fake_mojombo_to_urlopen()
+        hasbug.user.add_fake_users_to_urlopen()
         self._run(['au', '--mock', '--login', 'mojombo'])
 
     def test_lu_mock(self):

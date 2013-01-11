@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
-import unittest, StringIO
+from BeautifulSoup import BeautifulSoup
+import unittest, StringIO, re
 import hasbug
 import hasbug.coweb
 import hasbug.webhelpers
@@ -42,7 +43,8 @@ class ConsoleTest(unittest.TestCase):
 
     def setUp(self):
         self.app = hasbug.coweb.app.test_client()
-        test_shortener.cleanup_shorteners(hasbug.coweb.app.r, ["foo.hasb.ug", "bar.hasb.ug", "foo.bar"])
+        self.exceeding_shortener_names = [ "foo{0}.com".format(i) for i in range(10) ]
+        test_shortener.cleanup_shorteners(hasbug.coweb.app.r, ["foo.hasb.ug", "bar.hasb.ug", "foo.bar"] + self.exceeding_shortener_names)
 
     def test_oauth(self):
         hasbug.oauth.redirect_url("foobar")
@@ -86,6 +88,18 @@ class ConsoleTest(unittest.TestCase):
         self.login_as_octocat()
         resp = self.app.get("/me")
         self.assertTrue("200" in resp.status)
+
+    def test_me_with_exceeding_shorteners(self):
+        with self.app as c:
+            self.login_as_octocat()
+            for n in self.exceeding_shortener_names:
+                r = self.app.post("/s", data = { "host": n, "pattern": "http://bugs." + n + "/{id}", "canary": flask.session['canary'] })
+                self.assertTrue("201" in r.status)
+            resp = self.app.get("/me")
+            self.assertTrue("200" in resp.status)
+            soup = BeautifulSoup(resp.data)
+            self.assertEquals(0, len(soup.findAll("div", {'class': re.compile('add-shortener-button')})))
+            self.assertEquals(1, len(soup.findAll("div", {'class': re.compile('notice-upper-limit')})))
 
     def test_shortener_add(self):
         with self.app as c:

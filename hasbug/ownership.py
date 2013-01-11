@@ -1,9 +1,12 @@
 # -*- coding: utf-8 -*-
 
+import types
 import hasbug.store as store
 import hasbug.validation as validation
 import hasbug.user
 import hasbug.shortener
+
+OWNERSHIP_UPPER_LIMIT = 10
 
 class Belongings(object):
     def __init__(self, ownerhips):
@@ -16,6 +19,15 @@ class Belongings(object):
     @property
     def has_shortener_hosts(self):
         return 0 < len(self.shortener_hosts)
+
+    @property
+    def len(self):
+        return len(self.shortener_hosts)
+
+    @property
+    def reaches_upper_limit(self):
+        return OWNERSHIP_UPPER_LIMIT <= self.len
+
 
 class Ownership(store.Stuff):
     bag_name = "ownerships"
@@ -35,11 +47,16 @@ class Ownership(store.Stuff):
     @store.storing
     @classmethod
     def add_shortener(cls, repo, shortener):
+        belongins = repo.belongings_for(shortener.added_by)
+        if belongins and belongins.reaches_upper_limit:
+            raise validation.raise_validation_error(
+                shortener, "added_by", "The ower {owner} already has too many shorteners".format(owner=shortener.added_by_login))
+
         sig = repo.pattern_signatures.ensure(shortener.pattern)
         if not sig.worth_adding(shortener.pattern, shortener.host):
             covered_by = sig.hosts_for(shortener.pattern)
-            raise validation.Validator(shortener).found_invalid(
-                "pattern", "The pattern is covered by {host}".format(host=covered_by[0])).raise_if_invalid()
+            raise validation.raise_validation_error(
+                shortener, "pattern", "The pattern is covered by {host}".format(host=covered_by[0]))
         sig.add(shortener.pattern, shortener.host)
 
         # FIXME: Here is a race condition. (We can live with it though).
@@ -73,4 +90,5 @@ class Ownership(store.Stuff):
     @store.storing
     @classmethod
     def belongings_for(cls, repo, owner):
-        return Belongings(repo.ownerships.query(owner.key))
+        key = owner if isinstance(owner, types.StringType) or isinstance(owner, types.UnicodeType) else owner.key
+        return Belongings(repo.ownerships.query(key))

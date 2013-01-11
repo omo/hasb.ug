@@ -1,6 +1,7 @@
 
 import unittest
 import hasbug
+import hasbug.ownership as ownership
 import hasbug.store as store
 import hasbug.testing as testing
 import hasbug.validation as validation
@@ -11,17 +12,21 @@ class OwnershipTest(unittest.TestCase):
     def setUpClass(cls):
         cls.repo = hasbug.Repo(testing.TABLE_NAME if testing.enable_database else None)
         cls.mojombo = cls.repo.users.add_by_login("mojombo")
+        cls.octocat = cls.repo.users.add_by_login("octocat")
         foo_pattern = "http://foo.obug.org/{id}"
         cls.sfoo = hasbug.Shortener.make("foo.com", foo_pattern, cls.mojombo.url)
         cls.sbar = hasbug.Shortener.make("bar.com", "http://bar.obug.org/{id}", cls.mojombo.url)
         cls.sbaz = hasbug.Shortener.make("baz.com", "http://foo2.obug.org/{id}", cls.mojombo.url)
 
+        cls.tens = [ hasbug.Shortener.make("baz{i}.com".format(i=i), "http://baz{i}.obug.org/{id}".format(i=i, id="{id}"), cls.mojombo.url) 
+                     for i in range(ownership.OWNERSHIP_UPPER_LIMIT + 1) ]
+        cls.eleventh = cls.tens.pop()
         cls.sfoo_longer = hasbug.Shortener.make("foolong.com", foo_pattern, cls.mojombo.url)
         cls.sfoo_shorter = hasbug.Shortener.make("foo.jp", foo_pattern, cls.mojombo.url)
         cls.sfoo_similar = hasbug.Shortener.make("foo.edu", foo_pattern, cls.mojombo.url)
 
     def setUp(self):
-        for s in [self.sfoo, self.sbar, self.sbaz]:
+        for s in [self.sfoo, self.sfoo_shorter, self.sbar, self.sbaz, self.eleventh] + self.tens:
             try:
                 self.repo.remove_shortener(self.repo.shorteners.find(s.key))
             except store.ItemNotFoundError:
@@ -48,7 +53,14 @@ class OwnershipTest(unittest.TestCase):
     def test_add_not_conflict_shorter(self):
         self.repo.add_shortener(self.sfoo)
         self.repo.add_shortener(self.sfoo_shorter)
-        
+
+    @unittest.skipIf(testing.enable_database, "Hard to make the precondition clean")
+    def test_add_ownership_exceeded(self):
+        for o in self.tens:
+            self.repo.add_shortener(o)
+        def run():
+            self.repo.add_shortener(self.eleventh)
+        self.assertRaises(validation.ValidationError, run)
 
     def test_remove_shortener(self):
         self.repo.add_shortener(self.sfoo)
@@ -63,7 +75,6 @@ class OwnershipTest(unittest.TestCase):
         self.repo.add_shortener(self.sfoo)
         self.repo.update_shortener(self.sfoo)
 
-    @unittest.skipIf(not testing.enable_database, "Database test is disabled - query() needs it.")
     def test_list_belongings(self):
         self.repo.add_shortener(self.sfoo)
         self.repo.add_shortener(self.sbar)

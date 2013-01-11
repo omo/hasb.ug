@@ -66,8 +66,9 @@ mojombo_text = """
 
 mojombo_dict = json.loads(mojombo_text)
 
-def add_fake_mojombo_to_urlopen():
+def add_fake_users_to_urlopen():
     net.add_fake_data(mojombo_dict["url"], mojombo_text)
+    net.add_fake_data(octocat_dict["url"], octocat_text)
 
 class User(store.Stuff):
     bag_name = "users"
